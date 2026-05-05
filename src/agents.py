@@ -3,8 +3,9 @@ All 10 Agent Nodes for the TIMPS Swarm.
 
 Each function is a LangGraph node that:
   1. Reads from SwarmState
-  2. Calls the appropriate LLM via the router
-  3. Returns a partial state update (dict)
+  2. Uses AgentComputer (real browser, terminal, search, files) for grounding
+  3. Calls the appropriate LLM via the router
+  4. Returns a partial state update (dict)
 """
 import os
 import json
@@ -16,6 +17,7 @@ from typing import Optional
 from src.state import SwarmState, Task
 from src.llm_router import get_router
 from src.adapter_router import get_adapter_router
+from src.computer_use import get_agent_computer
 
 logger = logging.getLogger(__name__)
 
@@ -148,12 +150,24 @@ def product_manager_node(state: SwarmState) -> dict:
         return {}
 
     task = pending[0]
+
+    # ── Real computer use: search industry standards for the request ──
+    computer = get_agent_computer("product_manager")
+    research = computer.research_sync(
+        f"{state['user_request']} product requirements user stories best practices", follow_links=1
+    )
+    logger.info("[ProductManager] Web research complete (%d chars)", len(research))
+
     system = (
         "You are a senior Product Manager. Write a concise Product Requirements Document (PRD) "
         "with: Overview, Goals, User Stories, Acceptance Criteria, and Out-of-Scope items. "
-        "Be specific and developer-friendly."
+        "Be specific and developer-friendly. Ground your requirements in the research context provided."
     )
-    prompt = f"User request: {state['user_request']}\nTask: {task['description']}"
+    prompt = (
+        f"User request: {state['user_request']}\n\n"
+        f"Research context (from live web search):\n{research[:3000]}\n\n"
+        f"Task: {task['description']}"
+    )
     requirements = get_router().call("product_manager", prompt, system)
 
     path = _save("requirements.md", requirements)
@@ -178,13 +192,23 @@ def architect_node(state: SwarmState) -> dict:
         return {}
 
     task = pending[0]
+
+    # ── Real computer use: look up current best-practice tech stacks ──
+    computer = get_agent_computer("architect")
+    research = computer.research_sync(
+        f"{state['user_request']} system architecture design patterns tech stack 2024", follow_links=1
+    )
+    logger.info("[Architect] Web research complete (%d chars)", len(research))
+
     system = (
         "You are a Software Architect. Output a technical design covering: "
         "Tech Stack selection, Component diagram (text), API contracts (OpenAPI-style), "
-        "Data models, Security considerations, and Scalability notes."
+        "Data models, Security considerations, and Scalability notes. "
+        "Use the research context to choose modern, proven technologies."
     )
     prompt = (
         f"Requirements:\n{state.get('requirements', state['user_request'])}\n\n"
+        f"Research context (from live web search):\n{research[:3000]}\n\n"
         f"Task: {task['description']}"
     )
     plan = get_router().call("architect", prompt, system)
@@ -217,19 +241,25 @@ def code_generator_node(state: SwarmState) -> dict:
         for kw in ["fix", "bug", "error", "exception", "crash", "null", "undefined", "injection", "xss"]
     )
 
+    # ── Real computer use: search for code patterns before generating ──
+    computer = get_agent_computer("code_generator")
+    search_query = f"{prompt} Python code example best practice"
+    research = computer.research_sync(search_query)
+    logger.info("[CodeGenerator] Web research complete (%d chars)", len(research))
+
     if is_bug_fix:
-        # Use TIMPS-Coder with specialised adapter
         system = (
             f"Architecture context:\n{state.get('architecture_plan', '')}\n\n"
+            f"Relevant code patterns from web search:\n{research[:2000]}\n\n"
             "Explain the root cause of the bug, then provide the complete corrected code."
         )
         code = get_adapter_router().generate(prompt, system, max_tokens=2048)
     else:
-        # Use general Qwen coder for new features
         system = (
             "You are an expert software engineer. Implement clean, production-ready code. "
             "Include docstrings and inline comments. Follow best practices for the language used.\n\n"
-            f"Architecture:\n{state.get('architecture_plan', '')}"
+            f"Architecture:\n{state.get('architecture_plan', '')}\n\n"
+            f"Relevant patterns from web search:\n{research[:2000]}"
         )
         code = get_router().call("code_generator", prompt, system)
 
@@ -241,13 +271,27 @@ def code_generator_node(state: SwarmState) -> dict:
 
     filename = f"code/{task['id']}.{ext}"
     path = _save(filename, code)
+
+    # ── Real computer use: actually run the generated code to verify it executes ──
+    run_result = None
+    if ext == "py":
+        run_result = computer.code.run_file(path)
+        if run_result.success:
+            logger.info("[CodeGenerator] Code executed successfully")
+        else:
+            logger.warning("[CodeGenerator] Code execution failed: %s", run_result.error)
+
     updated_task = _mark_task(task, "completed", code)
     updated_task["artifact_path"] = path
 
-    return {
+    state_update = {
         "code_artifacts": [path],
         "tasks": [updated_task],
     }
+    if run_result:
+        state_update["test_results"] = f"[Initial run]\n{run_result.output[:500]}"
+
+    return state_update
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -319,8 +363,11 @@ def qa_tester_node(state: SwarmState) -> dict:
 
     path = _save("tests/test_generated.py", tests)
 
-    # Run tests in sandbox if pytest is available
-    test_result = _run_tests_safe(path)
+    # ── Real computer use: actually run the tests and capture results ──
+    computer = get_agent_computer("qa_tester")
+    run_result = computer.code.run_pytest(path)
+    test_result = run_result.output if run_result.output else run_result.error
+    logger.info("[QATester] Tests %s", "passed" if run_result.success else "failed")
 
     updated_tasks = []
     for task in pending:
@@ -334,15 +381,10 @@ def qa_tester_node(state: SwarmState) -> dict:
 
 
 def _run_tests_safe(test_path: str) -> str:
-    """Run pytest safely; return summary string."""
-    try:
-        result = subprocess.run(
-            ["python", "-m", "pytest", test_path, "-v", "--tb=short", "--timeout=30"],
-            capture_output=True, text=True, timeout=60
-        )
-        return result.stdout[-3000:] + result.stderr[-1000:]
-    except Exception as exc:
-        return f"[Tests not executed locally: {exc}]"
+    """Kept for backward compatibility — delegates to TerminalTool."""
+    computer = get_agent_computer("qa_tester")
+    result = computer.code.run_pytest(test_path)
+    return result.output or result.error
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -366,13 +408,28 @@ def security_auditor_node(state: SwarmState) -> dict:
         "Provide fix recommendations for each finding."
     )
 
+    # ── Real computer use: search OWASP and CVE databases for context ──
+    computer = get_agent_computer("security_auditor")
+    lang = state.get("language", "python")
+    research = computer.research_sync(f"OWASP {lang} security vulnerabilities 2024 checklist")
+    logger.info("[SecurityAuditor] Security research complete (%d chars)", len(research))
+
     code_contents = "\n\n".join([_read(a) for a in artifacts[:3] if _read(a)])
-    prompt = f"Security audit:\n```\n{code_contents[:5000]}\n```"
+    prompt = (
+        f"OWASP security checklist context:\n{research[:2000]}\n\n"
+        f"Security audit:\n```\n{code_contents[:5000]}\n```"
+    )
     report = get_router().call("security_auditor", prompt, system)
 
-    # Also run bandit if available
-    bandit_output = _run_bandit_safe(artifacts)
-    full_report = f"{report}\n\n---\n### Bandit Static Analysis\n{bandit_output}"
+    # ── Real computer use: run bandit static analysis ──
+    py_files = [a for a in artifacts if a.endswith(".py")]
+    bandit_output = ""
+    if py_files:
+        bandit_result = computer.code.run_bandit(py_files[0])
+        bandit_output = bandit_result.output or bandit_result.error
+        logger.info("[SecurityAuditor] Bandit scan complete: %s", "passed" if bandit_result.success else "issues found")
+
+    full_report = f"{report}\n\n---\n### Bandit Static Analysis\n{bandit_output or 'No Python files scanned.'}"
 
     path = _save("security_report.md", full_report)
 
@@ -388,18 +445,13 @@ def security_auditor_node(state: SwarmState) -> dict:
 
 
 def _run_bandit_safe(artifacts: list) -> str:
-    """Run bandit on Python files; return summary."""
+    """Kept for backward compatibility — delegates to computer tool."""
+    computer = get_agent_computer("security_auditor")
     py_files = [a for a in artifacts if a.endswith(".py")]
     if not py_files:
         return "No Python files to scan."
-    try:
-        result = subprocess.run(
-            ["python", "-m", "bandit", "-r"] + py_files[:5],
-            capture_output=True, text=True, timeout=30
-        )
-        return result.stdout[-2000:] + result.stderr[-500:]
-    except Exception as exc:
-        return f"[Bandit not available: {exc}]"
+    result = computer.code.run_bandit(py_files[0])
+    return result.output or result.error
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -456,6 +508,13 @@ def documentation_writer_node(state: SwarmState) -> dict:
     logger.info("[DocumentationWriter] Writing documentation")
     pending = _get_pending_tasks(state, "documentation_writer")
 
+    # ── Real computer use: fetch official docs for the libraries used ──
+    computer = get_agent_computer("documentation_writer")
+    research = computer.research_sync(
+        f"{state['user_request']} documentation README guide installation examples"
+    )
+    logger.info("[DocumentationWriter] Docs research complete (%d chars)", len(research))
+
     system = (
         "You are a Technical Writer. Write comprehensive documentation in Markdown: "
         "1) README.md with project overview, installation, usage, examples, "
@@ -468,6 +527,7 @@ def documentation_writer_node(state: SwarmState) -> dict:
         f"Architecture:\n{state.get('architecture_plan', 'N/A')[:2000]}\n\n"
         f"Code artifacts: {state.get('code_artifacts', [])}\n\n"
         f"Test results summary: {state.get('test_results', 'N/A')[:500]}\n\n"
+        f"Research context:\n{research[:2000]}\n\n"
         "Generate complete documentation."
     )
     docs = get_router().call("documentation_writer", prompt, system)

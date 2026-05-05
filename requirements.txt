@@ -38,6 +38,16 @@ pytest==8.3.0
 bandit==1.7.10
 black==24.10.0
 
+# ── Real computer use tools ───────────────────────────────────────
+playwright==1.49.0        # browser automation (run: playwright install chromium)
+aiohttp==3.11.0           # async HTTP for swarm bridge API calls
+psutil==6.1.0             # real CPU/RAM metrics in Layer 1
+
+# ── MCP Plugin (Model Context Protocol server) ────────────────────
+# No extra runtime deps — MCP uses stdlib JSON + stdio transport.
+# The Mcp SDK is optional (we use our own stdio loop for zero extra deps):
+#   pip install mcp>=1.0.0   ← only needed if you want the official SDK helpers
+
 # ── Utilities ─────────────────────────────────────────────────────
 aiohttp==3.11.0
 python-dotenv==1.0.1

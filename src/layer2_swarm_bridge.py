@@ -24,7 +24,8 @@ logger = logging.getLogger(__name__)
 
 
 class AgentRole(Enum):
-    """All 10 swarm agent roles."""
+    """All 22 swarm agent roles (10 SDLC + 12 Computer Health)."""
+    # ── SDLC pipeline ──────────────────────────────────────────────────────
     ORCHESTRATOR = "orchestrator"
     PRODUCT_MANAGER = "product_manager"
     ARCHITECT = "architect"
@@ -35,6 +36,35 @@ class AgentRole(Enum):
     PERFORMANCE_OPTIMIZER = "performance_optimizer"
     DOCUMENTATION_WRITER = "documentation_writer"
     DEVOPS = "devops"
+
+    # ── Computer Health pipeline ───────────────────────────────────────────
+    SYSTEM_OPTIMIZER     = "system_optimizer"      # slow laptop, thermal, startup bloat
+    FILE_ORGANIZER       = "file_organizer"         # downloads chaos, duplicates
+    ENVIRONMENT_DOCTOR   = "environment_doctor"     # broken npm/python/PATH/Docker
+    SECURITY_GUARD       = "security_guard"         # ports, camera/mic permissions
+    NETWORK_MEDIC        = "network_medic"          # WiFi drops, DNS, latency
+    BATTERY_ANALYST      = "battery_analyst"        # zombie energy drainers
+    UPDATE_MANAGER       = "update_manager"         # OS/app/library updates
+    LOG_INTERPRETER      = "log_interpreter"        # crash logs → plain English
+    PRIVACY_CLEANER      = "privacy_cleaner"        # cookies, app permissions
+    MEDIA_LIBRARIAN      = "media_librarian"        # photos, videos, screenshots
+    BACKUP_SENTINEL      = "backup_sentinel"        # git + Time Machine audit
+    CONTEXT_SWITCHER     = "context_switcher"       # tabs, focus, projects
+    CONTEXT_KEEPER       = "context_keeper"         # working memory daemon
+
+    # ── Expert / Deep-Diagnostic agents ────────────────────────────────────
+    DEPENDENCY_REBEL         = "dependency_rebel"
+    MERGE_CONFLICT_PREDICTOR = "merge_conflict_predictor"
+    TECH_DEBT_QUANTIFIER     = "tech_debt_quantifier"
+    MIGRATION_PILOT          = "migration_pilot"
+    FLAKY_TEST_DETECTIVE     = "flaky_test_detective"
+    ONBOARDING_MENTOR        = "onboarding_mentor"
+    INCIDENT_RESPONDER       = "incident_responder"
+    CLOUD_COST_AUDITOR       = "cloud_cost_auditor"
+    CERTIFICATE_ROTATOR      = "certificate_rotator"
+    TERRAFORM_PLAN_REVIEWER  = "terraform_plan_reviewer"
+    DOTFILE_DOCTOR           = "dotfile_doctor"
+    DISK_SPACE_PROPHET       = "disk_space_prophet"
 
 
 # Default resources per agent role
@@ -49,6 +79,35 @@ ROLE_RESOURCES: Dict[AgentRole, ComputeResources] = {
     AgentRole.PERFORMANCE_OPTIMIZER: ComputeResources(cpu_percent=20.0, memory_mb=1024, disk_mb=1024, timeout_seconds=300),
     AgentRole.DOCUMENTATION_WRITER: ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=512, timeout_seconds=180),
     AgentRole.DEVOPS: ComputeResources(cpu_percent=15.0, memory_mb=512, disk_mb=1024, timeout_seconds=300),
+
+    # Computer Health agents — lower CPU quota (read-only scanning)
+    AgentRole.SYSTEM_OPTIMIZER:   ComputeResources(cpu_percent=20.0, memory_mb=512, disk_mb=512,  timeout_seconds=120),
+    AgentRole.FILE_ORGANIZER:     ComputeResources(cpu_percent=15.0, memory_mb=512, disk_mb=1024, timeout_seconds=180),
+    AgentRole.ENVIRONMENT_DOCTOR: ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=256,  timeout_seconds=60),
+    AgentRole.SECURITY_GUARD:     ComputeResources(cpu_percent=20.0, memory_mb=512, disk_mb=256,  timeout_seconds=120),
+    AgentRole.NETWORK_MEDIC:      ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=128,  timeout_seconds=90),
+    AgentRole.BATTERY_ANALYST:    ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=128,  timeout_seconds=60),
+    AgentRole.UPDATE_MANAGER:     ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=512,  timeout_seconds=120),
+    AgentRole.LOG_INTERPRETER:    ComputeResources(cpu_percent=15.0, memory_mb=512, disk_mb=512,  timeout_seconds=120),
+    AgentRole.PRIVACY_CLEANER:    ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=256,  timeout_seconds=60),
+    AgentRole.MEDIA_LIBRARIAN:    ComputeResources(cpu_percent=20.0, memory_mb=512, disk_mb=2048, timeout_seconds=180),
+    AgentRole.BACKUP_SENTINEL:    ComputeResources(cpu_percent=15.0, memory_mb=256, disk_mb=256,  timeout_seconds=120),
+    AgentRole.CONTEXT_SWITCHER:   ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=128,  timeout_seconds=60),
+    AgentRole.CONTEXT_KEEPER:     ComputeResources(cpu_percent=5.0,  memory_mb=256, disk_mb=256,  timeout_seconds=300),
+
+    # Expert agents
+    AgentRole.DEPENDENCY_REBEL:         ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=256, timeout_seconds=60),
+    AgentRole.MERGE_CONFLICT_PREDICTOR: ComputeResources(cpu_percent=15.0, memory_mb=512, disk_mb=256, timeout_seconds=90),
+    AgentRole.TECH_DEBT_QUANTIFIER:     ComputeResources(cpu_percent=20.0, memory_mb=512, disk_mb=512, timeout_seconds=120),
+    AgentRole.MIGRATION_PILOT:          ComputeResources(cpu_percent=20.0, memory_mb=512, disk_mb=512, timeout_seconds=180),
+    AgentRole.FLAKY_TEST_DETECTIVE:     ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=256, timeout_seconds=60),
+    AgentRole.ONBOARDING_MENTOR:        ComputeResources(cpu_percent=15.0, memory_mb=512, disk_mb=512, timeout_seconds=180),
+    AgentRole.INCIDENT_RESPONDER:       ComputeResources(cpu_percent=20.0, memory_mb=512, disk_mb=512, timeout_seconds=300),
+    AgentRole.CLOUD_COST_AUDITOR:       ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=256, timeout_seconds=120),
+    AgentRole.CERTIFICATE_ROTATOR:      ComputeResources(cpu_percent=5.0,  memory_mb=128, disk_mb=128, timeout_seconds=60),
+    AgentRole.TERRAFORM_PLAN_REVIEWER:  ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=256, timeout_seconds=120),
+    AgentRole.DOTFILE_DOCTOR:           ComputeResources(cpu_percent=5.0,  memory_mb=128, disk_mb=128, timeout_seconds=30),
+    AgentRole.DISK_SPACE_PROPHET:       ComputeResources(cpu_percent=10.0, memory_mb=256, disk_mb=128, timeout_seconds=60),
 }
 
 

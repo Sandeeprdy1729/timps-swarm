@@ -20,16 +20,49 @@ TIMPS_MODEL_PATH = os.getenv("TIMPS_MODEL_PATH", "sandeeprdy1729/TIMPS-Coder-0.5
 
 # Map agent name → (model, temperature)
 AGENT_MODEL_MAP = {
-    "orchestrator":           ("qwen2.5:14b", 0.2),
-    "product_manager":        ("qwen2.5:7b",  0.3),
-    "architect":              ("qwen2.5:14b", 0.2),
-    "code_generator":         ("qwen2.5-coder:7b", 0.1),
-    "code_reviewer":          ("qwen2.5:7b",  0.2),
-    "qa_tester":              ("qwen2.5-coder:7b", 0.1),
-    "security_auditor":       ("qwen2.5:7b",  0.1),
-    "performance_optimizer":  ("qwen2.5:7b",  0.2),
-    "documentation_writer":   ("qwen2.5:3b",  0.4),
-    "devops":                 ("qwen2.5:7b",  0.1),
+    # ── SDLC pipeline (10 agents) ────────────────────────────────────────────
+    "orchestrator":           ("qwen2.5:14b",       0.2),
+    "product_manager":        ("qwen2.5:7b",        0.3),
+    "architect":              ("qwen2.5:14b",       0.2),
+    "code_generator":         ("qwen2.5-coder:7b",  0.1),
+    "code_reviewer":          ("qwen2.5:7b",        0.2),
+    "qa_tester":              ("qwen2.5-coder:7b",  0.1),
+    "security_auditor":       ("qwen2.5:7b",        0.1),
+    "performance_optimizer":  ("qwen2.5:7b",        0.2),
+    "documentation_writer":   ("qwen2.5:3b",        0.4),
+    "devops":                 ("qwen2.5:7b",        0.1),
+
+    # ── Computer Health pipeline (12 agents) ────────────────────────────────
+    # Needs deeper reasoning → 14b/7b models
+    "system_optimizer":       ("qwen2.5:7b",        0.2),
+    "file_organizer":         ("qwen2.5:7b",        0.3),
+    "environment_doctor":     ("qwen2.5-coder:7b",  0.1),
+    "security_guard":         ("qwen2.5:7b",        0.1),
+    "network_medic":          ("qwen2.5:7b",        0.2),
+    "battery_analyst":        ("qwen2.5:3b",        0.2),
+    "update_manager":         ("qwen2.5:7b",        0.2),
+    "log_interpreter":        ("qwen2.5:14b",       0.1),  # crash logs need max context
+    "privacy_cleaner":        ("qwen2.5:3b",        0.3),
+    "media_librarian":        ("qwen2.5:7b",        0.3),
+    "backup_sentinel":        ("qwen2.5:7b",        0.2),
+    "context_switcher":       ("qwen2.5:7b",        0.3),
+
+    # ── Context & Kernel agents ───────────────────────────────────────────────
+    "context_keeper":         ("qwen2.5:14b",       0.1),  # needs full context window
+
+    # ── Expert / Deep-Diagnostic agents ─────────────────────────────────────
+    "dependency_rebel":          ("qwen2.5-coder:7b", 0.1),
+    "merge_conflict_predictor":  ("qwen2.5:7b",       0.2),
+    "tech_debt_quantifier":      ("qwen2.5:14b",      0.2),
+    "migration_pilot":           ("qwen2.5:14b",      0.2),
+    "flaky_test_detective":      ("qwen2.5-coder:7b", 0.1),
+    "onboarding_mentor":         ("qwen2.5:14b",      0.3),
+    "incident_responder":        ("qwen2.5:14b",      0.1),
+    "cloud_cost_auditor":        ("qwen2.5:7b",       0.2),
+    "certificate_rotator":       ("qwen2.5:7b",       0.1),
+    "terraform_plan_reviewer":   ("qwen2.5:7b",       0.1),
+    "dotfile_doctor":            ("qwen2.5:7b",       0.2),
+    "disk_space_prophet":        ("qwen2.5:3b",       0.2),
 }
 
 

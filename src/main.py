@@ -11,6 +11,7 @@ import asyncio
 import json
 import logging
 import os
+import time
 import uuid
 from datetime import datetime
 from typing import Optional
@@ -39,8 +40,63 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── In-memory state store ──────────────────────────────────────────────────
-_runs: dict[str, dict] = {}          # run_id → swarm state snapshot
+# ── Redis-backed state store (falls back to in-memory if Redis unavailable) ─
+
+_REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+_redis_client = None
+_runs_fallback: dict[str, dict] = {}   # used only when Redis is down
+
+
+def _get_redis():
+    global _redis_client
+    if _redis_client is not None:
+        return _redis_client
+    try:
+        import redis as redis_lib
+        client = redis_lib.from_url(_REDIS_URL, decode_responses=True, socket_connect_timeout=2)
+        client.ping()
+        _redis_client = client
+        logger.info("Redis connected: %s", _REDIS_URL)
+    except Exception as exc:
+        logger.warning("Redis unavailable (%s) — using in-memory fallback", exc)
+        _redis_client = None
+    return _redis_client
+
+
+def _runs_set(run_id: str, data: dict):
+    r = _get_redis()
+    if r:
+        try:
+            r.set(f"timps:run:{run_id}", json.dumps(data), ex=86400)  # expire after 24h
+            r.zadd("timps:runs", {run_id: time.time()})
+            return
+        except Exception as exc:
+            logger.warning("Redis write failed: %s", exc)
+    _runs_fallback[run_id] = data
+
+
+def _runs_get(run_id: str) -> Optional[dict]:
+    r = _get_redis()
+    if r:
+        try:
+            raw = r.get(f"timps:run:{run_id}")
+            if raw:
+                return json.loads(raw)
+        except Exception as exc:
+            logger.warning("Redis read failed: %s", exc)
+    return _runs_fallback.get(run_id)
+
+
+def _runs_list() -> list[str]:
+    r = _get_redis()
+    if r:
+        try:
+            return list(reversed(r.zrange("timps:runs", 0, -1)))
+        except Exception as exc:
+            logger.warning("Redis list failed: %s", exc)
+    return list(reversed(list(_runs_fallback.keys())))
+
+
 _active_websockets: list[WebSocket] = []
 
 
@@ -120,6 +176,19 @@ def _build_dashboard_payload(run_id: str, state: dict) -> dict:
     completed_count = len([t for t in tasks if t["status"] == "completed"])
     failed_count = len([t for t in tasks if t["status"] == "failed"])
     running_count = len([t for t in tasks if t["status"] == "running"])
+    total_tasks = len(tasks)
+
+    # Real avg_latency: approximate from completed task timestamps
+    latencies = []
+    for t in tasks:
+        if t.get("created_at") and t.get("completed_at"):
+            try:
+                created = datetime.fromisoformat(t["created_at"])
+                completed = datetime.fromisoformat(t["completed_at"])
+                latencies.append((completed - created).total_seconds() * 1000)
+            except Exception:
+                pass
+    avg_latency = round(sum(latencies) / len(latencies)) if latencies else 0
 
     return {
         "run_id": run_id,
@@ -130,7 +199,7 @@ def _build_dashboard_payload(run_id: str, state: dict) -> dict:
             "active_agents": running_count,
             "completed_tasks": completed_count,
             "failed_tasks": failed_count,
-            "avg_latency": 450,
+            "avg_latency": avg_latency,
             "throughput": round(completed_count / max(state.get("iteration_count", 1), 1), 2),
             "queue_depth": len([t for t in tasks if t["status"] == "pending"]),
         },
@@ -153,7 +222,7 @@ def _build_dashboard_payload(run_id: str, state: dict) -> dict:
 
 async def _run_swarm_async(run_id: str, request: str, language: str, max_iterations: int):
     logger.info("Starting swarm run %s", run_id)
-    _runs[run_id] = {"status": "running", "state": {}}
+    _runs_set(run_id, {"status": "running", "state": {}})
 
     initial_state = {
         "user_request": request,
@@ -182,26 +251,32 @@ async def _run_swarm_async(run_id: str, request: str, language: str, max_iterati
             node_state = event.get(node_name, {})
 
             # Merge into accumulated state
+            run_data = _runs_get(run_id) or {"status": "running", "state": {}}
             for k, v in node_state.items():
                 if isinstance(v, list):
-                    existing = _runs[run_id]["state"].get(k, [])
-                    _runs[run_id]["state"][k] = existing + v
+                    existing = run_data["state"].get(k, [])
+                    run_data["state"][k] = existing + v
                 else:
-                    _runs[run_id]["state"][k] = v
+                    run_data["state"][k] = v
 
-            _runs[run_id]["state"]["last_node"] = node_name
+            run_data["state"]["last_node"] = node_name
+            _runs_set(run_id, run_data)
             logger.info("Swarm %s — node: %s", run_id, node_name)
 
-            payload = _build_dashboard_payload(run_id, _runs[run_id]["state"])
+            payload = _build_dashboard_payload(run_id, run_data["state"])
             await _broadcast(payload)
 
-        _runs[run_id]["status"] = "completed"
+        run_data = _runs_get(run_id) or {}
+        run_data["status"] = "completed"
+        _runs_set(run_id, run_data)
         logger.info("Swarm run %s completed ✓", run_id)
 
     except Exception as exc:
         logger.error("Swarm run %s failed: %s", run_id, exc, exc_info=True)
-        _runs[run_id]["status"] = "failed"
-        _runs[run_id]["error"] = str(exc)
+        run_data = _runs_get(run_id) or {}
+        run_data["status"] = "failed"
+        run_data["error"] = str(exc)
+        _runs_set(run_id, run_data)
         await _broadcast({"run_id": run_id, "status": "failed", "error": str(exc)})
 
 
@@ -209,7 +284,13 @@ async def _run_swarm_async(run_id: str, request: str, language: str, max_iterati
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "timps-swarm", "timestamp": datetime.utcnow().isoformat()}
+    r = _get_redis()
+    return {
+        "status": "ok",
+        "service": "timps-swarm",
+        "timestamp": datetime.utcnow().isoformat(),
+        "redis": "connected" if r else "unavailable (using in-memory fallback)",
+    }
 
 
 @app.post("/swarm/run", response_model=SwarmResponse)
@@ -231,28 +312,34 @@ async def run_swarm(request: SwarmRequest, background_tasks: BackgroundTasks):
 
 @app.get("/swarm/status")
 async def swarm_status(run_id: Optional[str] = None):
-    if run_id and run_id in _runs:
-        state = _runs[run_id]["state"]
-        return _build_dashboard_payload(run_id, state)
+    if run_id:
+        data = _runs_get(run_id)
+        if data:
+            return _build_dashboard_payload(run_id, data.get("state", {}))
 
     # Return latest run or empty state
-    if _runs:
-        latest_id = list(_runs.keys())[-1]
-        return _build_dashboard_payload(latest_id, _runs[latest_id]["state"])
+    run_ids = _runs_list()
+    if run_ids:
+        latest_id = run_ids[0]
+        data = _runs_get(latest_id) or {}
+        return _build_dashboard_payload(latest_id, data.get("state", {}))
 
     return _build_dashboard_payload("none", {})
 
 
 @app.get("/swarm/runs")
 async def list_runs():
-    return [
-        {
+    run_ids = _runs_list()
+    results = []
+    for rid in run_ids:
+        data = _runs_get(rid) or {}
+        tasks = data.get("state", {}).get("tasks", [])
+        results.append({
             "run_id": rid,
-            "status": data["status"],
-            "tasks_done": len([t for t in data["state"].get("tasks", []) if t["status"] == "completed"]),
-        }
-        for rid, data in _runs.items()
-    ]
+            "status": data.get("status", "unknown"),
+            "tasks_done": len([t for t in tasks if t["status"] == "completed"]),
+        })
+    return results
 
 
 # ── WebSocket ──────────────────────────────────────────────────────────────
@@ -265,17 +352,21 @@ async def websocket_endpoint(websocket: WebSocket):
 
     try:
         # Send current state immediately on connect
-        if _runs:
-            latest_id = list(_runs.keys())[-1]
-            payload = _build_dashboard_payload(latest_id, _runs[latest_id]["state"])
+        run_ids = _runs_list()
+        if run_ids:
+            latest_id = run_ids[0]
+            data = _runs_get(latest_id) or {}
+            payload = _build_dashboard_payload(latest_id, data.get("state", {}))
             await websocket.send_json(payload)
 
         # Keep alive until client disconnects
         while True:
             await asyncio.sleep(2)
-            if _runs:
-                latest_id = list(_runs.keys())[-1]
-                payload = _build_dashboard_payload(latest_id, _runs[latest_id]["state"])
+            run_ids = _runs_list()
+            if run_ids:
+                latest_id = run_ids[0]
+                data = _runs_get(latest_id) or {}
+                payload = _build_dashboard_payload(latest_id, data.get("state", {}))
                 await websocket.send_json(payload)
 
     except WebSocketDisconnect:

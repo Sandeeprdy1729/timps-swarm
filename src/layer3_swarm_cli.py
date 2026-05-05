@@ -187,10 +187,9 @@ class SwarmCLI:
         """Parse command string into action and args."""
         parts = command.strip().split()
         action = parts[0] if parts else ""
-        args = {" ".join(parts[1:])}
-        
+
         if action == "spawn" and len(parts) >= 2:
-            return "spawn", {"role": parts[1], "task": parts[2:] if len(parts) > 2 else None
+            return "spawn", {"role": parts[1], "task": " ".join(parts[2:]) if len(parts) > 2 else None}
         elif action == "task":
             return "task", {"request": " ".join(parts[1:])}
         elif action == "team":

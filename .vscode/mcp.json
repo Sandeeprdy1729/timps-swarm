@@ -1,0 +1,13 @@
+{
+  "mcp": {
+    "servers": {
+      "timps-swarm": {
+        "type": "stdio",
+        "command": "timps-mcp",
+        "env": {
+          "OLLAMA_HOST": "http://localhost:11434"
+        }
+      }
+    }
+  }
+}

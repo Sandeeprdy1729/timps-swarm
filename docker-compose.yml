@@ -16,15 +16,15 @@ services:
     volumes:
       - ollama-models:/root/.ollama
       - ./scripts/pull-models.sh:/pull-models.sh:ro
-    # Remove the deploy.resources block on Apple Silicon / CPU-only:
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    # On Apple Silicon, replace the command with just: ollama serve
+    # GPU block intentionally removed — works on macOS, Linux CPU, and NVIDIA.
+    # To add NVIDIA GPU support uncomment:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
     command: >
       sh -c "chmod +x /pull-models.sh && /pull-models.sh && ollama serve"
     healthcheck:
@@ -61,7 +61,9 @@ services:
       - generated-code:/workspace:rw
     working_dir: /workspace
     command: >
-      sh -c "pip install pytest bandit --quiet && tail -f /dev/null"
+      sh -c "pip install pytest bandit playwright --quiet
+             && python -m playwright install chromium --with-deps
+             && tail -f /dev/null"
     security_opt:
       - no-new-privileges:true
     cap_drop:
@@ -110,6 +112,16 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  # ── Dashboard builder: compiles React app before nginx serves it ──
+  dashboard-builder:
+    image: node:20-alpine
+    container_name: timps-dashboard-builder
+    working_dir: /app
+    volumes:
+      - ./dashboard:/app
+    command: sh -c "npm ci --silent && npm run build"
+    profiles: ["build"]   # run once with: docker compose --profile build up dashboard-builder
 
   # ── Dashboard: React UI served by nginx ───────────────────────────
   dashboard:
