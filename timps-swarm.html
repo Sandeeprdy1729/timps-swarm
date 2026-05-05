@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TIMPS Swarm — AI Agent Team</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f5f2ec;
+    --card: #ffffff;
+    --ink: #0d0d0d;
+    --ink2: #444;
+    --ink3: #888;
+    --border: #0d0d0d;
+    --accent: #0d0d0d;
+    --badge-bg: #0d0d0d;
+    --badge-txt: #f5f2ec;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 64px 40px 52px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      0deg, transparent, transparent 31px, rgba(245,242,236,0.06) 31px, rgba(245,242,236,0.06) 32px
+    ), repeating-linear-gradient(
+      90deg, transparent, transparent 31px, rgba(245,242,236,0.06) 31px, rgba(245,242,236,0.06) 32px
+    );
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+  .hero-label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: rgba(245,242,236,0.12);
+    border: 1px solid rgba(245,242,236,0.2);
+    color: rgba(245,242,236,0.7);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    margin-bottom: 18px;
+    color: var(--bg);
+  }
+  .hero h1 span { color: #f59e0b; }
+  .hero p {
+    font-size: 16px;
+    color: rgba(245,242,236,0.65);
+    max-width: 520px;
+    margin: 0 auto 32px;
+    line-height: 1.65;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--bg);
+    display: block;
+  }
+  .hero-stat .lbl {
+    font-size: 11px;
+    color: rgba(245,242,236,0.5);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section { padding: 64px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 16px;
+  }
+  .section-header h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .section-header .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink3);
+  }
+
+  /* ── AGENT GRID ── */
+  .agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0;
+    border-top: 1.5px solid var(--border);
+    border-left: 1.5px solid var(--border);
+  }
+
+  /* ── AGENT CARD ── */
+  .agent-card {
+    background: var(--card);
+    border-right: 1.5px solid var(--border);
+    border-bottom: 1.5px solid var(--border);
+    padding: 28px 24px 24px;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .agent-card:hover { background: #f9f7f3; }
+  .agent-card:hover .face-frame { transform: scale(1.04); }
+  .agent-card.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .agent-card.active .agent-name,
+  .agent-card.active .agent-role,
+  .agent-card.active .agent-model { color: var(--bg); }
+  .agent-card.active .agent-role { opacity: 0.55; }
+  .agent-card.active .agent-model { opacity: 0.4; }
+
+  /* ── FACE ILLUSTRATION ── */
+  .face-frame {
+    width: 72px;
+    height: 72px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    background: var(--bg);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .agent-card.active .face-frame {
+    background: rgba(245,242,236,0.12);
+    border-color: rgba(245,242,236,0.3);
+  }
+
+  .agent-name {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+    color: var(--ink);
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .agent-role {
+    font-size: 11px;
+    color: var(--ink3);
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .agent-model {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink3);
+  }
+  .agent-tag {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 9px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 100px;
+  }
+
+  /* ── DETAIL PANEL ── */
+  .detail-panel {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 0;
+    padding: 40px;
+    margin-top: 0;
+    border-top: 2px solid var(--ink);
+    display: none;
+  }
+  .detail-panel.visible { display: block; }
+  .detail-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; }
+  .detail-panel h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .detail-panel .subtitle { font-size: 13px; opacity: 0.5; font-family: 'JetBrains Mono', monospace; margin-bottom: 24px; }
+  .detail-panel p { font-size: 14px; line-height: 1.7; opacity: 0.8; }
+  .detail-col { }
+  .detail-col h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.45; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
+  .task-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .task-list li {
+    font-size: 13px;
+    opacity: 0.75;
+    padding: 6px 10px;
+    background: rgba(245,242,236,0.07);
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    border-left: 2px solid rgba(245,242,236,0.2);
+  }
+  .model-pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    border: 1px solid rgba(245,242,236,0.25);
+    border-radius: 4px;
+    color: rgba(245,242,236,0.85);
+  }
+
+  /* ── ADAPTERS SECTION ── */
+  .adapter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0;
+    border-top: 1.5px solid var(--border);
+    border-left: 1.5px solid var(--border);
+  }
+  .adapter-card {
+    border-right: 1.5px solid var(--border);
+    border-bottom: 1.5px solid var(--border);
+    padding: 18px 20px;
+    background: var(--card);
+  }
+  .adapter-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .adapter-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .adapter-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* ── AGENT GRID DIVIDER ── */
+  .agent-grid-divider {
+    grid-column: 1 / -1;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-right: 1.5px solid var(--border);
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow-section {
+    background: var(--ink);
+    padding: 64px 40px;
+    overflow-x: auto;
+  }
+  .flow-inner { max-width: 1200px; margin: 0 auto; }
+  .flow-section h2 { color: var(--bg); font-size: 22px; font-weight: 800; margin-bottom: 40px; letter-spacing: -0.02em; }
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .flow-node {
+    background: rgba(245,242,236,0.08);
+    border: 1px solid rgba(245,242,236,0.2);
+    border-radius: 4px;
+    padding: 14px 18px;
+    text-align: center;
+    min-width: 100px;
+    flex-shrink: 0;
+  }
+  .flow-node .fn-icon { font-size: 18px; margin-bottom: 6px; display: block; }
+  .flow-node .fn-label { font-size: 10px; color: rgba(245,242,236,0.65); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; }
+  .flow-arrow { color: rgba(245,242,236,0.3); font-size: 18px; padding: 0 6px; flex-shrink: 0; }
+  .flow-node.highlight { background: rgba(245,242,236,0.16); border-color: rgba(245,242,236,0.45); }
+
+  /* ── GH BANNER ── */
+  .gh-banner {
+    background: #f59e0b;
+    padding: 40px;
+    text-align: center;
+  }
+  .gh-banner h2 { font-size: 26px; font-weight: 800; color: var(--ink); letter-spacing: -0.03em; margin-bottom: 8px; }
+  .gh-banner p { font-size: 14px; color: rgba(13,13,13,0.65); margin-bottom: 24px; }
+  .gh-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 28px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: opacity 0.15s;
+  }
+  .gh-btn:hover { opacity: 0.85; }
+
+  /* ── LAYERS SECTION ── */
+  .layers-section {
+    background: var(--bg);
+    padding: 64px 40px;
+  }
+  .layers-inner { max-width: 1200px; margin: 0 auto; }
+  .layers-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 16px;
+  }
+  .layers-header h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .layers-header .count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink3); }
+  .layers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 0;
+    border-top: 1.5px solid var(--border);
+    border-left: 1.5px solid var(--border);
+  }
+  .layer-card {
+    background: var(--card);
+    border-right: 1.5px solid var(--border);
+    border-bottom: 1.5px solid var(--border);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .layer-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 6px;
+  }
+  .layer-title {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .layer-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #f59e0b;
+    background: var(--ink);
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+  .layer-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .layer-items li {
+    font-size: 13px;
+    color: var(--ink2);
+    padding: 7px 12px;
+    background: var(--bg);
+    border-left: 2px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.5;
+  }
+  .layer-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 100px;
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  @media (max-width: 700px) {
+    .hero { padding: 40px 20px 36px; }
+    .section { padding: 40px 20px; }
+    .detail-inner { grid-template-columns: 1fr; gap: 24px; }
+    .detail-panel { padding: 28px 20px; }
+    .flow-section { padding: 40px 20px; }
+    .gh-banner { padding: 40px 20px; }
+    .layers-section { padding: 40px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-label">github.com/Sandeeprdy1729/timps-swarm</div>
+    <h1>TIMPS<br/><span>Swarm</span></h1>
+    <p>22 specialized agents — 10 for the full software development lifecycle and 12 for diagnosing your Mac. Powered by TIMPS-Coder and Qwen models running locally via Ollama.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="num">22</span><span class="lbl">Agents</span></div>
+      <div class="hero-stat"><span class="num">20</span><span class="lbl">Adapters</span></div>
+      <div class="hero-stat"><span class="num">31</span><span class="lbl">MCP Tools</span></div>
+      <div class="hero-stat"><span class="num">100%</span><span class="lbl">Open Source</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── AGENTS ── -->
+<div class="section">
+  <div class="section-header">
+    <h2>The Team</h2>
+    <span class="count">22 agents · click to explore</span>
+  </div>
+  <div class="agent-grid" id="agentGrid"></div>
+</div>
+
+<!-- ── DETAIL PANEL ── -->
+<div class="detail-panel" id="detailPanel">
+  <div class="detail-inner">
+    <div class="detail-col">
+      <div id="d-name" style="font-size:22px;font-weight:800;margin-bottom:4px;letter-spacing:-0.02em;"></div>
+      <div id="d-role" style="font-family:'JetBrains Mono',monospace;font-size:11px;opacity:0.45;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:20px;"></div>
+      <p id="d-desc" style="font-size:14px;line-height:1.7;opacity:0.8;"></p>
+    </div>
+    <div class="detail-col">
+      <h4>Tasks this agent handles</h4>
+      <ul class="task-list" id="d-tasks"></ul>
+    </div>
+    <div class="detail-col">
+      <h4>Model</h4>
+      <div class="model-pill" id="d-model" style="margin-bottom:20px;"></div>
+      <h4 style="margin-top:20px;">Reports to</h4>
+      <div style="font-size:13px;opacity:0.65;font-family:'JetBrains Mono',monospace;" id="d-reports"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FLOW ── -->
+<div class="flow-section">
+  <div class="flow-inner">
+    <h2>How a task flows through the swarm</h2>
+    <div class="flow-diagram">
+      <div class="flow-node highlight"><span class="fn-icon">🎯</span><span class="fn-label">User request</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-icon">🎛️</span><span class="fn-label">Orchestrator</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-icon">📋</span><span class="fn-label">Product Mgr</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-icon">🏗️</span><span class="fn-label">Architect</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight"><span class="fn-icon">⚡</span><span class="fn-label">Code Gen</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-icon">🔍</span><span class="fn-label">Reviewer</span></div>
+      <div class="flow-arrow">↕</div>
+      <div class="flow-node"><span class="fn-icon">🧪</span><span class="fn-label">QA Tester</span></div>
+      <div class="flow-arrow">+</div>
+      <div class="flow-node"><span class="fn-icon">🛡️</span><span class="fn-label">Security</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-icon">🚀</span><span class="fn-label">Perf Opt</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-icon">📝</span><span class="fn-label">Docs</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight"><span class="fn-icon">🔧</span><span class="fn-label">DevOps</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight"><span class="fn-icon">✅</span><span class="fn-label">Deployed</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADAPTERS ── -->
+<div class="section">
+  <div class="section-header">
+    <h2>TIMPS-Coder Adapters</h2>
+    <span class="count">20 specialised LoRA adapters</span>
+  </div>
+  <div class="adapter-grid" id="adapterGrid"></div>
+</div>
+
+<!-- ── WHAT I BUILT TODAY ── -->
+<div class="layers-section">
+  <div class="layers-inner">
+    <div class="layers-header">
+      <h2>What's New</h2>
+      <span class="count">6 systems · 3 new this sprint</span>
+    </div>
+    <div class="layers-grid">
+
+      <!-- Layer 1 -->
+      <div class="layer-card">
+        <div class="layer-badge">NEW</div>
+        <div class="layer-num">Layer 1</div>
+        <div class="layer-title">Computer Manager</div>
+        <div class="layer-file">src/layer1_computer_manager.py</div>
+        <ul class="layer-items">
+          <li>Allocates isolated computers to each sub-agent</li>
+          <li>Per-agent: working directory, CPU quota, memory limit, disk quota</li>
+          <li>Resource tracking per agent</li>
+          <li>Clean cleanup when agents die</li>
+        </ul>
+      </div>
+
+      <!-- Layer 2 -->
+      <div class="layer-card">
+        <div class="layer-badge">NEW</div>
+        <div class="layer-num">Layer 2</div>
+        <div class="layer-title">Swarm Bridge</div>
+        <div class="layer-file">src/layer2_swarm_bridge.py</div>
+        <ul class="layer-items">
+          <li>spawn_sub_agent(role) — create agent with its own computer</li>
+          <li>spawn_agent_team(roles) — create a team of agents</li>
+          <li>run_swarm_task(request) — execute full 10-agent pipeline</li>
+          <li>Connects to TIMPS-Swarm's LangGraph workflow</li>
+        </ul>
+      </div>
+
+      <!-- Layer 3 -->
+      <div class="layer-card">
+        <div class="layer-badge">CORE</div>
+        <div class="layer-num">Layer 3</div>
+        <div class="layer-title">CLI Commands</div>
+        <div class="layer-file">src/layer3_swarm_cli.py</div>
+        <ul class="layer-items">
+          <li>/swarm spawn &lt;role&gt; — spin up a single agent</li>
+          <li>/swarm team &lt;roles&gt; — launch an agent team</li>
+          <li>/swarm run &lt;task&gt; — run the full pipeline</li>
+          <li>/swarm status — inspect live agent resources</li>
+        </ul>
+      </div>
+
+      <!-- Agent Memory -->
+      <div class="layer-card">
+        <div class="layer-badge" style="background:#047857;">NEW</div>
+        <div class="layer-num">Feature</div>
+        <div class="layer-title">Agent Memory</div>
+        <div class="layer-file">src/memory.py</div>
+        <ul class="layer-items">
+          <li>Every run saved to ~/.timps/memory/runs.jsonl</li>
+          <li>Agents recall similar past fixes before each LLM call</li>
+          <li>Keyword-overlap scoring + recency ranking</li>
+          <li>timps work --memory to review what they've learned</li>
+        </ul>
+      </div>
+
+      <!-- API Key Auth -->
+      <div class="layer-card">
+        <div class="layer-badge" style="background:#1d4ed8;">NEW</div>
+        <div class="layer-num">Feature</div>
+        <div class="layer-title">API Key Auth</div>
+        <div class="layer-file">src/auth.py</div>
+        <ul class="layer-items">
+          <li>Opt-in team auth — off by default, set TIMPS_AUTH=1</li>
+          <li>Keys: timps-sk-&lt;48 hex&gt;, stored as SHA-256 only</li>
+          <li>timps keygen / timps keys / timps revoke</li>
+          <li>MCP server enforces auth on every tool call</li>
+        </ul>
+      </div>
+
+      <!-- Install Improvements -->
+      <div class="layer-card">
+        <div class="layer-badge" style="background:#b45309;">NEW</div>
+        <div class="layer-num">Feature</div>
+        <div class="layer-title">Install Improvements</div>
+        <div class="layer-file">install.sh</div>
+        <ul class="layer-items">
+          <li>Disk space pre-flight check before model pulls (~16 GB)</li>
+          <li>Warns and exits early if storage is insufficient</li>
+          <li>New Step 8: auto-starts TIMPS daemon after install</li>
+          <li>Daemon logs to ~/.timps/logs/daemon.log</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── GH BANNER ── -->
+<div class="gh-banner">
+  <h2>Build your own swarm</h2>
+  <p>Everything is open source. Drop in your bug-fix datasets and GitHub Actions trains 20 adapters automatically.</p>
+  <a class="gh-btn" href="https://github.com/Sandeeprdy1729/timps-swarm" target="_blank">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+    github.com/Sandeeprdy1729/timps-swarm
+  </a>
+</div>
+
+<script>
+const AGENTS = [
+  {
+    id: 'orchestrator',
+    name: 'ORCHESTRATOR',
+    role: 'Supervisor',
+    model: 'qwen2.5:14b',
+    tag: 'Central',
+    tagColor: '#0d0d0d',
+    desc: 'The brain of the swarm. Receives user requests, decomposes them into a dependency DAG, routes tasks to the right agents, and handles retries when agents fail.',
+    tasks: ['Parse user intent', 'Build task DAG', 'Route to agents', 'Handle retries', 'Manage iterations'],
+    reports: 'Entry point — all agents report back here',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="#0d0d0d"/>
+      <ellipse cx="18" cy="24" rx="5" ry="5" fill="none" stroke="#f5f2ec" stroke-width="2"/>
+      <circle cx="18" cy="24" r="2" fill="#f5f2ec"/>
+      <ellipse cx="30" cy="24" rx="5" ry="5" fill="none" stroke="#f5f2ec" stroke-width="2"/>
+      <circle cx="30" cy="24" r="2" fill="#f5f2ec"/>
+      <path d="M19 34 Q24 37 29 34" stroke="#f5f2ec" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'product_manager',
+    name: 'PRODUCT MGR',
+    role: 'Planner',
+    model: 'qwen2.5:7b',
+    tag: 'Planner',
+    tagColor: '#5340c0',
+    desc: 'Translates raw user requests into structured Product Requirements Documents. Writes user stories, acceptance criteria, and defines what "done" looks like.',
+    tasks: ['Write PRDs', 'Define user stories', 'Set acceptance criteria', 'Clarify scope', 'Identify out-of-scope'],
+    reports: 'Orchestrator',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 Q24 4 44 8" fill="#0d0d0d" stroke="none"/>
+      <path d="M4 8 C8 8 8 14 4 14 Z" fill="#0d0d0d"/>
+      <path d="M44 8 C40 8 40 14 44 14 Z" fill="#0d0d0d"/>
+      <circle cx="18" cy="26" r="3" fill="#0d0d0d"/>
+      <circle cx="30" cy="26" r="3" fill="#0d0d0d"/>
+      <path d="M18 36 Q24 39 30 36" stroke="#0d0d0d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <line x1="16" y1="20" x2="20" y2="20" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="28" y1="20" x2="32" y2="20" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'architect',
+    name: 'ARCHITECT',
+    role: 'Planner',
+    model: 'qwen2.5:14b',
+    tag: 'Planner',
+    tagColor: '#5340c0',
+    desc: 'Designs the technical blueprint. Picks the tech stack, defines component boundaries, writes API contracts, designs data models, and plans for security and scalability.',
+    tasks: ['Design system structure', 'Define API contracts', 'Choose tech stack', 'Design data models', 'Plan scalability'],
+    reports: 'Orchestrator',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <polygon points="24,6 44,16 4,16" fill="#0d0d0d"/>
+      <ellipse cx="17" cy="27" rx="4" ry="4" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <ellipse cx="31" cy="27" rx="4" ry="4" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <line x1="14" y1="36" x2="20" y2="36" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="28" y1="36" x2="34" y2="36" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'code_generator',
+    name: 'CODE GEN',
+    role: 'Doer · TIMPS-Coder',
+    model: 'TIMPS-Coder-0.5B + qwen2.5-coder:7b',
+    tag: 'Core',
+    tagColor: '#047857',
+    desc: 'The engine of the swarm. Uses your fine-tuned TIMPS-Coder-0.5B with 20 specialised LoRA adapters for bug fixes, and Qwen-Coder-7B for new feature implementation.',
+    tasks: ['Implement features', 'Fix bugs (TIMPS)', 'Write clean code', 'Follow architecture', 'Apply adapters'],
+    reports: 'Orchestrator → Reviewer + QA',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 C4 8 24 6 44 8 L44 16 L4 16 Z" fill="#0d0d0d"/>
+      <path d="M18 25 L14 28 L18 31" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M30 25 L34 28 L30 31" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="22" y1="23" x2="26" y2="33" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'code_reviewer',
+    name: 'REVIEWER',
+    role: 'Critic',
+    model: 'qwen2.5:7b',
+    tag: 'Critic',
+    tagColor: '#b45309',
+    desc: 'Scrutinises every generated code artifact. Identifies logic errors, anti-patterns, missing error handling, and inconsistencies with the architecture. Rates issues as BLOCKER / MAJOR / MINOR.',
+    tasks: ['Review pull requests', 'Find logic errors', 'Flag anti-patterns', 'Check error handling', 'Verify architecture fit'],
+    reports: 'Orchestrator → Code Generator (loops)',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 Q24 5 44 8 L44 18 L4 18 Z" fill="#0d0d0d"/>
+      <ellipse cx="17" cy="27" rx="5" ry="4" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <ellipse cx="31" cy="27" rx="5" ry="4" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <ellipse cx="17" cy="27" rx="2" ry="2" fill="#0d0d0d"/>
+      <ellipse cx="31" cy="27" rx="2" ry="2" fill="#0d0d0d"/>
+      <line x1="22" y1="27" x2="26" y2="27" stroke="#0d0d0d" stroke-width="1.5"/>
+      <line x1="16" y1="36" x2="32" y2="36" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'qa_tester',
+    name: 'QA TESTER',
+    role: 'Critic',
+    model: 'qwen2.5-coder:7b',
+    tag: 'Critic',
+    tagColor: '#b45309',
+    desc: 'Writes comprehensive pytest and integration test suites. Targets 100% coverage of critical paths including happy paths, edge cases, error conditions, and boundary values. Runs tests in a sandboxed container.',
+    tasks: ['Write pytest suites', 'Write integration tests', 'Run tests in sandbox', 'Report coverage', 'Flag failures'],
+    reports: 'Orchestrator',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="4" y="8" width="40" height="14" rx="2" fill="#0d0d0d"/>
+      <path d="M4 14 L44 14" fill="none"/>
+      <circle cx="17" cy="28" r="3.5" fill="#0d0d0d"/>
+      <circle cx="31" cy="28" r="3.5" fill="#0d0d0d"/>
+      <path d="M10 21 Q17 19 17 21" stroke="#0d0d0d" stroke-width="1.2" fill="none"/>
+      <path d="M24 21 Q31 19 31 21" stroke="#0d0d0d" stroke-width="1.2" fill="none"/>
+      <path d="M19 36 Q24 39 29 36" stroke="#0d0d0d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'security_auditor',
+    name: 'SECURITY',
+    role: 'Critic',
+    model: 'qwen2.5:7b',
+    tag: 'Critic',
+    tagColor: '#b45309',
+    desc: 'Full OWASP security scan on all generated code. Detects SQL injection, XSS, CSRF, hardcoded secrets, insecure auth, and path traversal. Also runs bandit for Python static analysis.',
+    tasks: ['OWASP scanning', 'SQL injection detection', 'XSS / CSRF audit', 'Secrets scanning', 'Run bandit SAST'],
+    reports: 'Orchestrator — CRITICAL findings loop back to Code Gen',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 Q24 4 44 8 L44 22 Q44 22 4 22 Z" fill="#0d0d0d"/>
+      <circle cx="18" cy="30" r="1.5" fill="#0d0d0d"/>
+      <circle cx="30" cy="30" r="1.5" fill="#0d0d0d"/>
+      <line x1="20" y1="24" x2="20" y2="20" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M18 37 Q24 40 30 37" stroke="#0d0d0d" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <line x1="12" y1="30" x2="16" y2="30" stroke="#0d0d0d" stroke-width="4" stroke-linecap="round"/>
+      <line x1="32" y1="30" x2="36" y2="30" stroke="#0d0d0d" stroke-width="4" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'performance_optimizer',
+    name: 'PERF OPT',
+    role: 'Doer',
+    model: 'qwen2.5:7b',
+    tag: 'Doer',
+    tagColor: '#c2410c',
+    desc: 'Profiles generated code for performance bottlenecks. Detects N+1 queries, poor Big-O complexity, missing caching, and missed async opportunities. Only runs after security issues are resolved.',
+    tasks: ['Big-O analysis', 'Detect N+1 queries', 'Suggest caching', 'Recommend async patterns', 'Memory efficiency'],
+    reports: 'Orchestrator (only after Security passes)',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 Q14 6 24 8 Q34 10 44 8 L44 16 Q34 18 24 16 Q14 14 4 16 Z" fill="#0d0d0d"/>
+      <line x1="14" y1="23" x2="20" y2="23" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round"/>
+      <line x1="28" y1="23" x2="34" y2="23" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="17" cy="30" r="2" fill="#0d0d0d"/>
+      <circle cx="31" cy="30" r="2" fill="#0d0d0d"/>
+      <path d="M14" y1="38" x2="34" y2="38" stroke="none"/>
+      <path d="M19 38 Q24 35 29 38" stroke="#0d0d0d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'documentation_writer',
+    name: 'DOCS WRITER',
+    role: 'Presenter',
+    model: 'qwen2.5:3b',
+    tag: 'Output',
+    tagColor: '#1d4ed8',
+    desc: 'Synthesises everything the swarm has produced into clear, developer-friendly documentation. Writes the README, API reference, deployment guide, and contributing guide in Markdown.',
+    tasks: ['Write README', 'Write API reference', 'Deployment guide', 'Contributing guide', 'Inline comments'],
+    reports: 'Terminal node → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M28 8 L44 8 L44 22 Z" fill="#0d0d0d"/>
+      <line x1="10" y1="23" x2="24" y2="23" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="10" y1="28" x2="28" y2="28" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="10" y1="33" x2="22" y2="33" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="32" cy="30" r="2" fill="#0d0d0d"/>
+      <circle cx="38" cy="30" r="2" fill="#0d0d0d"/>
+      <path d="M30 38 Q35 41 40 38" stroke="#0d0d0d" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'devops',
+    name: 'DEVOPS',
+    role: 'Tool Operator',
+    model: 'qwen2.5:7b',
+    tag: 'Output',
+    tagColor: '#1d4ed8',
+    desc: 'Generates all the infrastructure-as-code. Produces multi-stage Dockerfiles, docker-compose stacks, GitHub Actions CI/CD pipelines, and environment documentation — ready to ship.',
+    tasks: ['Write Dockerfile', 'Write docker-compose', 'GitHub Actions CI/CD', 'Health check endpoints', 'Env documentation'],
+    reports: 'Orchestrator → Production',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="4" y="8" width="16" height="36" fill="#0d0d0d"/>
+      <circle cx="19" cy="26" r="2.5" fill="white"/>
+      <circle cx="30" cy="26" r="2.5" fill="#0d0d0d"/>
+      <circle cx="38" cy="26" r="2.5" fill="#0d0d0d"/>
+      <path d="M28 35 Q33 38 40 35" stroke="#0d0d0d" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <line x1="28" y1="20" x2="40" y2="20" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'system_optimizer',
+    name: 'SYS OPTIMIZER',
+    role: 'Health · Performance',
+    model: 'qwen2.5:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Diagnoses slow Mac performance. Reads live CPU and memory stats from psutil, scans LaunchAgents for startup bloat, checks thermal state, and returns a ranked list of culprits plus a shell script to address each one.',
+    tasks: ['Scan CPU-hogging processes', 'List startup items', 'Check thermal throttling', 'Memory pressure report', 'Generate fix script'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 Q24 4 44 8 L44 18 L4 18 Z" fill="#0d0d0d"/>
+      <circle cx="17" cy="28" r="4" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <circle cx="31" cy="28" r="4" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <line x1="17" y1="28" x2="20" y2="25" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="31" y1="28" x2="34" y2="25" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M20 37 Q24 40 28 37" stroke="#0d0d0d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'file_organizer',
+    name: 'FILE ORGANIZER',
+    role: 'Health · Storage',
+    model: 'qwen2.5:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Scans Downloads, Desktop, and Documents for duplicates, very large files, and junk (`.DS_Store`, temp dirs, old `.dmg` files). Returns a prioritized plan with move and delete commands — nothing runs until you approve it.',
+    tasks: ['Find duplicate files', 'Surface large files', 'Identify junk files', 'Suggest folder structure', 'Generate cleanup script'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 L24 8 L28 14 L44 14 L44 8 L4 8 Z" fill="#0d0d0d"/>
+      <rect x="10" y="22" width="8" height="8" rx="1" fill="none" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="22" y="22" width="8" height="8" rx="1" fill="none" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="10" y="33" width="8" height="6" rx="1" fill="#0d0d0d"/>
+      <rect x="22" y="33" width="8" height="6" rx="1" fill="none" stroke="#0d0d0d" stroke-width="1.5"/>
+      <line x1="34" y1="22" x2="40" y2="22" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="34" y1="26" x2="38" y2="26" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'environment_doctor',
+    name: 'ENV DOCTOR',
+    role: 'Health · Dev Tools',
+    model: 'qwen2.5-coder:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Diagnoses broken development environments. Checks Python versions, virtualenv paths, pip installations, Node/npm, Docker daemon, and PATH conflicts. Returns the exact shell commands needed to fix each issue — no guessing required.',
+    tasks: ['Check Python/pip/venv', 'Diagnose Node/npm issues', 'Verify Docker daemon', 'Detect PATH conflicts', 'Output exact fix commands'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="4" y="8" width="40" height="14" rx="2" fill="#0d0d0d"/>
+      <line x1="24" y1="8" x2="24" y2="18" stroke="white" stroke-width="2"/>
+      <line x1="18" y1="13" x2="30" y2="13" stroke="white" stroke-width="2"/>
+      <circle cx="17" cy="29" r="3.5" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <circle cx="31" cy="29" r="3.5" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <circle cx="17" cy="29" r="1.5" fill="#0d0d0d"/>
+      <circle cx="31" cy="29" r="1.5" fill="#0d0d0d"/>
+      <path d="M19 38 Q24 41 29 38" stroke="#0d0d0d" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'security_guard',
+    name: 'SECURITY GUARD',
+    role: 'Health · Security',
+    model: 'qwen2.5:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Audits your Mac for security issues. Lists open ports with the processes behind them, checks which apps have camera and microphone access, flags unusual background processes, and reviews Gatekeeper and FileVault status.',
+    tasks: ['Scan open ports', 'Check camera/mic permissions', 'Flag suspicious processes', 'Review Gatekeeper status', 'FileVault encryption check'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M24 10 L38 14 L38 24 Q38 32 24 38 Q10 32 10 24 L10 14 Z" fill="#0d0d0d"/>
+      <circle cx="17" cy="29" r="2.5" fill="white"/>
+      <circle cx="31" cy="29" r="2.5" fill="white"/>
+      <line x1="17" y1="35" x2="31" y2="35" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'network_medic',
+    name: 'NETWORK MEDIC',
+    role: 'Health · Networking',
+    model: 'qwen2.5:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Traces network problems from symptom to root cause. Runs ping, traceroute, and DNS lookups; checks WiFi signal strength and channel congestion; tests DNS resolution and HTTP connectivity. Returns a ranked diagnosis.',
+    tasks: ['Ping and traceroute', 'DNS resolution tests', 'WiFi signal check', 'Channel congestion analysis', 'HTTP connectivity test'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 Q24 4 44 8 L44 20 L4 20 Z" fill="#0d0d0d"/>
+      <path d="M14 30 Q24 22 34 30" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M17 34 Q24 28 31 34" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="24" cy="38" r="2" fill="#0d0d0d"/>
+    </svg>`
+  },
+  {
+    id: 'battery_analyst',
+    name: 'BATTERY ANALYST',
+    role: 'Health · Power',
+    model: 'qwen2.5:3b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Reads battery health data via system_profiler and identifies processes draining the most energy. Reports cycle count, design vs current capacity, wakeup reasons from pmset, and top energy consumers ranked by impact.',
+    tasks: ['Read cycle count', 'Check battery capacity', 'List energy hogs', 'Analyze pmset wakeup log', 'Power usage report'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="8" y="16" width="28" height="20" rx="2" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <rect x="36" y="22" width="5" height="8" rx="1" fill="#0d0d0d"/>
+      <rect x="10" y="18" width="16" height="16" rx="1" fill="#0d0d0d"/>
+      <circle cx="38" cy="34" r="2" fill="none" stroke="#0d0d0d" stroke-width="1.5"/>
+      <line x1="36" y1="36" x2="34" y2="38" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'update_manager',
+    name: 'UPDATE MGR',
+    role: 'Health · Maintenance',
+    model: 'qwen2.5:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Checks for pending updates across all package managers: macOS Software Update, Homebrew, pip, npm, and gem. Returns a safe ordered update script that handles dependencies between them and lets you skip specific packages.',
+    tasks: ['Check macOS updates', 'Check Homebrew outdated', 'Check pip outdated', 'Check npm outdated', 'Generate ordered update script'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="4" y="8" width="40" height="14" rx="2" fill="#0d0d0d"/>
+      <path d="M18 28 A8 8 0 1 1 30 28" stroke="#0d0d0d" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <polygon points="30,24 30,32 36,28" fill="#0d0d0d"/>
+      <line x1="16" y1="38" x2="32" y2="38" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'log_interpreter',
+    name: 'LOG INTERPRETER',
+    role: 'Health · Diagnostics',
+    model: 'qwen2.5:14b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Reads crash reports and system logs from ~/Library/Logs and /var/log, then explains what went wrong in plain English. Identifies the faulting module, root cause, and what user action (if any) triggered the crash.',
+    tasks: ['Read crash reports', 'Parse system logs', 'Identify faulting module', 'Explain in plain English', 'Suggest preventive action'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M28 8 L44 8 L44 22 Z" fill="#0d0d0d"/>
+      <line x1="10" y1="18" x2="24" y2="18" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="10" y1="24" x2="26" y2="24" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="10" y1="30" x2="22" y2="30" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="34" cy="32" r="7" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <circle cx="34" cy="32" r="3" fill="#0d0d0d"/>
+      <line x1="39" y1="37" x2="43" y2="41" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'privacy_cleaner',
+    name: 'PRIVACY CLEANER',
+    role: 'Health · Privacy',
+    model: 'qwen2.5:3b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Reviews your privacy footprint. Audits browser cookies and saved passwords, lists all macOS apps with Full Disk Access, Contacts, Calendar, and Location permissions, and flags anything that looks overly permissive.',
+    tasks: ['Audit browser cookies', 'Review macOS permissions', 'Flag over-permissioned apps', 'Check Keychain entries', 'Suggest privacy settings'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="14" y="10" width="20" height="14" rx="2" fill="#0d0d0d"/>
+      <rect x="10" y="20" width="28" height="18" rx="2" fill="#0d0d0d"/>
+      <circle cx="24" cy="29" r="4" fill="white"/>
+      <circle cx="24" cy="29" r="2" fill="#0d0d0d"/>
+      <line x1="16" y1="40" x2="32" y2="40" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'media_librarian',
+    name: 'MEDIA LIBRARIAN',
+    role: 'Health · Storage',
+    model: 'qwen2.5:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Organizes photo and video clutter. Scans for screenshots with default names, suggests a date-based rename plan, identifies large uncompressed videos, and generates ffmpeg commands to compress them without visible quality loss.',
+    tasks: ['Scan for default-named screenshots', 'Suggest rename plan', 'Find large video files', 'Generate ffmpeg compress commands', 'Deduplicate photos'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="10" y="14" width="28" height="22" rx="1" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <circle cx="17" cy="20" r="2.5" fill="#0d0d0d"/>
+      <path d="M10 30 L20 22 L28 28 L34 22 L38 26" stroke="#0d0d0d" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M18 38 Q24 41 30 38" stroke="#0d0d0d" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'backup_sentinel',
+    name: 'BACKUP SENTINEL',
+    role: 'Health · Backup',
+    model: 'qwen2.5:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Makes sure your work is not at risk. Checks when Time Machine last ran, finds git repos with uncommitted changes or unpushed commits, and surfaces files modified recently that are not under any backup or version control.',
+    tasks: ['Check Time Machine recency', 'Find uncommitted git changes', 'Find unpushed commits', 'Surface unprotected recent files', 'Backup health score'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <path d="M4 8 Q24 4 44 8 L44 18 L4 18 Z" fill="#0d0d0d"/>
+      <rect x="10" y="22" width="28" height="16" rx="2" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <circle cx="24" cy="30" r="3" fill="#0d0d0d"/>
+      <line x1="24" y1="27" x2="24" y2="22" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: 'context_switcher',
+    name: 'CONTEXT SWITCHER',
+    role: 'Health · Focus',
+    model: 'qwen2.5:7b',
+    tag: 'Health',
+    tagColor: '#047857',
+    desc: 'Helps you regain focus. Triages open browser tabs, lists running distraction apps (social media, streaming, games), and generates a macOS Focus Mode script that closes the noise and surfaces only the windows you need for the current task.',
+    tasks: ['Triage browser tabs', 'List distraction apps', 'Generate Focus Mode script', 'Workspace snapshot', 'Restore previous context'],
+    reports: 'computer_health_graph → END',
+    face: `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="8" width="40" height="36" rx="2" fill="white" stroke="#0d0d0d" stroke-width="1.5"/>
+      <rect x="4" y="8" width="40" height="14" rx="2" fill="#0d0d0d"/>
+      <circle cx="24" cy="32" r="10" fill="none" stroke="#0d0d0d" stroke-width="2"/>
+      <line x1="24" y1="22" x2="24" y2="32" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round"/>
+      <line x1="24" y1="32" x2="30" y2="36" stroke="#0d0d0d" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`
+  }
+];
+
+const ADAPTERS = [
+  {lang:'Java', name:'java_npe', label:'NullPointerException'},
+  {lang:'Java', name:'java_ioob', label:'IndexOutOfBounds'},
+  {lang:'Java', name:'java_concurrent', label:'ConcurrentModification'},
+  {lang:'Python', name:'python_keyerror', label:'KeyError'},
+  {lang:'Python', name:'python_typeerror', label:'TypeError'},
+  {lang:'Python', name:'python_recursion', label:'RecursionError'},
+  {lang:'Python', name:'python_async', label:'asyncio bugs'},
+  {lang:'Python', name:'python_logic', label:'Logic errors'},
+  {lang:'JavaScript', name:'javascript_null', label:'null / undefined'},
+  {lang:'JavaScript', name:'javascript_scope', label:'Scope / closures'},
+  {lang:'JavaScript', name:'javascript_async', label:'Promise / async-await'},
+  {lang:'C++', name:'cpp_memory', label:'Memory leaks'},
+  {lang:'C++', name:'cpp_bounds', label:'Buffer overflow'},
+  {lang:'Go', name:'go_routine', label:'Goroutine deadlock'},
+  {lang:'Rust', name:'rust_borrow', label:'Borrow checker'},
+  {lang:'Security', name:'sql_injection', label:'SQL injection'},
+  {lang:'Security', name:'xss_vuln', label:'XSS prevention'},
+  {lang:'Security', name:'auth_bypass', label:'Auth / session'},
+  {lang:'Perf', name:'performance_slow', label:'Slow algorithms'},
+  {lang:'Design', name:'api_design', label:'REST API design'},
+];
+
+const TAG_COLORS = {
+  'Central': '#0d0d0d',
+  'Planner': '#4338ca',
+  'Core':    '#065f46',
+  'Critic':  '#92400e',
+  'Doer':    '#c2410c',
+  'Output':  '#1e40af',
+  'Health':  '#047857',
+};
+
+let activeId = null;
+
+function renderAgents() {
+  const grid = document.getElementById('agentGrid');
+  const sdlcAgents = AGENTS.filter(a => a.tag !== 'Health');
+  const healthAgents = AGENTS.filter(a => a.tag === 'Health');
+
+  const renderCard = a => `
+    <div class="agent-card" id="card-${a.id}" onclick="selectAgent('${a.id}')">
+      <div class="agent-tag" style="background:${TAG_COLORS[a.tag]||'#0d0d0d'};color:white;">${a.tag}</div>
+      <div class="face-frame">${a.face}</div>
+      <div class="agent-name">${a.name}</div>
+      <div class="agent-role">${a.role}</div>
+      <div class="agent-model">${a.model}</div>
+    </div>
+  `;
+
+  grid.innerHTML =
+    sdlcAgents.map(renderCard).join('') +
+    `<div class="agent-grid-divider">Computer Health Agents — 12 specialists · auto-routed by keyword</div>` +
+    healthAgents.map(renderCard).join('');
+}
+
+function renderAdapters() {
+  const langColors = {Java:'#b45309',Python:'#1d4ed8',JavaScript:'#d97706','C++':'#6d28d9',Go:'#0e7490',Rust:'#c2410c',Security:'#991b1b',Perf:'#047857',Design:'#4338ca'};
+  const grid = document.getElementById('adapterGrid');
+  grid.innerHTML = ADAPTERS.map(a => `
+    <div class="adapter-card">
+      <div class="adapter-lang" style="color:${langColors[a.lang]||'#888'};">${a.lang}</div>
+      <div class="adapter-name"><span class="adapter-dot" style="background:${langColors[a.lang]||'#0d0d0d'};"></span>${a.label}</div>
+    </div>
+  `).join('');
+}
+
+function selectAgent(id) {
+  const agent = AGENTS.find(a => a.id === id);
+  if (!agent) return;
+
+  document.querySelectorAll('.agent-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById('card-' + id);
+
+  if (activeId === id) {
+    activeId = null;
+    document.getElementById('detailPanel').classList.remove('visible');
+    return;
+  }
+
+  activeId = id;
+  card.classList.add('active');
+
+  document.getElementById('d-name').textContent = agent.name;
+  document.getElementById('d-role').textContent = agent.role;
+  document.getElementById('d-desc').textContent = agent.desc;
+  document.getElementById('d-model').textContent = agent.model;
+  document.getElementById('d-reports').textContent = agent.reports;
+
+  const taskList = document.getElementById('d-tasks');
+  taskList.innerHTML = agent.tasks.map(t => `<li>${t}</li>`).join('');
+
+  const panel = document.getElementById('detailPanel');
+  panel.classList.add('visible');
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+}
+
+renderAgents();
+renderAdapters();
+</script>
+</body>
+</html>
