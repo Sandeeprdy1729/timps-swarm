@@ -23,7 +23,7 @@ import json
 import logging
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -98,7 +98,7 @@ def inbox_gatekeeper(
         result = {"summary": raw}
 
     result["_agent"] = "inbox_gatekeeper"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -145,7 +145,7 @@ def meeting_condenser(
         result = {"tldr": raw}
 
     result["_agent"] = "meeting_condenser"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -196,7 +196,7 @@ def calendar_tetris(
         result = {"recommendation": raw}
 
     result["_agent"] = "calendar_tetris"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -252,7 +252,7 @@ def research_scout(
     path = _save("reports", "research_scout.md", json.dumps(result, indent=2))
     result["_report_path"] = path
     result["_agent"] = "research_scout"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -302,7 +302,7 @@ def trend_monitor(keywords: List[str], sources: Optional[List[str]] = None) -> D
         result = {"digest_summary": raw}
 
     result["_agent"] = "trend_monitor"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -353,7 +353,7 @@ def data_wrangler(
         result = {"data_quality_score": 0, "issues_found": [raw]}
 
     result["_agent"] = "data_wrangler"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -407,7 +407,7 @@ def expense_auditor(
     path = _save("reports", "expense_auditor.md", json.dumps(result, indent=2))
     result["_report_path"] = path
     result["_agent"] = "expense_auditor"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -471,7 +471,7 @@ def reference_checker(document: str) -> Dict[str, Any]:
         result = {"overall_accuracy": 50, "red_flags": [raw]}
 
     result["_agent"] = "reference_checker"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -528,7 +528,7 @@ def client_liaison(
         result["escalate"] = True
 
     result["_agent"] = "client_liaison"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -589,7 +589,7 @@ def competitor_tracker(
     path = _save("reports", "competitor_tracker.md", json.dumps(result, indent=2))
     result["_report_path"] = path
     result["_agent"] = "competitor_tracker"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 

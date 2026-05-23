@@ -1027,6 +1027,74 @@ TOOLS: List[Dict[str, Any]] = [
         },
     },
 
+    # ── NEW domain agents (intelligence/aiml/india/domain/business/infra/emerging) ──
+    # Generated from the HTML agent catalogue — 47 agents across 7 packages.
+    *[
+        {
+            "name": f"timps_{name}",
+            "description": desc,
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "request": {"type": "string", "description": "Plain-English task or context for the agent."},
+                    "language": {"type": "string", "description": "Primary programming language (default: python).", "default": "python"},
+                },
+                "required": [],
+            },
+        }
+        for name, desc in [
+            # Intelligence
+            ("code_archaeology",  "Analyse git history to build an AST import graph, risk map, and tribal knowledge document."),
+            ("pattern_detector",  "Detect duplicate code blocks, god classes, magic numbers, and anti-patterns in a codebase."),
+            ("technical_debt",    "Quantify technical debt via radon complexity + git churn + TODO density; output a debt roadmap."),
+            ("memory_agent",      "Store, recall, and manage TIMPS run history and contextual memory."),
+            ("learning_agent",    "Analyse past successful runs and distil prompt improvements for all agents."),
+            ("agent_composer",    "Generate a new fully-functional Python agent file from a natural-language description."),
+            # AI/ML
+            ("prompt_engineer",   "Rewrite prompts with Chain-of-Thought, XML tags, and few-shot examples for better LLM output."),
+            ("dataset_agent",     "Validate and clean ML training datasets; generate data cards and quality reports."),
+            ("model_evaluator",   "Create evaluation harnesses, adversarial test inputs, and RAGAS config for LLM models."),
+            ("rag_designer",      "Design chunking/embedding/retrieval/reranking RAG pipelines for LlamaIndex or LangChain."),
+            ("finetuning_agent",  "Generate complete LoRA/MLX/Axolotl/Unsloth fine-tuning pipelines with push-to-hub scripts."),
+            ("ai_safety_agent",   "Audit LLM applications against OWASP LLM Top 10 (LLM01-LLM10) with mitigations."),
+            ("vector_db_agent",   "Design Qdrant/Pinecone/Weaviate/pgvector schemas and integration code."),
+            # India
+            ("gst_compliance",    "Generate GSTR-1/3B filings, e-invoice XML, ITC reconciliation reports (India GST)."),
+            ("abdm_agent",        "Implement ABHA enrollment, HIP/HIU flows, FHIR R4 bundles, and consent workflows (India ABDM)."),
+            ("upi_agent",         "Generate UPI deep links, QR codes, Razorpay/Cashfree webhook handlers (India UPI)."),
+            ("digilocker_agent",  "Implement DigiLocker OAuth, document pull, Aadhaar OTP, PAN verify, and eKYC flows (India)."),
+            ("indiehacker_agent", "India GTM plan: INR pricing tiers, Razorpay integration, GST invoice generation."),
+            # Domain
+            ("web_scraping",      "Generate Playwright/Scrapy/httpx scrapers with anti-bot config and data extraction logic."),
+            ("data_pipeline",     "Design dbt/Airflow/Prefect/Dagster ETL/ELT pipelines with monitoring and lineage."),
+            ("realtime_agent",    "Build WebSocket/SSE/Redis Pub-Sub/Kafka server+client real-time systems."),
+            ("mobile_agent",      "Scaffold React Native/Flutter/Expo apps with push notifications and deep links."),
+            ("browser_automation","Generate Playwright E2E tests with page objects, fixtures, and CI config."),
+            ("graphql_agent",     "Write GraphQL SDL schemas, resolvers, DataLoader, subscriptions, and federation config."),
+            ("cli_tool_agent",    "Generate Click/Cobra/Commander CLI tools with shell completions and release workflows."),
+            ("embedded_agent",    "Create Arduino/ESP32/RPi firmware, HAL headers, CMakeLists, and OTA update scripts."),
+            # Business
+            ("analytics_agent",   "Set up PostHog/Mixpanel/Amplitude event tracking, funnels, and dashboards."),
+            ("ab_testing_agent",  "Design A/B tests with Welch's t-test power analysis and GrowthBook configuration."),
+            ("monetization_agent","Configure Stripe/LemonSqueezy products, checkout flows, webhooks, and dunning emails."),
+            ("seo_agent",         "Run Lighthouse CI, generate schema.org JSON-LD, fix Core Web Vitals, build sitemaps."),
+            ("postmortem_agent",  "Write blameless postmortems: 5 Whys, root causes, P0-P2 action items, runbooks."),
+            ("sprint_planning_agent", "Decompose epics into sprint tickets with estimates, dependencies, and GitHub Issues payload."),
+            # Infra
+            ("load_testing",      "Generate k6/Artillery/Locust load test scripts with ramp-up plans and Grafana dashboards."),
+            ("feature_flag",      "Design feature flags with LaunchDarkly/Flagsmith/GrowthBook targeting rules and rollout plans."),
+            ("disaster_recovery", "Design RTO/RPO-aware DR plans, failover runbooks, and DR test scripts for cloud systems."),
+            ("finops_agent",      "Analyse cloud costs with Infracost, generate rightsizing recommendations and budget alerts."),
+            ("secrets_management","Scan for hardcoded secrets, generate Vault/AWS Secrets Manager migration code and pre-commit hooks."),
+            ("edge_agent",        "Generate Cloudflare Workers/Vercel Edge/Fastly code with KV storage and geo-routing."),
+            # Emerging
+            ("robotics_agent",    "Generate ROS2 nodes, URDF descriptions, motion planning config, and ISO 10218-1 safety analysis."),
+            ("web3_agent",        "Audit smart contracts with Slither/Mythril patterns; generate Solidity code with gas optimisation."),
+            ("federated_learning","Design Flower/FedAvg/PySyft FL pipelines with differential privacy and aggregation strategies."),
+            ("quantum_ready",     "Identify quantum-vulnerable algorithms, generate Qiskit circuits, and produce NIST PQC migration plans."),
+        ]
+    ],
+
     # ── Provider status ────────────────────────────────────────────────────────
     {
         "name": "timps_list_providers",
@@ -1144,6 +1212,20 @@ def _handle_list_agents(_args: Dict) -> str:
     health = [k for k in AGENT_DESCRIPTIONS if k not in sdlc]
     for name in health:
         lines.append(f"- **`timps_{name}`**: {AGENT_DESCRIPTIONS[name]}")
+
+    # Domain package agents
+    for pkg, label, names in [
+        ("intelligence", "Intelligence (6)", ["code_archaeology", "pattern_detector", "technical_debt", "memory_agent", "learning_agent", "agent_composer"]),
+        ("aiml",         "AI/ML (7)",        ["prompt_engineer", "dataset_agent", "model_evaluator", "rag_designer", "finetuning_agent", "ai_safety_agent", "vector_db_agent"]),
+        ("india",        "India (5)",        ["gst_compliance", "abdm_agent", "upi_agent", "digilocker_agent", "indiehacker_agent"]),
+        ("domain",       "Domain (8)",       ["web_scraping", "data_pipeline", "realtime_agent", "mobile_agent", "browser_automation", "graphql_agent", "cli_tool_agent", "embedded_agent"]),
+        ("business",     "Business (6)",     ["analytics_agent", "ab_testing_agent", "monetization_agent", "seo_agent", "postmortem_agent", "sprint_planning_agent"]),
+        ("infra",        "Infra (6)",        ["load_testing", "feature_flag", "disaster_recovery", "finops_agent", "secrets_management", "edge_agent"]),
+        ("emerging",     "Emerging (4)",     ["robotics_agent", "web3_agent", "federated_learning", "quantum_ready"]),
+    ]:
+        lines.append(f"\n## {label} — `src/{pkg}/`\n")
+        for name in names:
+            lines.append(f"- **`timps_{name}`**")
 
     return "\n".join(lines)
 
@@ -1431,6 +1513,36 @@ def _handle_more_agent(agent_name: str, args: Dict) -> str:
     return str(result)
 
 
+def _handle_domain_agent(package_name: str, agent_name: str, args: Dict) -> str:
+    """Generic handler for all domain-package agents."""
+    import importlib
+    mod = importlib.import_module(f"src.{package_name}")
+    agents_dict_name = f"{package_name.upper()}_AGENTS"
+    agents_dict = getattr(mod, agents_dict_name, None)
+    if agents_dict is None:
+        raise ValueError(f"No {agents_dict_name} found in src.{package_name}")
+    fn = agents_dict.get(agent_name)
+    if fn is None:
+        raise ValueError(f"Agent '{agent_name}' not in {agents_dict_name}")
+    result = fn(args)
+    if isinstance(result, dict):
+        lines = [f"# TIMPS {agent_name.replace('_', ' ').title()}\n"]
+        for k, v in result.items():
+            if k.startswith("_"):
+                continue
+            if isinstance(v, (list, dict)):
+                try:
+                    lines.append(f"**{k}:**\n```json\n{json.dumps(v, indent=2)}\n```\n")
+                except TypeError:
+                    lines.append(f"**{k}:** {str(v)[:500]}\n")
+            elif isinstance(v, str) and len(v) > 500:
+                lines.append(f"**{k}:**\n```\n{v[:2000]}\n```\n")
+            else:
+                lines.append(f"**{k}:** {v}\n")
+        return "\n".join(lines)
+    return str(result)
+
+
 def _handle_list_providers(_args: Dict) -> str:
     from src.providers import list_providers
     providers = list_providers()
@@ -1515,6 +1627,26 @@ _TOOL_HANDLERS: Dict[str, Any] = {
     "timps_i18n_agent":          lambda a: _handle_more_agent("i18n_agent", a),
     "timps_cost_optimizer":      lambda a: _handle_more_agent("cost_optimizer", a),
     "timps_self_critic_agent":   lambda a: _handle_more_agent("self_critic_agent", a),
+    # NEW domain package agents (47 agents across 7 packages)
+    **{
+        f"timps_{name}": (lambda pkg, ag: lambda a: _handle_domain_agent(pkg, ag, a))(pkg, name)
+        for pkg, names in [
+            ("intelligence", ["code_archaeology", "pattern_detector", "technical_debt",
+                              "memory_agent", "learning_agent", "agent_composer"]),
+            ("aiml",         ["prompt_engineer", "dataset_agent", "model_evaluator",
+                              "rag_designer", "finetuning_agent", "ai_safety_agent", "vector_db_agent"]),
+            ("india",        ["gst_compliance", "abdm_agent", "upi_agent",
+                              "digilocker_agent", "indiehacker_agent"]),
+            ("domain",       ["web_scraping", "data_pipeline", "realtime_agent", "mobile_agent",
+                              "browser_automation", "graphql_agent", "cli_tool_agent", "embedded_agent"]),
+            ("business",     ["analytics_agent", "ab_testing_agent", "monetization_agent",
+                              "seo_agent", "postmortem_agent", "sprint_planning_agent"]),
+            ("infra",        ["load_testing", "feature_flag", "disaster_recovery",
+                              "finops_agent", "secrets_management", "edge_agent"]),
+            ("emerging",     ["robotics_agent", "web3_agent", "federated_learning", "quantum_ready"]),
+        ]
+        for name in names
+    },
     # Provider status
     "timps_list_providers":      lambda a: _handle_list_providers(a),
     # Tool connector

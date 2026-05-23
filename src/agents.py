@@ -11,7 +11,7 @@ import os
 import json
 import logging
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from src.state import SwarmState, Task
@@ -53,7 +53,7 @@ def _mark_task(task: Task, status: str, output: str = "") -> Task:
     t = dict(task)
     t["status"] = status
     t["output"] = output
-    t["completed_at"] = datetime.utcnow().isoformat()
+    t["completed_at"] = datetime.now(timezone.utc).isoformat()
     return t
 
 
@@ -119,7 +119,7 @@ def orchestrator_node(state: SwarmState) -> dict:
                 dependencies=t.get("dependencies", []),
                 output=None,
                 artifact_path=None,
-                created_at=datetime.utcnow().isoformat(),
+                created_at=datetime.now(timezone.utc).isoformat(),
                 completed_at=None,
                 retry_count=0,
             ))

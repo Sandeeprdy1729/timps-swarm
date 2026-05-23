@@ -7,6 +7,8 @@ Flow:
                → [dependency_agent →] documentation_writer → END
 """
 import logging
+from datetime import datetime, timezone
+from typing import Callable
 
 from langgraph.graph import StateGraph, END
 
@@ -26,6 +28,67 @@ from src.agents import (
 
 logger = logging.getLogger(__name__)
 
+# ── New domain agent names (module-level for testability) ─────────────────────
+_NEW_AGENTS = [
+    # Intelligence
+    "code_archaeology", "pattern_detector", "technical_debt",
+    "memory_agent", "learning_agent", "agent_composer",
+    # AI/ML
+    "prompt_engineer", "dataset_agent", "model_evaluator",
+    "rag_designer", "finetuning_agent", "ai_safety_agent", "vector_db_agent",
+    # India
+    "gst_compliance", "abdm_agent", "upi_agent",
+    "digilocker_agent", "indiehacker_agent",
+    # Domain
+    "web_scraping", "data_pipeline", "realtime_agent", "mobile_agent",
+    "browser_automation", "graphql_agent", "cli_tool_agent", "embedded_agent",
+    # Business
+    "analytics_agent", "ab_testing_agent", "monetization_agent",
+    "seo_agent", "postmortem_agent", "sprint_planning_agent",
+    # Infra
+    "load_testing", "feature_flag", "disaster_recovery",
+    "finops_agent", "secrets_management", "edge_agent",
+    # Emerging
+    "robotics_agent", "web3_agent", "federated_learning", "quantum_ready",
+    # More agents
+    "refactoring_agent", "test_data_agent", "monitoring_agent",
+    "ui_ux_agent", "i18n_agent", "cost_optimizer", "self_critic_agent",
+    # N8n
+    "n8n_workflow_agent",
+]
+
+
+# ── Generic agent node factory ────────────────────────────────────────────────
+
+def _make_node(agent_name: str, fn: Callable, state_key: str = "code_artifacts") -> Callable:
+    """Wrap a plain agent function as a LangGraph-compatible node."""
+    def _node(state: SwarmState) -> dict:
+        pending = [t for t in state.get("tasks", [])
+                   if t["assigned_to"] == agent_name and t["status"] == "pending"]
+        if not pending:
+            return {}
+        task = pending[0]
+        try:
+            result = fn({
+                "user_request": state.get("user_request", ""),
+                "requirements": state.get("requirements", ""),
+                "language":     state.get("language", "python"),
+            })
+        except Exception as exc:
+            logger.warning("Agent %s raised: %s", agent_name, exc)
+            result = {"summary": str(exc)}
+        updated = dict(task)
+        updated.update({
+            "status":       "completed",
+            "output":       result.get("summary", ""),
+            "completed_at": datetime.now(timezone.utc).isoformat(),
+        })
+        artifact_keys = [k for k in result if k.endswith("_path")]
+        artifacts = [result[k] for k in artifact_keys if result.get(k)]
+        return {"tasks": [updated], state_key: artifacts}
+    _node.__name__ = f"_{agent_name}_node"
+    return _node
+
 
 # ── New agent node wrappers ───────────────────────────────────────────────────
 # These wrap priority_agents.py functions as LangGraph-compatible nodes.
@@ -38,10 +101,10 @@ def _research_agent_node(state: SwarmState) -> dict:
         return {}
     task = pending[0]
     result = research_agent({"topic": state["user_request"], "depth": "medium"})
-    from datetime import datetime
+    from datetime import datetime, timezone
     updated = dict(task)
     updated.update({"status": "completed", "output": result.get("summary", ""),
-                    "completed_at": datetime.utcnow().isoformat()})
+                    "completed_at": datetime.now(timezone.utc).isoformat()})
     return {
         "tasks": [updated],
         "code_artifacts": [result.get("report_path", "")],
@@ -58,11 +121,11 @@ def _api_design_node(state: SwarmState) -> dict:
         return {}
     task = pending[0]
     result = api_design_agent({"description": state["user_request"]})
-    from datetime import datetime
+    from datetime import datetime, timezone
     updated = dict(task)
     updated.update({"status": "completed", "output": result.get("spec_yaml", ""),
                     "artifact_path": result.get("spec_path", ""),
-                    "completed_at": datetime.utcnow().isoformat()})
+                    "completed_at": datetime.now(timezone.utc).isoformat()})
     return {
         "tasks": [updated],
         "code_artifacts": [result.get("spec_path", "")],
@@ -83,15 +146,15 @@ def _dependency_agent_node(state: SwarmState) -> dict:
         if "requirements" in str(path) or "package.json" in str(path):
             try:
                 import os
-                manifest = open(path).read()
+                manifest = open(path, encoding="utf-8").read()
                 break
             except Exception:
                 pass
     result = dependency_agent({"manifest": manifest or "# No manifest found", "ecosystem": "auto"})
-    from datetime import datetime
+    from datetime import datetime, timezone
     updated = dict(task)
     updated.update({"status": "completed", "output": result.get("summary", ""),
-                    "completed_at": datetime.utcnow().isoformat()})
+                    "completed_at": datetime.now(timezone.utc).isoformat()})
     return {
         "tasks": [updated],
         "security_report": (state.get("security_report") or "") + "\n\n## Dependency Audit\n" + result.get("summary", ""),
@@ -159,6 +222,12 @@ def route_after_orchestrator(state: SwarmState) -> str:
     if "devops" in pending:
         return "devops"
 
+    # ── New domain agents — any pending task for a registered agent ──────────
+    # Order determines priority within a group.
+    for agent in _NEW_AGENTS:
+        if agent in pending:
+            return agent
+
     return "documentation_writer"
 
 
@@ -167,7 +236,7 @@ def route_after_orchestrator(state: SwarmState) -> str:
 def build_graph() -> StateGraph:
     workflow = StateGraph(SwarmState)
 
-    # Core 10 SDLC agents
+    # ── Core 10 SDLC agents ───────────────────────────────────────────────────
     workflow.add_node("orchestrator",           orchestrator_node)
     workflow.add_node("product_manager",        product_manager_node)
     workflow.add_node("architect",              architect_node)
@@ -179,48 +248,68 @@ def build_graph() -> StateGraph:
     workflow.add_node("documentation_writer",   documentation_writer_node)
     workflow.add_node("devops",                 devops_node)
 
-    # NEW priority agents
+    # ── Priority agents (hand-crafted wrappers above) ─────────────────────────
     workflow.add_node("research_agent",         _research_agent_node)
     workflow.add_node("api_design_agent",       _api_design_node)
     workflow.add_node("dependency_agent",       _dependency_agent_node)
 
-    # Entry point
+    # ── Bulk registration of domain-package agents ────────────────────────────
+    def _load_agents():
+        from src.intelligence import INTELLIGENCE_AGENTS
+        from src.aiml       import AIML_AGENTS
+        from src.india      import INDIA_AGENTS
+        from src.domain     import DOMAIN_AGENTS
+        from src.business   import BUSINESS_AGENTS
+        from src.infra      import INFRA_AGENTS
+        from src.emerging   import EMERGING_AGENTS
+        from src.more_agents   import MORE_AGENTS
+        from src.priority_agents import PRIORITY_AGENTS
+        combined = {}
+        for d in [INTELLIGENCE_AGENTS, AIML_AGENTS, INDIA_AGENTS, DOMAIN_AGENTS,
+                  BUSINESS_AGENTS, INFRA_AGENTS, EMERGING_AGENTS, MORE_AGENTS]:
+            combined.update(d)
+        # n8n from priority
+        for k in ["n8n_workflow_agent"]:
+            if k in PRIORITY_AGENTS:
+                combined[k] = PRIORITY_AGENTS[k]
+        return combined
+
+    all_domain_agents = _load_agents()
+    for name, fn in all_domain_agents.items():
+        workflow.add_node(name, _make_node(name, fn))
+
+    # ── Entry point ───────────────────────────────────────────────────────────
     workflow.set_entry_point("orchestrator")
 
-    # Orchestrator conditionally routes to any agent
-    workflow.add_conditional_edges(
-        "orchestrator",
-        route_after_orchestrator,
-        {
-            "research_agent":        "research_agent",
-            "api_design_agent":      "api_design_agent",
-            "product_manager":       "product_manager",
-            "architect":             "architect",
-            "code_generator":        "code_generator",
-            "code_reviewer":         "code_reviewer",
-            "qa_tester":             "qa_tester",
-            "security_auditor":      "security_auditor",
-            "dependency_agent":      "dependency_agent",
-            "performance_optimizer": "performance_optimizer",
-            "documentation_writer":  "documentation_writer",
-            "devops":                "devops",
-        },
-    )
+    # ── Conditional routing from orchestrator ─────────────────────────────────
+    route_targets = {
+        "research_agent":        "research_agent",
+        "api_design_agent":      "api_design_agent",
+        "product_manager":       "product_manager",
+        "architect":             "architect",
+        "code_generator":        "code_generator",
+        "code_reviewer":         "code_reviewer",
+        "qa_tester":             "qa_tester",
+        "security_auditor":      "security_auditor",
+        "dependency_agent":      "dependency_agent",
+        "performance_optimizer": "performance_optimizer",
+        "documentation_writer":  "documentation_writer",
+        "devops":                "devops",
+    }
+    for name in all_domain_agents:
+        route_targets[name] = name
 
-    # All non-terminal agents loop back to orchestrator
-    for node in [
-        "research_agent",
-        "api_design_agent",
-        "product_manager",
-        "architect",
-        "code_generator",
-        "code_reviewer",
-        "qa_tester",
-        "security_auditor",
-        "dependency_agent",
-        "performance_optimizer",
-        "devops",
-    ]:
+    workflow.add_conditional_edges("orchestrator", route_after_orchestrator, route_targets)
+
+    # ── All non-terminal agents loop back to orchestrator ─────────────────────
+    loop_back = [
+        "research_agent", "api_design_agent",
+        "product_manager", "architect", "code_generator",
+        "code_reviewer", "qa_tester", "security_auditor",
+        "dependency_agent", "performance_optimizer", "devops",
+    ] + list(all_domain_agents.keys())
+
+    for node in loop_back:
         workflow.add_edge(node, "orchestrator")
 
     # documentation_writer is the terminal node

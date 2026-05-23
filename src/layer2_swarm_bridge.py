@@ -12,7 +12,7 @@ import json
 import uuid
 from typing import Dict, Optional, Any, List, Callable
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 
 try:
@@ -178,7 +178,7 @@ class SwarmBridge:
             computer=computer,
             status="running" if initial_task else "idle",
             current_task=initial_task or "",
-            started_at=datetime.utcnow().isoformat() if initial_task else None,
+            started_at=datetime.now(timezone.utc).isoformat() if initial_task else None,
         )
         
         self.sub_agents[agent.id] = agent
@@ -243,7 +243,7 @@ class SwarmBridge:
             language=language,
             max_iterations=max_iterations,
             status="running",
-            started_at=datetime.utcnow().isoformat(),
+            started_at=datetime.now(timezone.utc).isoformat(),
         )
         
         self.swarm_tasks[task_id] = task
@@ -257,12 +257,12 @@ class SwarmBridge:
             task.status = "completed"
             task.results = result.get("results", {})
             task.artifacts = result.get("artifacts", [])
-            task.completed_at = datetime.utcnow().isoformat()
+            task.completed_at = datetime.now(timezone.utc).isoformat()
             
         except Exception as e:
             task.status = "failed"
             task.error = str(e)
-            task.completed_at = datetime.utcnow().isoformat()
+            task.completed_at = datetime.now(timezone.utc).isoformat()
             logger.error(f"[SwarmBridge] Task {task_id} failed: {e}")
         
         return task

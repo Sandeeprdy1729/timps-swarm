@@ -26,7 +26,7 @@ import logging
 import os
 import re
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -126,7 +126,7 @@ def issue_triager(request: str, repo_path: Optional[str] = None) -> Dict[str, An
         result = {"summary": raw, "severity": "medium"}
 
     result["_agent"] = "issue_triager"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -179,7 +179,7 @@ def boilerplate_architect(request: str, language: str = "python") -> Dict[str, A
         _save("code", safe_path, content)
 
     scaffold["_agent"] = "boilerplate_architect"
-    scaffold["_timestamp"] = datetime.utcnow().isoformat()
+    scaffold["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return scaffold
 
 
@@ -226,7 +226,7 @@ def pr_reviewer(diff_or_description: str, style_guide: str = "") -> Dict[str, An
     path = _save("reports", "pr_review.md", json.dumps(review, indent=2))
     review["_report_path"] = path
     review["_agent"] = "pr_reviewer"
-    review["_timestamp"] = datetime.utcnow().isoformat()
+    review["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return review
 
 
@@ -289,7 +289,7 @@ def dependency_sentinel(manifest_content: str, manifest_type: str = "auto") -> D
     path = _save("reports", "dependency_sentinel.md", json.dumps(report, indent=2))
     report["_report_path"] = path
     report["_agent"] = "dependency_sentinel"
-    report["_timestamp"] = datetime.utcnow().isoformat()
+    report["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return report
 
 
@@ -354,7 +354,7 @@ def unit_test_writer(
         result["test_file_path"] = path
 
     result["_agent"] = "unit_test_writer"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -414,7 +414,7 @@ def docstring_generator(
         result["output_path"] = path
 
     result["_agent"] = "docstring_generator"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -455,7 +455,7 @@ def log_detective(log_content: str, service_name: str = "app") -> Dict[str, Any]
     path = _save("reports", "log_detective.md", json.dumps(result, indent=2))
     result["_report_path"] = path
     result["_agent"] = "log_detective"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -511,7 +511,7 @@ def sql_optimizer(
     path = _save("reports", "sql_optimizer.md", json.dumps(result, indent=2))
     result["_report_path"] = path
     result["_agent"] = "sql_optimizer"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -559,7 +559,7 @@ def sprint_reporter(
         result = {"standup_markdown": raw}
 
     result["_agent"] = "sprint_reporter"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -608,7 +608,7 @@ def flaky_test_hunter(ci_history: str, repo_path: Optional[str] = None) -> Dict[
     path = _save("reports", "flaky_test_hunter.md", json.dumps(result, indent=2))
     result["_report_path"] = path
     result["_agent"] = "flaky_test_hunter"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -657,7 +657,7 @@ def api_contract_auditor(
     path = _save("reports", "api_contract_auditor.md", json.dumps(result, indent=2))
     result["_report_path"] = path
     result["_agent"] = "api_contract_auditor"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 
@@ -701,7 +701,7 @@ def content_multiplier(
         result = {"docs_blurb": raw}
 
     result["_agent"] = "content_multiplier"
-    result["_timestamp"] = datetime.utcnow().isoformat()
+    result["_timestamp"] = datetime.now(timezone.utc).isoformat()
     return result
 
 

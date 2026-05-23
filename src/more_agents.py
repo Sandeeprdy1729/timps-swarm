@@ -21,7 +21,7 @@ import logging
 import os
 import re
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -33,12 +33,12 @@ _GEN = Path("generated")
 
 
 def _ts() -> str:
-    return datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    return datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
 
 def _llm(prompt: str, system: str, agent: str = "default") -> str:
     try:
-        return _router.call(prompt, system_prompt=system, agent_name=agent)
+        return _router.call(agent, prompt, system_prompt=system)
     except Exception as exc:
         logger.error("LLM call failed for %s: %s", agent, exc)
         return f"# LLM error: {exc}"

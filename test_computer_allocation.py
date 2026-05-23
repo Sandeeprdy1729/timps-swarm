@@ -48,7 +48,7 @@ async def test_computer_allocation():
     return agents
 
 
-async def test_swarm_execution(agents):
+async def test_swarm_execution():
     """Test that swarm can execute a task."""
     print("=" * 60)
     print("TEST 2: Swarm Task Execution")
@@ -212,10 +212,7 @@ async def main():
     for name, test_fn in tests:
         try:
             if name == "Swarm Execution":
-                if agents:
-                    result = await test_fn(agents)
-                else:
-                    result = await test_fn([])
+                result = await test_fn()
             else:
                 result = await test_fn()
                 if name == "Computer Allocation":

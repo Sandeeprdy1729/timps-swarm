@@ -13,7 +13,7 @@ import logging
 import os
 import time
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import uvicorn
@@ -169,7 +169,7 @@ def _build_dashboard_payload(run_id: str, state: dict) -> dict:
             "adapter_loaded": "base",
             "latency_ms": 0,
             "tokens_generated": 0,
-            "last_active": datetime.utcnow().isoformat(),
+            "last_active": datetime.now(timezone.utc).isoformat(),
             "color": agent_colors.get(name, "#94a3b8"),
         })
 
@@ -288,7 +288,7 @@ async def health():
     return {
         "status": "ok",
         "service": "timps-swarm",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "redis": "connected" if r else "unavailable (using in-memory fallback)",
     }
 
@@ -452,7 +452,7 @@ class RefactoringRequest(BaseModel):
 
 
 class TestDataRequest(BaseModel):
-    schema: str
+    schema_desc: str
     count: Optional[int] = 20
     format: Optional[str] = "json"
     locale: Optional[str] = "en_US"
@@ -503,7 +503,7 @@ async def agent_refactor(req: RefactoringRequest):
 @app.post("/agents/test-data")
 async def agent_test_data(req: TestDataRequest):
     from src.more_agents import test_data_agent
-    return test_data_agent({"schema": req.schema, "count": req.count,
+    return test_data_agent({"schema": req.schema_desc, "count": req.count,
                             "format": req.format, "locale": req.locale})
 
 
@@ -550,20 +550,8 @@ async def list_all_providers():
     providers_info = []
     for name in ["mcp", "gemini", "anthropic", "openai", "groq", "ollama", "timps"]:
         try:
-            prov = registry._instances.get(name)
-            if prov is None:
-                from src.providers import _PROVIDER_CLASSES  # noqa: F401
-                from src.providers import (
-                    MCPSamplerProvider, GeminiProvider, AnthropicProvider,
-                    OpenAIProvider, GroqProvider, OllamaProvider, TIMPSProvider,
-                )
-                classes = {
-                    "mcp": MCPSamplerProvider, "gemini": GeminiProvider,
-                    "anthropic": AnthropicProvider, "openai": OpenAIProvider,
-                    "groq": GroqProvider, "ollama": OllamaProvider, "timps": TIMPSProvider,
-                }
-                prov = classes[name]()
-            available = prov.is_available()
+            prov = registry.get(name)
+            available = prov.is_available() if prov else False
             description = {
                 "mcp": "MCP sampler (when inside Claude Code)",
                 "gemini": "Google Gemini 2.5 Flash",

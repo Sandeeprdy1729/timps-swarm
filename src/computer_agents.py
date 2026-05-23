@@ -931,6 +931,69 @@ _KEYWORD_MAP = [
 ]
 
 
+def run_full_checkup(focus: str = "") -> dict:
+    """
+    Run a comprehensive computer health scan across 6 agents:
+    system_optimizer, battery_analyst, security_guard, network_medic,
+    backup_sentinel, update_manager.
+
+    Returns a combined dict with per-agent reports, a health_summary,
+    a 0-100 health_score, and a list of action_scripts.
+    """
+    agents_to_run = [
+        ("system_optimizer",  system_optimizer_node),
+        ("battery_analyst",   battery_analyst_node),
+        ("security_guard",    security_guard_node),
+        ("network_medic",     network_medic_node),
+        ("backup_sentinel",   backup_sentinel_node),
+        ("update_manager",    update_manager_node),
+    ]
+
+    state_base: Dict = {"user_request": focus or "full system checkup"}
+    reports = []
+    action_scripts = []
+    errors = []
+    agents_run = []
+
+    for name, fn in agents_to_run:
+        try:
+            result = fn(dict(state_base))
+            result["agent"] = name
+            reports.append(result)
+            agents_run.append(name)
+            if result.get("script_path"):
+                action_scripts.append(result["script_path"])
+        except Exception as exc:
+            logger.warning("run_full_checkup: agent %s failed: %s", name, exc)
+            errors.append(f"{name}: {exc}")
+
+    # Derive a simple 0-100 health score from the reports
+    # Start at 100 and deduct points for critical/warning keywords in reports
+    score = 100
+    for r in reports:
+        report_text = (r.get("report") or "").lower()
+        score -= report_text.count("critical") * 10
+        score -= report_text.count("warning") * 3
+        score -= report_text.count("error") * 5
+    score = max(0, min(100, score))
+
+    # Build a short health_summary
+    health_summary = (
+        f"Health score: {score}/100 across {len(agents_run)} agents. "
+        + (f"Issues detected — review reports below." if score < 80 else "System looks healthy.")
+    )
+
+    return {
+        "status": "ok",
+        "health_score": score,
+        "health_summary": health_summary,
+        "agents_run": agents_run,
+        "reports": reports,
+        "action_scripts": action_scripts,
+        "errors": errors,
+    }
+
+
 def dispatch(request: str, state: Optional[Dict] = None) -> Dict:
     """
     Route a plain-English request to the most appropriate computer health agent.

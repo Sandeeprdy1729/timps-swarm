@@ -18,7 +18,7 @@ import tempfile
 import shutil
 from typing import Dict, Optional, Any
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +44,8 @@ class AgentComputer:
     working_dir: str
     env_vars: Dict[str, str] = field(default_factory=dict)
     is_active: bool = False
-    created_at: str = field(default_factory=lambda: datetime.utcnow().isoformat())
-    last_used: str = field(default_factory=lambda: datetime.utcnow().isoformat())
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    last_used: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
 class ComputerManager:
