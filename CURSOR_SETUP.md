@@ -38,7 +38,7 @@ cd /path/to/timps-swarm
 python -m uvicorn src.main:app --port 8000 &
 
 # Auto-configure Cursor
-curl -sf -X POST http://localhost:8000/mcp/install \
+curl -sf -X POST http://localhost:8000/mcp/install \  # DEPRECATED — use `npx timps-swarm install-mcp` instead
   -H "Content-Type: application/json" \
   -d '{"tool_id": "cursor"}'
 ```

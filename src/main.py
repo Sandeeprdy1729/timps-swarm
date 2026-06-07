@@ -594,84 +594,36 @@ async def full_health_checkup():
 
 @app.post("/mcp/install")
 async def mcp_install(body: dict):
-    """Auto-configure TIMPS as MCP server in known AI tools."""
-    import json, os, pathlib
-    tool_id = body.get("tool_id", "all")
-    dry_run = body.get("dry_run", False)
+    """DEPRECATED — use the npm CLI instead.
 
-    repo_dir = str(pathlib.Path(__file__).parent.parent.resolve())
-    results = []
+    The npm `timps-swarm` CLI's `install-mcp` command is the canonical way
+    to wire TIMPS Swarm into your AI coding tool. It supports 7 IDEs
+    (Claude Code, Cursor, Windsurf, Goose, Gemini CLI, Codex CLI, VS
+    Code/Cline), forwards API keys via the `env:` block, and does not
+    hardcode the repo path. The old HTTP endpoint here only covered 3
+    IDEs, used a hardcoded `command: "python"` (broken on macOS without
+    a PATH alias), and forwarded no env vars.
 
-    configs = {
-        "claude-code": {
-            "path": pathlib.Path.home() / ".claude" / "mcp.json",
-            "merger": lambda existing: {
-                **existing,
-                "mcpServers": {
-                    **existing.get("mcpServers", {}),
-                    "timps-swarm": {
-                        "command": "python",
-                        "args": ["-m", "mcp_server.server"],
-                        "cwd": repo_dir,
-                        "env": {},
-                    },
-                },
-            },
-        },
-        "cursor": {
-            "path": pathlib.Path.home() / ".cursor" / "mcp.json",
-            "merger": lambda existing: {
-                **existing,
-                "mcpServers": {
-                    **existing.get("mcpServers", {}),
-                    "timps-swarm": {
-                        "command": "python",
-                        "args": ["-m", "mcp_server.server"],
-                        "cwd": repo_dir,
-                        "env": {},
-                    },
-                },
-            },
-        },
-        "local-mcp": {
-            "path": pathlib.Path(repo_dir) / ".claude" / "mcp.json",
-            "merger": lambda _: {
-                "mcpServers": {
-                    "timps-swarm": {
-                        "command": "python",
-                        "args": ["-m", "mcp_server.server"],
-                        "cwd": repo_dir,
-                        "env": {},
-                    },
-                },
-            },
-        },
-    }
+    Run::
 
-    for cid, cfg in configs.items():
-        if tool_id not in ("all", cid):
-            continue
-        p = cfg["path"]
-        try:
-            existing = json.loads(p.read_text()) if p.exists() else {}
-            merged = cfg["merger"](existing)
-            if dry_run:
-                results.append({"tool": cid, "status": "dry_run",
-                                 "message": f"Would write to {p}", "config": merged})
-            else:
-                p.parent.mkdir(parents=True, exist_ok=True)
-                p.write_text(json.dumps(merged, indent=2))
-                results.append({"tool": cid, "status": "ok",
-                                 "message": f"Written to {p}"})
-        except Exception as e:
-            results.append({"tool": cid, "status": "error", "message": str(e)})
-
-    return {"results": results}
+        npx timps-swarm install-mcp
+        npx timps-swarm install-mcp --dry-run          # preview
+        npx timps-swarm install-mcp --no-sub-agents    # skip sub-agent files
+        npx timps-swarm uninstall-mcp                  # reverse
+    """
+    raise HTTPException(
+        status_code=410,
+        detail=(
+            "This HTTP endpoint is deprecated. Use the npm CLI instead: "
+            "`npx timps-swarm install-mcp` (or `timps-swarm install-mcp` "
+            "if installed globally)."
+        ),
+    )
 
 
 # ── HTTP bridge to the MCP server ─────────────────────────────────────────
 # These two endpoints let a thin Node.js stdio proxy (cli/lib/mcp-proxy.js)
-# expose the full 64-tool MCP surface to Claude Code / Cursor / Codex when
+# expose the full 160-tool MCP surface to Claude Code / Cursor / Codex when
 # the user has `npm install -g timps-swarm` but has not cloned the Python repo.
 # The proxy starts the FastAPI server (or points at a remote one) and forwards
 # JSON-RPC 2.0 tool calls to these endpoints. The actual tool execution lives
