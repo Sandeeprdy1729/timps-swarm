@@ -1,6 +1,6 @@
 ---
 name: timps_ai_safety_agent
-description: Audit LLM applications against OWASP LLM Top 10 (LLM01-LLM10) with mitigations. Use the `timps_ai_safety_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Audit LLM applications against OWASP LLM Top 10 (LLM01-LLM10) with mitigations. Use the `timps_ai_safety_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_ai_safety_agent"]
 model: sonnet

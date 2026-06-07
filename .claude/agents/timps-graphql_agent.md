@@ -1,6 +1,6 @@
 ---
 name: timps_graphql_agent
-description: Write GraphQL SDL schemas, resolvers, DataLoader, subscriptions, and federation config. Use the `timps_graphql_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Write GraphQL SDL schemas, resolvers, DataLoader, subscriptions, and federation config. Use the `timps_graphql_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_graphql_agent"]
 model: sonnet

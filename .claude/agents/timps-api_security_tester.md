@@ -1,6 +1,6 @@
 ---
 name: timps_api_security_tester
-description: Run an OWASP API Security Top-10 (2023) audit against an OpenAPI spec or live endpoint — broken auth, BOLA, mass assignment, rate-limit, SSRF, injection — with a runnable test harness. Use the `timps_api_security_tester` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Run an OWASP API Security Top-10 (2023) audit against an OpenAPI spec or live endpoint — broken auth, BOLA, mass assignment, rate-limit, SSRF, injection — with a runnable test harness. Use the `timps_api_security_tester` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_api_security_tester"]
 model: sonnet

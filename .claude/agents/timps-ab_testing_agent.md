@@ -1,6 +1,6 @@
 ---
 name: timps_ab_testing_agent
-description: Design A/B tests with Welch's t-test power analysis and GrowthBook configuration. Use the `timps_ab_testing_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Design A/B tests with Welch's t-test power analysis and GrowthBook configuration. Use the `timps_ab_testing_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_ab_testing_agent"]
 model: sonnet

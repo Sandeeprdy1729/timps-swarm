@@ -1,6 +1,6 @@
 ---
 name: timps_list_providers
-description: Show all configured LLM providers and which one is currently active. Useful for debugging which model is handling agent calls. Use the `timps_list_providers` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Show all configured LLM providers and which one is currently active. Useful for debugging which model is handling agent calls. Use the `timps_list_providers` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: meta
 tools: ["mcp__timps-swarm__timps_list_providers"]
 model: haiku

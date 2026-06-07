@@ -1,6 +1,6 @@
 ---
 name: timps_web_search
-description: Multi-engine web search (DuckDuckGo / Brave / SerpAPI / Bing) with deduplication, content extraction, and LLM-synthesised answer with [N] citations. Use for live lookups, news, vendor docs, and competitive intel. Use the `timps_web_search` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Multi-engine web search (DuckDuckGo / Brave / SerpAPI / Bing) with deduplication, content extraction, and LLM-synthesised answer with [N] citations. Use for live lookups, news, vendor docs, and competitive intel. Use the `timps_web_search` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_web_search"]
 model: sonnet

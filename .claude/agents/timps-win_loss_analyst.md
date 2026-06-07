@@ -1,6 +1,6 @@
 ---
 name: timps_win_loss_analyst
-description: Analyse a set of won/lost deals to surface the real reasons — pricing, champion, timing, competitor, fit — and recommend sales-coaching and product fixes. Use the `timps_win_loss_analyst` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse a set of won/lost deals to surface the real reasons — pricing, champion, timing, competitor, fit — and recommend sales-coaching and product fixes. Use the `timps_win_loss_analyst` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_win_loss_analyst"]
 model: sonnet

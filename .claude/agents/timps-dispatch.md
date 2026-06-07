@@ -1,6 +1,6 @@
 ---
 name: timps_dispatch
-description: Auto-detect the best TIMPS agent for any plain-English request and run it immediately. Use this when unsure which agent to pick. Examples: 'my wifi keeps dropping', 'why is my laptop slow', 'broken python environment', 'organize my downloads'. Use the `timps_dispatch` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Auto-detect the best TIMPS agent for any plain-English request and run it immediately. Use this when unsure which agent to pick. Examples: 'my wifi keeps dropping', 'why is my laptop slow', 'broken python environment', 'organize my downloads'. Use the `timps_dispatch` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: meta
 tools: ["mcp__timps-swarm__timps_dispatch"]
 model: haiku

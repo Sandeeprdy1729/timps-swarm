@@ -1,6 +1,6 @@
 ---
 name: timps_kernel_status
-description: Check the status of a previously delegated kernel run by its run_id. Use the `timps_kernel_status` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Check the status of a previously delegated kernel run by its run_id. Use the `timps_kernel_status` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: kernel
 tools: ["mcp__timps-swarm__timps_kernel_status"]
 model: sonnet

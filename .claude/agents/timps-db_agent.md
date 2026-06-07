@@ -1,6 +1,6 @@
 ---
 name: timps_db_agent
-description: DB Agent — schema design, query optimisation, and migration scripts. Given a description of your data model it produces: CREATE TABLE SQL, an ER diagram in Mermaid, index recommendations, a migration script (Alembic / Flyway / raw SQL), and query templates. Pairs with the sql_injection LoRA for secure query generation. Use the `timps_db_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "DB Agent — schema design, query optimisation, and migration scripts. Given a description of your data model it produces: CREATE TABLE SQL, an ER diagram in Mermaid, index recommendations, a migration script (Alembic / Flyway / raw SQL), and query templates. Pairs with the sql_injection LoRA for secure query generation. Use the `timps_db_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_db_agent"]
 model: sonnet

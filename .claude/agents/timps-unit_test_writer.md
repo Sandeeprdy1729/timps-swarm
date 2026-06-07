@@ -1,6 +1,6 @@
 ---
 name: timps_unit_test_writer
-description: Analyse source code and generate a comprehensive test suite: happy paths, edge cases, error conditions. Returns a complete test file ready to run. Use the `timps_unit_test_writer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse source code and generate a comprehensive test suite: happy paths, edge cases, error conditions. Returns a complete test file ready to run. Use the `timps_unit_test_writer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_unit_test_writer"]
 model: haiku

@@ -1,6 +1,6 @@
 ---
 name: timps_context_switcher
-description: Analyse current work context: active apps, estimated browser tabs, current git branch and recent commits. Identifies distraction apps and generates a focus-mode script to quit them. Use the `timps_context_switcher` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse current work context: active apps, estimated browser tabs, current git branch and recent commits. Identifies distraction apps and generates a focus-mode script to quit them. Use the `timps_context_switcher` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_context_switcher"]
 model: haiku

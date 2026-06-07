@@ -1,6 +1,6 @@
 ---
 name: timps_issue_triager
-description: Triage a bug report or GitHub issue: detect duplicates, assign severity (critical/high/medium/low), suggest labels and owner. Pass the raw issue title and body text. Use the `timps_issue_triager` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Triage a bug report or GitHub issue: detect duplicates, assign severity (critical/high/medium/low), suggest labels and owner. Pass the raw issue title and body text. Use the `timps_issue_triager` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_issue_triager"]
 model: haiku

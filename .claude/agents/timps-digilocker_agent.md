@@ -1,6 +1,6 @@
 ---
 name: timps_digilocker_agent
-description: Implement DigiLocker OAuth, document pull, Aadhaar OTP, PAN verify, and eKYC flows (India). Use the `timps_digilocker_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Implement DigiLocker OAuth, document pull, Aadhaar OTP, PAN verify, and eKYC flows (India). Use the `timps_digilocker_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_digilocker_agent"]
 model: sonnet

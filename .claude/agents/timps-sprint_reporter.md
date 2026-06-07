@@ -1,6 +1,6 @@
 ---
 name: timps_sprint_reporter
-description: Generate a formatted daily standup report from task lists. Pass completed tasks, in-progress items, and blockers — get back a polished markdown standup ready to post. Use the `timps_sprint_reporter` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate a formatted daily standup report from task lists. Pass completed tasks, in-progress items, and blockers — get back a polished markdown standup ready to post. Use the `timps_sprint_reporter` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_sprint_reporter"]
 model: haiku

@@ -1,6 +1,6 @@
 ---
 name: timps_terraform_plan_reviewer
-description: Review terraform plan output for destructive changes. Requires explicit approval before allowing apply on high-risk plans. Use the `timps_terraform_plan_reviewer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Review terraform plan output for destructive changes. Requires explicit approval before allowing apply on high-risk plans. Use the `timps_terraform_plan_reviewer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_terraform_plan_reviewer"]
 model: sonnet

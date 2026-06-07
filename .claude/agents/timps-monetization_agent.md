@@ -1,6 +1,6 @@
 ---
 name: timps_monetization_agent
-description: Configure Stripe/LemonSqueezy products, checkout flows, webhooks, and dunning emails. Use the `timps_monetization_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Configure Stripe/LemonSqueezy products, checkout flows, webhooks, and dunning emails. Use the `timps_monetization_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_monetization_agent"]
 model: sonnet

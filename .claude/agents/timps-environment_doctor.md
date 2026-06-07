@@ -1,6 +1,6 @@
 ---
 name: timps_environment_doctor
-description: Diagnose broken development environments. Checks Python, Node.js, Docker, Git, PATH integrity, shell config conflicts. Returns exact terminal commands to fix each issue. Use the `timps_environment_doctor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Diagnose broken development environments. Checks Python, Node.js, Docker, Git, PATH integrity, shell config conflicts. Returns exact terminal commands to fix each issue. Use the `timps_environment_doctor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_environment_doctor"]
 model: haiku

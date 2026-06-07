@@ -1,6 +1,6 @@
 ---
 name: timps_fssai_compliance_agent
-description: Assess an F&B product / packaging against India's FSSAI regulations: license type, label checklist, additive and claim restrictions, and a submission-ready checklist. Use the `timps_fssai_compliance_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Assess an F&B product / packaging against India's FSSAI regulations: license type, label checklist, additive and claim restrictions, and a submission-ready checklist. Use the `timps_fssai_compliance_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_fssai_compliance_agent"]
 model: sonnet

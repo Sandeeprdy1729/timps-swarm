@@ -1,6 +1,6 @@
 ---
 name: timps_finetuning_agent
-description: Generate complete LoRA/MLX/Axolotl/Unsloth fine-tuning pipelines with push-to-hub scripts. Use the `timps_finetuning_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate complete LoRA/MLX/Axolotl/Unsloth fine-tuning pipelines with push-to-hub scripts. Use the `timps_finetuning_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_finetuning_agent"]
 model: sonnet

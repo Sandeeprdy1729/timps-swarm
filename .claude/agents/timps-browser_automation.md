@@ -1,6 +1,6 @@
 ---
 name: timps_browser_automation
-description: Generate Playwright E2E tests with page objects, fixtures, and CI config. Use the `timps_browser_automation` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate Playwright E2E tests with page objects, fixtures, and CI config. Use the `timps_browser_automation` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_browser_automation"]
 model: sonnet

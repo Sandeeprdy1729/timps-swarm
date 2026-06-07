@@ -1,6 +1,6 @@
 ---
 name: timps_tracing_emitter
-description: Generate an OpenTelemetry tracing bootstrap: service name, resource attributes, auto-instrumentation, sampling, span/metric/log pipeline, and exporter config. Use the `timps_tracing_emitter` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate an OpenTelemetry tracing bootstrap: service name, resource attributes, auto-instrumentation, sampling, span/metric/log pipeline, and exporter config. Use the `timps_tracing_emitter` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_tracing_emitter"]
 model: sonnet

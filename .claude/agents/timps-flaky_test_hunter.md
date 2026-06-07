@@ -1,6 +1,6 @@
 ---
 name: timps_flaky_test_hunter
-description: Find non-deterministic tests from CI run history. Returns ranked list of flaky tests, suspected causes, and fix suggestions. Use the `timps_flaky_test_hunter` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Find non-deterministic tests from CI run history. Returns ranked list of flaky tests, suspected causes, and fix suggestions. Use the `timps_flaky_test_hunter` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_flaky_test_hunter"]
 model: haiku

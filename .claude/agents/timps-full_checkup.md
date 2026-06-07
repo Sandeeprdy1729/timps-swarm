@@ -1,6 +1,6 @@
 ---
 name: timps_full_checkup
-description: Run a comprehensive computer health scan across 6 agents: system optimizer, battery analyst, security guard, network medic, backup sentinel, and update manager. Returns a combined health score and prioritised action list. Use the `timps_full_checkup` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Run a comprehensive computer health scan across 6 agents: system optimizer, battery analyst, security guard, network medic, backup sentinel, and update manager. Returns a combined health score and prioritised action list. Use the `timps_full_checkup` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: meta
 tools: ["mcp__timps-swarm__timps_full_checkup"]
 model: haiku

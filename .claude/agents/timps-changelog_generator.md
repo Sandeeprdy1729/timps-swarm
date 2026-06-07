@@ -1,6 +1,6 @@
 ---
 name: timps_changelog_generator
-description: Generate a Conventional Commits changelog from commit history, PRs, and issues; supports semver bump recommendation. Use the `timps_changelog_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate a Conventional Commits changelog from commit history, PRs, and issues; supports semver bump recommendation. Use the `timps_changelog_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_changelog_generator"]
 model: sonnet

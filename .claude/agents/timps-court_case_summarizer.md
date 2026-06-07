@@ -1,6 +1,6 @@
 ---
 name: timps_court_case_summarizer
-description: Summarise a court judgment / order: bench, facts, issues, holdings, reasoning, ratio, and citations in a structured brief. For legal research, not legal advice. Use the `timps_court_case_summarizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Summarise a court judgment / order: bench, facts, issues, holdings, reasoning, ratio, and citations in a structured brief. For legal research, not legal advice. Use the `timps_court_case_summarizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_court_case_summarizer"]
 model: sonnet

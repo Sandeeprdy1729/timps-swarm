@@ -1,6 +1,6 @@
 ---
 name: timps_research_agent
-description: Research Agent — runs BEFORE any coding task. Searches documentation, GitHub issues, Stack Overflow, and the web to gather context so all downstream agents have grounded information. Returns a structured brief: findings, gotchas, recommended approach, sources. Use the `timps_research_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Research Agent — runs BEFORE any coding task. Searches documentation, GitHub issues, Stack Overflow, and the web to gather context so all downstream agents have grounded information. Returns a structured brief: findings, gotchas, recommended approach, sources. Use the `timps_research_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_research_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_cold_email_sequence_writer
-description: Write a 5-7 step cold-outreach email sequence for a persona + offer, with subject A/B variants, social proof, objection handling, and a reply-promise CTA. Spam-safe. Use the `timps_cold_email_sequence_writer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Write a 5-7 step cold-outreach email sequence for a persona + offer, with subject A/B variants, social proof, objection handling, and a reply-promise CTA. Spam-safe. Use the `timps_cold_email_sequence_writer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_cold_email_sequence_writer"]
 model: sonnet

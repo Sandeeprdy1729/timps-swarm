@@ -1,6 +1,6 @@
 ---
 name: timps_code_archaeology
-description: Analyse git history to build an AST import graph, risk map, and tribal knowledge document. Use the `timps_code_archaeology` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse git history to build an AST import graph, risk map, and tribal knowledge document. Use the `timps_code_archaeology` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_code_archaeology"]
 model: sonnet

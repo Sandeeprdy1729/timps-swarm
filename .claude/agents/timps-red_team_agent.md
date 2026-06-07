@@ -1,6 +1,6 @@
 ---
 name: timps_red_team_agent
-description: Plan and execute an OWASP-style red-team engagement: threat model, adversarial test cases, payloads, runnable exploit harness, and a remediation checklist. Use the `timps_red_team_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Plan and execute an OWASP-style red-team engagement: threat model, adversarial test cases, payloads, runnable exploit harness, and a remediation checklist. Use the `timps_red_team_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_red_team_agent"]
 model: sonnet

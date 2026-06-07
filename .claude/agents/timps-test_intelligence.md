@@ -1,6 +1,6 @@
 ---
 name: timps_test_intelligence
-description: Analyse test suite + git bug history to find untested code paths, suggest property-based tests, and propose a mutation-testing config. Use the `timps_test_intelligence` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse test suite + git bug history to find untested code paths, suggest property-based tests, and propose a mutation-testing config. Use the `timps_test_intelligence` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_test_intelligence"]
 model: sonnet

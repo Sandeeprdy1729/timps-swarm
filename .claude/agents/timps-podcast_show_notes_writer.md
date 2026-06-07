@@ -1,6 +1,6 @@
 ---
 name: timps_podcast_show_notes_writer
-description: Turn a podcast transcript / outline into SEO-friendly show notes: title, summary, chapter timestamps, key quotes, links, guest bio, and 3 tweet drafts. Use the `timps_podcast_show_notes_writer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Turn a podcast transcript / outline into SEO-friendly show notes: title, summary, chapter timestamps, key quotes, links, guest bio, and 3 tweet drafts. Use the `timps_podcast_show_notes_writer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_podcast_show_notes_writer"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_disk_space_prophet
-description: Predict disk usage trends, identify cache directories safe to prune, and warn before 'no space left on device' events. Use the `timps_disk_space_prophet` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Predict disk usage trends, identify cache directories safe to prune, and warn before 'no space left on device' events. Use the `timps_disk_space_prophet` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_disk_space_prophet"]
 model: sonnet

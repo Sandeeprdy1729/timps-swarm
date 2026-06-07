@@ -1,6 +1,6 @@
 ---
 name: timps_n8n_workflow_agent
-description: n8n Workflow Agent — converts a plain-English task description into a complete, importable n8n workflow JSON. Knows all n8n core nodes, integrations (Slack, Gmail, GitHub, Notion, Airtable, HTTP Request, Webhook, Cron, etc.), and expression syntax. Returns the workflow JSON + a visual description of every node. Use the `timps_n8n_workflow_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "n8n Workflow Agent — converts a plain-English task description into a complete, importable n8n workflow JSON. Knows all n8n core nodes, integrations (Slack, Gmail, GitHub, Notion, Airtable, HTTP Request, Webhook, Cron, etc.), and expression syntax. Returns the workflow JSON + a visual description of every node. Use the `timps_n8n_workflow_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_n8n_workflow_agent"]
 model: sonnet

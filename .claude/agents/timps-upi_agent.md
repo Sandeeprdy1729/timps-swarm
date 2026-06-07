@@ -1,6 +1,6 @@
 ---
 name: timps_upi_agent
-description: Generate UPI deep links, QR codes, Razorpay/Cashfree webhook handlers (India UPI). Use the `timps_upi_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate UPI deep links, QR codes, Razorpay/Cashfree webhook handlers (India UPI). Use the `timps_upi_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_upi_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_contract_reviewer
-description: Review a contract (MSA, NDA, SaaS, vendor agreement) for red-flags: indemnification, liability caps, IP, data, termination, SLAs. Returns a clause-by-clause scorecard and a redline. Use the `timps_contract_reviewer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Review a contract (MSA, NDA, SaaS, vendor agreement) for red-flags: indemnification, liability caps, IP, data, termination, SLAs. Returns a clause-by-clause scorecard and a redline. Use the `timps_contract_reviewer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_contract_reviewer"]
 model: sonnet

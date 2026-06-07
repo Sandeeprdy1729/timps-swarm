@@ -1,6 +1,6 @@
 ---
 name: timps_backup_sentinel
-description: Audit backup health: Time Machine last backup time, all local git repos with uncommitted/unpushed changes, large files on Desktop/Documents not tracked by git or cloud. Returns a risk score and backup script. Use the `timps_backup_sentinel` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Audit backup health: Time Machine last backup time, all local git repos with uncommitted/unpushed changes, large files on Desktop/Documents not tracked by git or cloud. Returns a risk score and backup script. Use the `timps_backup_sentinel` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_backup_sentinel"]
 model: haiku

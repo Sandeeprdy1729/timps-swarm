@@ -1,6 +1,6 @@
 ---
 name: timps_demo_video_script_writer
-description: Write a punchy 60-90s product demo video script: hook, problem, demo beats, payoff, CTA — with storyboard, B-roll suggestions, and on-screen copy. Use the `timps_demo_video_script_writer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Write a punchy 60-90s product demo video script: hook, problem, demo beats, payoff, CTA — with storyboard, B-roll suggestions, and on-screen copy. Use the `timps_demo_video_script_writer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_demo_video_script_writer"]
 model: sonnet

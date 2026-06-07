@@ -1,6 +1,6 @@
 ---
 name: timps_certificate_rotator
-description: Check TLS certificate expiry for all hosts found in config files. Warns 30 days before expiry and generates certbot renewal commands. Use the `timps_certificate_rotator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Check TLS certificate expiry for all hosts found in config files. Warns 30 days before expiry and generates certbot renewal commands. Use the `timps_certificate_rotator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_certificate_rotator"]
 model: sonnet

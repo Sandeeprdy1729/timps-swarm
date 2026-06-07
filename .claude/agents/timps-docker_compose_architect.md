@@ -1,6 +1,6 @@
 ---
 name: timps_docker_compose_architect
-description: Compose a production-grade multi-service docker-compose (or compose.yaml) for a project: env, healthchecks, volumes, networks, profiles. Use the `timps_docker_compose_architect` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Compose a production-grade multi-service docker-compose (or compose.yaml) for a project: env, healthchecks, volumes, networks, profiles. Use the `timps_docker_compose_architect` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_docker_compose_architect"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_battery_analyst
-description: Identify battery drainers. Reads battery %, health cycle count, and ranks processes by CPU usage (proxy for energy drain). Generates kill commands for the top energy vampires. Use the `timps_battery_analyst` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Identify battery drainers. Reads battery %, health cycle count, and ranks processes by CPU usage (proxy for energy drain). Generates kill commands for the top energy vampires. Use the `timps_battery_analyst` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_battery_analyst"]
 model: haiku

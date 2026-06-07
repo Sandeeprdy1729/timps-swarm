@@ -1,6 +1,6 @@
 ---
 name: timps_flaky_test_detective
-description: Identify flaky tests by scanning for timing dependencies, random data, and external HTTP calls. Reads pytest failure cache for history. Use the `timps_flaky_test_detective` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Identify flaky tests by scanning for timing dependencies, random data, and external HTTP calls. Reads pytest failure cache for history. Use the `timps_flaky_test_detective` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_flaky_test_detective"]
 model: sonnet

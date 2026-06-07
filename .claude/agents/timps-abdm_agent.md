@@ -1,6 +1,6 @@
 ---
 name: timps_abdm_agent
-description: Implement ABHA enrollment, HIP/HIU flows, FHIR R4 bundles, and consent workflows (India ABDM). Use the `timps_abdm_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Implement ABHA enrollment, HIP/HIU flows, FHIR R4 bundles, and consent workflows (India ABDM). Use the `timps_abdm_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_abdm_agent"]
 model: sonnet

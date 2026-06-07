@@ -1,6 +1,6 @@
 ---
 name: timps_rag_designer
-description: Design chunking/embedding/retrieval/reranking RAG pipelines for LlamaIndex or LangChain. Use the `timps_rag_designer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Design chunking/embedding/retrieval/reranking RAG pipelines for LlamaIndex or LangChain. Use the `timps_rag_designer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_rag_designer"]
 model: sonnet

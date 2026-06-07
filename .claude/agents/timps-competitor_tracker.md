@@ -1,6 +1,6 @@
 ---
 name: timps_competitor_tracker
-description: Monitor competitors for pricing changes, new features, job postings, and public sentiment. Returns a competitive intelligence brief. Use the `timps_competitor_tracker` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Monitor competitors for pricing changes, new features, job postings, and public sentiment. Returns a competitive intelligence brief. Use the `timps_competitor_tracker` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: knowledge
 tools: ["mcp__timps-swarm__timps_competitor_tracker"]
 model: haiku

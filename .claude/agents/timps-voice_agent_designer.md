@@ -1,6 +1,6 @@
 ---
 name: timps_voice_agent_designer
-description: Design a production voice / phone agent: persona, system prompt, SSML, tool calls, barge-in handling, escalation rules, latency budget, and test utterances. Use the `timps_voice_agent_designer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Design a production voice / phone agent: persona, system prompt, SSML, tool calls, barge-in handling, escalation rules, latency budget, and test utterances. Use the `timps_voice_agent_designer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_voice_agent_designer"]
 model: sonnet

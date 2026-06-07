@@ -1,6 +1,6 @@
 ---
 name: timps_cli_tool_agent
-description: Generate Click/Cobra/Commander CLI tools with shell completions and release workflows. Use the `timps_cli_tool_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate Click/Cobra/Commander CLI tools with shell completions and release workflows. Use the `timps_cli_tool_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_cli_tool_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_dependency_sentinel
-description: Scan a dependency manifest (requirements.txt, package.json, go.mod, Cargo.toml) for CVEs and severely outdated packages. Returns a severity-ranked report with upgrade commands. Use the `timps_dependency_sentinel` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan a dependency manifest (requirements.txt, package.json, go.mod, Cargo.toml) for CVEs and severely outdated packages. Returns a severity-ranked report with upgrade commands. Use the `timps_dependency_sentinel` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_dependency_sentinel"]
 model: haiku

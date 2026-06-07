@@ -1,6 +1,6 @@
 ---
 name: timps_observability_cost_optimizer
-description: Analyse your observability bill (Datadog / New Relic / Grafana Cloud / Splunk) and recommend cardinality pruning, sampling, log-volume cuts, and tier migrations with projected savings. Use the `timps_observability_cost_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse your observability bill (Datadog / New Relic / Grafana Cloud / Splunk) and recommend cardinality pruning, sampling, log-volume cuts, and tier migrations with projected savings. Use the `timps_observability_cost_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_observability_cost_optimizer"]
 model: sonnet

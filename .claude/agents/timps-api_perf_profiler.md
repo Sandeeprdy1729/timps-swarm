@@ -1,6 +1,6 @@
 ---
 name: timps_api_perf_profiler
-description: Profile an API from access logs / traces — p50/p95/p99 by endpoint, slow query, N+1 detection, and concrete optimisations. Use the `timps_api_perf_profiler` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Profile an API from access logs / traces — p50/p95/p99 by endpoint, slow query, N+1 detection, and concrete optimisations. Use the `timps_api_perf_profiler` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_api_perf_profiler"]
 model: sonnet

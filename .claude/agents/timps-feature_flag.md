@@ -1,6 +1,6 @@
 ---
 name: timps_feature_flag
-description: Design feature flags with LaunchDarkly/Flagsmith/GrowthBook targeting rules and rollout plans. Use the `timps_feature_flag` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Design feature flags with LaunchDarkly/Flagsmith/GrowthBook targeting rules and rollout plans. Use the `timps_feature_flag` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_feature_flag"]
 model: sonnet

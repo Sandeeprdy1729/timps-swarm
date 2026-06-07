@@ -1,6 +1,6 @@
 ---
 name: timps_service_mesh_configurator
-description: Generate production-grade service-mesh config (Istio / Linkerd / Consul) — mTLS, traffic policies, retries, circuit-breakers, observability, multi-cluster, and a migration plan. Use the `timps_service_mesh_configurator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate production-grade service-mesh config (Istio / Linkerd / Consul) — mTLS, traffic policies, retries, circuit-breakers, observability, multi-cluster, and a migration plan. Use the `timps_service_mesh_configurator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_service_mesh_configurator"]
 model: sonnet

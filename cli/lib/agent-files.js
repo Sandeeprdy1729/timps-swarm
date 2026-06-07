@@ -22,16 +22,27 @@ import { AGENTS, agentFileBase } from "./agents-manifest.js";
  * Render the frontmatter + body for a single agent.
  * The 'description' field is what Claude Code uses to decide when to delegate
  * to this sub-agent, so we keep it concrete and trigger-rich.
+ *
+ * NOTE: The full description is double-quoted and any embedded `"` and `\n`
+ * are escaped. This is required because ~30% of agent descriptions contain
+ * `:` (e.g. "Re-design a noisy calendar: time-block...") which would otherwise
+ * be parsed by YAML as a mapping key and break Claude Code / Cursor / Codex
+ * frontmatter loading.
  */
 export function renderAgentFile(agent) {
   const base = agentFileBase(agent.name);
   const toolName = agent.name;
   const description = agent.description;
 
+  const desc = `${description} Use the \`${toolName}\` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.`
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g,  "\\\"")
+    .replace(/\n/g, " ");
+
   const frontmatter = [
     "---",
     `name: ${toolName}`,
-    `description: ${description} Use the \`${toolName}\` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.`,
+    `description: "${desc}"`,
     `category: ${agent.category}`,
     `tools: ["mcp__timps-swarm__${toolName}"]`,
     `model: ${agent.model}`,

@@ -1,6 +1,6 @@
 ---
 name: timps_realtime_agent
-description: Build WebSocket/SSE/Redis Pub-Sub/Kafka server+client real-time systems. Use the `timps_realtime_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Build WebSocket/SSE/Redis Pub-Sub/Kafka server+client real-time systems. Use the `timps_realtime_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_realtime_agent"]
 model: sonnet

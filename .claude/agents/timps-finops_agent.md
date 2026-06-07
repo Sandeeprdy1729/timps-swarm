@@ -1,6 +1,6 @@
 ---
 name: timps_finops_agent
-description: Analyse cloud costs with Infracost, generate rightsizing recommendations and budget alerts. Use the `timps_finops_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse cloud costs with Infracost, generate rightsizing recommendations and budget alerts. Use the `timps_finops_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_finops_agent"]
 model: sonnet

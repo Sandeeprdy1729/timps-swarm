@@ -1,6 +1,6 @@
 ---
 name: timps_prompt_injection_scanner
-description: Scan prompts, system messages, and tool schemas for prompt-injection / jailbreak / data-exfiltration risk. Produces a severity-rated report and hardened prompt rewrites. Use the `timps_prompt_injection_scanner` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan prompts, system messages, and tool schemas for prompt-injection / jailbreak / data-exfiltration risk. Produces a severity-rated report and hardened prompt rewrites. Use the `timps_prompt_injection_scanner` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_prompt_injection_scanner"]
 model: sonnet

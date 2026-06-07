@@ -1,6 +1,6 @@
 ---
 name: timps_run_task
-description: Run the full 10-agent SDLC pipeline (product manager → architect → code generator → reviewer → QA → security → performance → devops → docs). Use for software development tasks: writing code, fixing bugs, building APIs, etc. Use the `timps_run_task` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Run the full 10-agent SDLC pipeline (product manager → architect → code generator → reviewer → QA → security → performance → devops → docs). Use for software development tasks: writing code, fixing bugs, building APIs, etc. Use the `timps_run_task` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: sdlc
 tools: ["mcp__timps-swarm__timps_run_task"]
 model: sonnet

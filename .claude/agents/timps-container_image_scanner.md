@@ -1,6 +1,6 @@
 ---
 name: timps_container_image_scanner
-description: Scan a container image / Dockerfile for CVEs, misconfigurations, and supply-chain risk. Wraps trivy/grype/syft when present; falls back to static analysis of the Dockerfile. Use the `timps_container_image_scanner` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan a container image / Dockerfile for CVEs, misconfigurations, and supply-chain risk. Wraps trivy/grype/syft when present; falls back to static analysis of the Dockerfile. Use the `timps_container_image_scanner` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_container_image_scanner"]
 model: sonnet

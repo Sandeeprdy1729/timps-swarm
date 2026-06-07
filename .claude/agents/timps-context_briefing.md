@@ -1,6 +1,6 @@
 ---
 name: timps_context_briefing
-description: Get a 3-sentence resumption briefing from the Context Keeper: what you were working on, current state (uncommitted changes, broken tests), and recommended next step. Use when the user says 'what was I doing' or 'catch me up'. Use the `timps_context_briefing` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Get a 3-sentence resumption briefing from the Context Keeper: what you were working on, current state (uncommitted changes, broken tests), and recommended next step. Use when the user says 'what was I doing' or 'catch me up'. Use the `timps_context_briefing` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: context
 tools: ["mcp__timps-swarm__timps_context_briefing"]
 model: haiku

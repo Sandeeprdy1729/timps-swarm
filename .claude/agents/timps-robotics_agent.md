@@ -1,6 +1,6 @@
 ---
 name: timps_robotics_agent
-description: Generate ROS2 nodes, URDF descriptions, motion planning config, and ISO 10218-1 safety analysis. Use the `timps_robotics_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate ROS2 nodes, URDF descriptions, motion planning config, and ISO 10218-1 safety analysis. Use the `timps_robotics_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_robotics_agent"]
 model: sonnet

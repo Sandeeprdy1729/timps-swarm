@@ -1,6 +1,6 @@
 ---
 name: timps_pipeline_healer
-description: Read a failing CI/CD run and produce a minimal diff to make it green: cache tweaks, image bumps, secret injection, retry policies. Use the `timps_pipeline_healer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Read a failing CI/CD run and produce a minimal diff to make it green: cache tweaks, image bumps, secret injection, retry policies. Use the `timps_pipeline_healer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_pipeline_healer"]
 model: sonnet

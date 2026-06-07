@@ -1,6 +1,6 @@
 ---
 name: timps_research_scout
-description: Deep-dive research on any topic. Returns a structured brief: key findings, consensus view, controversies, recommended actions, and sources. Depth options: quick, medium (default), deep. Use the `timps_research_scout` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Deep-dive research on any topic. Returns a structured brief: key findings, consensus view, controversies, recommended actions, and sources. Depth options: quick, medium (default), deep. Use the `timps_research_scout` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: knowledge
 tools: ["mcp__timps-swarm__timps_research_scout"]
 model: haiku

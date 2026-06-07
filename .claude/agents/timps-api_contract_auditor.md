@@ -1,6 +1,6 @@
 ---
 name: timps_api_contract_auditor
-description: Diff two API specs (OpenAPI/AsyncAPI) and flag breaking changes, deprecations, and safe additions. Returns a semver recommendation and a migration guide for clients. Use the `timps_api_contract_auditor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Diff two API specs (OpenAPI/AsyncAPI) and flag breaking changes, deprecations, and safe additions. Returns a semver recommendation and a migration guide for clients. Use the `timps_api_contract_auditor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_api_contract_auditor"]
 model: haiku

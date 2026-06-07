@@ -1,6 +1,6 @@
 ---
 name: timps_local_rag_builder
-description: Build a fully-local RAG pipeline (Ollama embeddings + Chroma/FAISS + reranker + chat) from a corpus description. Emits ingest, retrieve, generate, evaluate, Dockerfile, Makefile. Use the `timps_local_rag_builder` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Build a fully-local RAG pipeline (Ollama embeddings + Chroma/FAISS + reranker + chat) from a corpus description. Emits ingest, retrieve, generate, evaluate, Dockerfile, Makefile. Use the `timps_local_rag_builder` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_local_rag_builder"]
 model: sonnet

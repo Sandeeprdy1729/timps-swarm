@@ -1,6 +1,6 @@
 ---
 name: timps_incident_responder
-description: Multi-source log correlation for production incidents. Gathers Docker + app logs, builds a timeline, and generates a triage report. Use the `timps_incident_responder` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Multi-source log correlation for production incidents. Gathers Docker + app logs, builds a timeline, and generates a triage report. Use the `timps_incident_responder` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_incident_responder"]
 model: sonnet

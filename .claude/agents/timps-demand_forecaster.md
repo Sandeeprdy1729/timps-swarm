@@ -1,6 +1,6 @@
 ---
 name: timps_demand_forecaster
-description: Produce a SKU/location-level demand forecast with seasonality, promotions, and trend. Returns intervals, backtest MAPE/MASE, and an ordering recommendation. Use the `timps_demand_forecaster` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Produce a SKU/location-level demand forecast with seasonality, promotions, and trend. Returns intervals, backtest MAPE/MASE, and an ordering recommendation. Use the `timps_demand_forecaster` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_demand_forecaster"]
 model: sonnet

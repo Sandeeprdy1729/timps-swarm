@@ -1,6 +1,6 @@
 ---
 name: timps_sprint_planning_agent
-description: Decompose epics into sprint tickets with estimates, dependencies, and GitHub Issues payload. Use the `timps_sprint_planning_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Decompose epics into sprint tickets with estimates, dependencies, and GitHub Issues payload. Use the `timps_sprint_planning_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_sprint_planning_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_release_manager
-description: Produce a release plan: SemVer bump, release notes, rollout/canary strategy, rollback gate, customer-comms draft, and stakeholder checklist. Use the `timps_release_manager` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Produce a release plan: SemVer bump, release notes, rollout/canary strategy, rollback gate, customer-comms draft, and stakeholder checklist. Use the `timps_release_manager` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_release_manager"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_sql_optimizer
-description: Analyse a slow SQL query and return: the optimised rewrite, index recommendations with CREATE INDEX SQL, and an estimated speedup. Supports PostgreSQL, MySQL, SQLite, MSSQL. Use the `timps_sql_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse a slow SQL query and return: the optimised rewrite, index recommendations with CREATE INDEX SQL, and an estimated speedup. Supports PostgreSQL, MySQL, SQLite, MSSQL. Use the `timps_sql_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_sql_optimizer"]
 model: haiku

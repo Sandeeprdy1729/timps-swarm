@@ -1,6 +1,6 @@
 ---
 name: timps_incident_response_coordinator
-description: Turn an active incident (SIEM alert, customer report, CVE disclosure) into a play-by-play response with comms, containment, and a postmortem stub. Use the `timps_incident_response_coordinator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Turn an active incident (SIEM alert, customer report, CVE disclosure) into a play-by-play response with comms, containment, and a postmortem stub. Use the `timps_incident_response_coordinator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_incident_response_coordinator"]
 model: sonnet

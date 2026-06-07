@@ -1,6 +1,6 @@
 ---
 name: timps_model_evaluator
-description: Create evaluation harnesses, adversarial test inputs, and RAGAS config for LLM models. Use the `timps_model_evaluator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Create evaluation harnesses, adversarial test inputs, and RAGAS config for LLM models. Use the `timps_model_evaluator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_model_evaluator"]
 model: sonnet

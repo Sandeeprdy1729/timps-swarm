@@ -1,6 +1,6 @@
 ---
 name: timps_inbox_gatekeeper
-description: Triage a batch of emails: flag urgent ones, draft routine replies, identify newsletters to unsubscribe from. Pass a list of email objects with 'from', 'subject', 'body'. Use the `timps_inbox_gatekeeper` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Triage a batch of emails: flag urgent ones, draft routine replies, identify newsletters to unsubscribe from. Pass a list of email objects with 'from', 'subject', 'body'. Use the `timps_inbox_gatekeeper` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: knowledge
 tools: ["mcp__timps-swarm__timps_inbox_gatekeeper"]
 model: haiku

@@ -1,6 +1,6 @@
 ---
 name: timps_load_testing
-description: Generate k6/Artillery/Locust load test scripts with ramp-up plans and Grafana dashboards. Use the `timps_load_testing` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate k6/Artillery/Locust load test scripts with ramp-up plans and Grafana dashboards. Use the `timps_load_testing` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_load_testing"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_tool_status
-description: Show which AI coding tools are installed and which ones are already connected to the TIMPS Swarm MCP server. Use the `timps_tool_status` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Show which AI coding tools are installed and which ones are already connected to the TIMPS Swarm MCP server. Use the `timps_tool_status` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: meta
 tools: ["mcp__timps-swarm__timps_tool_status"]
 model: haiku

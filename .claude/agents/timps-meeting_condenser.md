@@ -1,6 +1,6 @@
 ---
 name: timps_meeting_condenser
-description: Extract action items, decisions, and open questions from a meeting transcript. Returns a structured summary with owners and deadlines. Use the `timps_meeting_condenser` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Extract action items, decisions, and open questions from a meeting transcript. Returns a structured summary with owners and deadlines. Use the `timps_meeting_condenser` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: knowledge
 tools: ["mcp__timps-swarm__timps_meeting_condenser"]
 model: haiku

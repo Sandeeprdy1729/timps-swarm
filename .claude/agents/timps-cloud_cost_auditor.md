@@ -1,6 +1,6 @@
 ---
 name: timps_cloud_cost_auditor
-description: Scan Terraform configs for waste (over-provisioned instances, missing deletion protection) and check AWS CLI for idle resources. Use the `timps_cloud_cost_auditor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan Terraform configs for waste (over-provisioned instances, missing deletion protection) and check AWS CLI for idle resources. Use the `timps_cloud_cost_auditor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_cloud_cost_auditor"]
 model: sonnet

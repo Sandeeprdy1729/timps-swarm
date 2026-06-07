@@ -1,6 +1,6 @@
 ---
 name: timps_tech_debt_quantifier
-description: Scan codebase for TODO/FIXME density, cyclomatic complexity hotspots, and deprecated patterns. Returns a prioritised debt repayment plan. Use the `timps_tech_debt_quantifier` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan codebase for TODO/FIXME density, cyclomatic complexity hotspots, and deprecated patterns. Returns a prioritised debt repayment plan. Use the `timps_tech_debt_quantifier` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_tech_debt_quantifier"]
 model: sonnet

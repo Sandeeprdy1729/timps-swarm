@@ -1,6 +1,6 @@
 ---
 name: timps_pattern_detector
-description: Detect duplicate code blocks, god classes, magic numbers, and anti-patterns in a codebase. Use the `timps_pattern_detector` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Detect duplicate code blocks, god classes, magic numbers, and anti-patterns in a codebase. Use the `timps_pattern_detector` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_pattern_detector"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_api_design_agent
-description: API Design Agent — generates a complete OpenAPI 3.1 spec (YAML) from a natural-language description. Enforces REST/GraphQL best practices, versioning strategy, and consistent naming BEFORE code generation starts. Returns the spec + a design rationale document. Use the `timps_api_design_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "API Design Agent — generates a complete OpenAPI 3.1 spec (YAML) from a natural-language description. Enforces REST/GraphQL best practices, versioning strategy, and consistent naming BEFORE code generation starts. Returns the spec + a design rationale document. Use the `timps_api_design_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_api_design_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_compliance_auditor
-description: Map a codebase + infra config against SOC 2 / ISO 27001 / HIPAA / PCI-DSS / GDPR controls; produce an evidence pack and gap report. Use the `timps_compliance_auditor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Map a codebase + infra config against SOC 2 / ISO 27001 / HIPAA / PCI-DSS / GDPR controls; produce an evidence pack and gap report. Use the `timps_compliance_auditor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_compliance_auditor"]
 model: sonnet

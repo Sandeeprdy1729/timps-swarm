@@ -1,6 +1,6 @@
 ---
 name: timps_log_detective
-description: Cluster production log errors, identify root cause, and suggest a fix. Handles stack traces, JSON logs, syslog, and journald output. Use the `timps_log_detective` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Cluster production log errors, identify root cause, and suggest a fix. Handles stack traces, JSON logs, syslog, and journald output. Use the `timps_log_detective` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_log_detective"]
 model: haiku

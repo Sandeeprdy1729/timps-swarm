@@ -1,6 +1,6 @@
 ---
 name: timps_sbom_generator
-description: Generate a CycloneDX / SPDX Software Bill of Materials from a project tree + manifests, integrate syft/trivy if available, and flag license and supply-chain risks. Use the `timps_sbom_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate a CycloneDX / SPDX Software Bill of Materials from a project tree + manifests, integrate syft/trivy if available, and flag license and supply-chain risks. Use the `timps_sbom_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_sbom_generator"]
 model: sonnet

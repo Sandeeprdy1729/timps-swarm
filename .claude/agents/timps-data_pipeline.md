@@ -1,6 +1,6 @@
 ---
 name: timps_data_pipeline
-description: Design dbt/Airflow/Prefect/Dagster ETL/ELT pipelines with monitoring and lineage. Use the `timps_data_pipeline` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Design dbt/Airflow/Prefect/Dagster ETL/ELT pipelines with monitoring and lineage. Use the `timps_data_pipeline` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_data_pipeline"]
 model: sonnet

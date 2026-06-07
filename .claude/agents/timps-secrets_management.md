@@ -1,6 +1,6 @@
 ---
 name: timps_secrets_management
-description: Scan for hardcoded secrets, generate Vault/AWS Secrets Manager migration code and pre-commit hooks. Use the `timps_secrets_management` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan for hardcoded secrets, generate Vault/AWS Secrets Manager migration code and pre-commit hooks. Use the `timps_secrets_management` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_secrets_management"]
 model: sonnet

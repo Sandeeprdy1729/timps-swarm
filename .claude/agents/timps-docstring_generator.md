@@ -1,6 +1,6 @@
 ---
 name: timps_docstring_generator
-description: Read raw source code and insert production-quality docstrings in your preferred format (Google, Sphinx, NumPy, JSDoc, Doxygen). Logic is never changed — only documentation is added. Use the `timps_docstring_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Read raw source code and insert production-quality docstrings in your preferred format (Google, Sphinx, NumPy, JSDoc, Doxygen). Logic is never changed — only documentation is added. Use the `timps_docstring_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_docstring_generator"]
 model: haiku

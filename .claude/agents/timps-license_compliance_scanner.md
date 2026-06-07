@@ -1,6 +1,6 @@
 ---
 name: timps_license_compliance_scanner
-description: Scan source + manifests for OSS license usage (GPL/AGPL/LGPL/SSPL/Commercial), produce a per-dependency report, and a copyleft-compatibility matrix for your distribution model. Use the `timps_license_compliance_scanner` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan source + manifests for OSS license usage (GPL/AGPL/LGPL/SSPL/Commercial), produce a per-dependency report, and a copyleft-compatibility matrix for your distribution model. Use the `timps_license_compliance_scanner` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_license_compliance_scanner"]
 model: sonnet

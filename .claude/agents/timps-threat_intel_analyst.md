@@ -1,6 +1,6 @@
 ---
 name: timps_threat_intel_analyst
-description: Ingest threat feeds (CVE, MITRE ATT&CK, CISA KEV) and produce a threat brief with detection rules and prioritised mitigations. Use the `timps_threat_intel_analyst` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Ingest threat feeds (CVE, MITRE ATT&CK, CISA KEV) and produce a threat brief with detection rules and prioritised mitigations. Use the `timps_threat_intel_analyst` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_threat_intel_analyst"]
 model: sonnet

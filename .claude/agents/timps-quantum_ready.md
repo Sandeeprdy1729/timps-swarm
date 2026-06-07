@@ -1,6 +1,6 @@
 ---
 name: timps_quantum_ready
-description: Identify quantum-vulnerable algorithms, generate Qiskit circuits, and produce NIST PQC migration plans. Use the `timps_quantum_ready` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Identify quantum-vulnerable algorithms, generate Qiskit circuits, and produce NIST PQC migration plans. Use the `timps_quantum_ready` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_quantum_ready"]
 model: sonnet

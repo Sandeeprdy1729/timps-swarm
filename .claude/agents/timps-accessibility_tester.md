@@ -1,6 +1,6 @@
 ---
 name: timps_accessibility_tester
-description: Audit a frontend (HTML / React / Vue) for WCAG 2.2 AA & AAA issues — colour contrast, ARIA, keyboard nav, focus order, screen reader hints. Use the `timps_accessibility_tester` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Audit a frontend (HTML / React / Vue) for WCAG 2.2 AA & AAA issues — colour contrast, ARIA, keyboard nav, focus order, screen reader hints. Use the `timps_accessibility_tester` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_accessibility_tester"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_agent_composer
-description: Generate a new fully-functional Python agent file from a natural-language description. Use the `timps_agent_composer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate a new fully-functional Python agent file from a natural-language description. Use the `timps_agent_composer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_agent_composer"]
 model: sonnet

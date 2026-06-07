@@ -1,6 +1,6 @@
 ---
 name: timps_model_perf_monitor
-description: Monitor an ML model in production: drift, accuracy decay, latency, and cost — with alerting thresholds and a re-training trigger plan. Use the `timps_model_perf_monitor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Monitor an ML model in production: drift, accuracy decay, latency, and cost — with alerting thresholds and a re-training trigger plan. Use the `timps_model_perf_monitor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_model_perf_monitor"]
 model: sonnet

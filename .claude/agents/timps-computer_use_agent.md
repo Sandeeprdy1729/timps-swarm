@@ -1,6 +1,6 @@
 ---
 name: timps_computer_use_agent
-description: Plan a GUI / computer-use task and emit OS-specific step scripts (cliclick / xdotool / PowerShell) with safety approval gates. Pairs with the runtime computer_use tools. Use the `timps_computer_use_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Plan a GUI / computer-use task and emit OS-specific step scripts (cliclick / xdotool / PowerShell) with safety approval gates. Pairs with the runtime computer_use tools. Use the `timps_computer_use_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_computer_use_agent"]
 model: sonnet

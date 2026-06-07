@@ -1,6 +1,6 @@
 ---
 name: timps_trend_monitor
-description: Monitor keywords across Hacker News, Reddit, GitHub, and Dev.to for spikes in interest. Returns trend direction, sentiment, and a digest summary. Use the `timps_trend_monitor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Monitor keywords across Hacker News, Reddit, GitHub, and Dev.to for spikes in interest. Returns trend direction, sentiment, and a digest summary. Use the `timps_trend_monitor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: knowledge
 tools: ["mcp__timps-swarm__timps_trend_monitor"]
 model: haiku

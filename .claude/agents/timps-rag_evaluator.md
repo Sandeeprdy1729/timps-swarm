@@ -1,6 +1,6 @@
 ---
 name: timps_rag_evaluator
-description: Run a RAGAS-style evaluation of a RAG pipeline: context precision/recall, faithfulness, answer relevance, MRR/NDCG, with a runnable eval harness and an improvement plan. Use the `timps_rag_evaluator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Run a RAGAS-style evaluation of a RAG pipeline: context precision/recall, faithfulness, answer relevance, MRR/NDCG, with a runnable eval harness and an improvement plan. Use the `timps_rag_evaluator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_rag_evaluator"]
 model: sonnet

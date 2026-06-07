@@ -1,6 +1,6 @@
 ---
 name: timps_dataset_agent
-description: Validate and clean ML training datasets; generate data cards and quality reports. Use the `timps_dataset_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Validate and clean ML training datasets; generate data cards and quality reports. Use the `timps_dataset_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_dataset_agent"]
 model: sonnet

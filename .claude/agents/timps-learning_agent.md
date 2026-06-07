@@ -1,6 +1,6 @@
 ---
 name: timps_learning_agent
-description: Analyse past successful runs and distil prompt improvements for all agents. Use the `timps_learning_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse past successful runs and distil prompt improvements for all agents. Use the `timps_learning_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_learning_agent"]
 model: sonnet

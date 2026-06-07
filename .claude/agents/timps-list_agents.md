@@ -1,6 +1,6 @@
 ---
 name: timps_list_agents
-description: List all 22 TIMPS Swarm agents with their purpose, so you can choose the right one for the user's request. Use the `timps_list_agents` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "List all 22 TIMPS Swarm agents with their purpose, so you can choose the right one for the user's request. Use the `timps_list_agents` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: meta
 tools: ["mcp__timps-swarm__timps_list_agents"]
 model: haiku

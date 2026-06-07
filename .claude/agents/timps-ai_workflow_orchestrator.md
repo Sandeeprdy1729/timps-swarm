@@ -1,6 +1,6 @@
 ---
 name: timps_ai_workflow_orchestrator
-description: Turn a plain-English multi-step workflow into executable code for LangGraph, Temporal, or Claude-Flow — plus a Mermaid diagram and tests. Use the `timps_ai_workflow_orchestrator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Turn a plain-English multi-step workflow into executable code for LangGraph, Temporal, or Claude-Flow — plus a Mermaid diagram and tests. Use the `timps_ai_workflow_orchestrator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_ai_workflow_orchestrator"]
 model: sonnet

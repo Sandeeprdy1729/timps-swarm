@@ -1,6 +1,6 @@
 ---
 name: timps_iac_drift_detector
-description: Detect drift between Terraform / Pulumi / CloudFormation state and live cloud — produces a ranked diff, blast-radius estimate, and a safe `terraform plan` review. Use the `timps_iac_drift_detector` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Detect drift between Terraform / Pulumi / CloudFormation state and live cloud — produces a ranked diff, blast-radius estimate, and a safe `terraform plan` review. Use the `timps_iac_drift_detector` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_iac_drift_detector"]
 model: sonnet

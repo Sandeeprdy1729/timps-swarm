@@ -1,6 +1,6 @@
 ---
 name: timps_analytics_agent
-description: Set up PostHog/Mixpanel/Amplitude event tracking, funnels, and dashboards. Use the `timps_analytics_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Set up PostHog/Mixpanel/Amplitude event tracking, funnels, and dashboards. Use the `timps_analytics_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_analytics_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_disaster_recovery
-description: Design RTO/RPO-aware DR plans, failover runbooks, and DR test scripts for cloud systems. Use the `timps_disaster_recovery` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Design RTO/RPO-aware DR plans, failover runbooks, and DR test scripts for cloud systems. Use the `timps_disaster_recovery` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_disaster_recovery"]
 model: sonnet

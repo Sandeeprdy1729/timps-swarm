@@ -1,6 +1,6 @@
 ---
 name: timps_game_day_facilitator
-description: Plan and run a chaos-engineering game-day: hypothesis, blast radius, rollback, comms tree, inject schedule, success criteria, and a blameless retrospective template. Use the `timps_game_day_facilitator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Plan and run a chaos-engineering game-day: hypothesis, blast radius, rollback, comms tree, inject schedule, success criteria, and a blameless retrospective template. Use the `timps_game_day_facilitator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_game_day_facilitator"]
 model: sonnet

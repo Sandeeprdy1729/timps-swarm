@@ -1,6 +1,6 @@
 ---
 name: timps_privacy_cleaner
-description: Privacy audit: count cookies per browser (Chrome, Firefox, Edge, Brave), list macOS app permissions (camera, mic, location, contacts). Returns a cleanup manifest — no data is deleted until user reviews. Use the `timps_privacy_cleaner` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Privacy audit: count cookies per browser (Chrome, Firefox, Edge, Brave), list macOS app permissions (camera, mic, location, contacts). Returns a cleanup manifest — no data is deleted until user reviews. Use the `timps_privacy_cleaner` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_privacy_cleaner"]
 model: haiku

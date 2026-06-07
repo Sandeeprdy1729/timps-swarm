@@ -1,6 +1,6 @@
 ---
 name: timps_git_workflow_automator
-description: Generate an opinionated git workflow: pre-commit hooks, commitlint, lefthook, semantic-release / release-please config, PR template, branch-protection policy, CODEOWNERS. Use the `timps_git_workflow_automator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate an opinionated git workflow: pre-commit hooks, commitlint, lefthook, semantic-release / release-please config, PR template, branch-protection policy, CODEOWNERS. Use the `timps_git_workflow_automator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_git_workflow_automator"]
 model: sonnet

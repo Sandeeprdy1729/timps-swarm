@@ -1,6 +1,6 @@
 ---
 name: timps_kubernetes_navigator
-description: Diagnose Kubernetes workloads: pods, services, ingress, RBAC, resources, network policies. Outputs fix YAML and Helm/Kustomize patches. Use the `timps_kubernetes_navigator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Diagnose Kubernetes workloads: pods, services, ingress, RBAC, resources, network policies. Outputs fix YAML and Helm/Kustomize patches. Use the `timps_kubernetes_navigator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_kubernetes_navigator"]
 model: sonnet

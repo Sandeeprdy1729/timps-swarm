@@ -1,6 +1,6 @@
 ---
 name: timps_log_pattern_analyzer
-description: Cluster production log errors, identify root cause, suggest a fix. Handles stack traces, JSON logs, syslog, and journald output. Use the `timps_log_pattern_analyzer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Cluster production log errors, identify root cause, suggest a fix. Handles stack traces, JSON logs, syslog, and journald output. Use the `timps_log_pattern_analyzer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_log_pattern_analyzer"]
 model: sonnet

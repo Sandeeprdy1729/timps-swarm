@@ -1,6 +1,6 @@
 ---
 name: timps_phishing_simulator
-description: Generate a realistic, organisation-tailored phishing simulation: emails, landing pages, payload tracking, and a click-through metrics plan. Strictly for authorised training use. Use the `timps_phishing_simulator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate a realistic, organisation-tailored phishing simulation: emails, landing pages, payload tracking, and a click-through metrics plan. Strictly for authorised training use. Use the `timps_phishing_simulator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_phishing_simulator"]
 model: sonnet

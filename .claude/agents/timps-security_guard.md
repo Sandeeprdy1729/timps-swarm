@@ -1,6 +1,6 @@
 ---
 name: timps_security_guard
-description: Security scan: open network ports, running process anomalies, app camera/microphone/location permissions (macOS TCC). Returns CVSS-rated findings and mitigation commands. Use the `timps_security_guard` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Security scan: open network ports, running process anomalies, app camera/microphone/location permissions (macOS TCC). Returns CVSS-rated findings and mitigation commands. Use the `timps_security_guard` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_security_guard"]
 model: haiku

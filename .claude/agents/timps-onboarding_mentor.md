@@ -1,6 +1,6 @@
 ---
 name: timps_onboarding_mentor
-description: Generate a customised onboarding guide: most-touched files, architecture overview, key modules, recent PR walkthroughs. Use the `timps_onboarding_mentor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate a customised onboarding guide: most-touched files, architecture overview, key modules, recent PR walkthroughs. Use the `timps_onboarding_mentor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_onboarding_mentor"]
 model: sonnet

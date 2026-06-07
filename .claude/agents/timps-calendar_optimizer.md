@@ -1,6 +1,6 @@
 ---
 name: timps_calendar_optimizer
-description: Re-design a noisy calendar: time-block deep work, batch meetings, protect maker time, add commute/exercise buffers, and emit an ICS patch and a focus-mode script. Use the `timps_calendar_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Re-design a noisy calendar: time-block deep work, batch meetings, protect maker time, add commute/exercise buffers, and emit an ICS patch and a focus-mode script. Use the `timps_calendar_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_calendar_optimizer"]
 model: sonnet

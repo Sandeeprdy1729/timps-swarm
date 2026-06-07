@@ -1,6 +1,6 @@
 ---
 name: timps_system_optimizer
-description: Diagnose why a computer is slow. Scans: top CPU/RAM processes, startup items, thermal throttling, memory pressure. Returns a report with specific processes to kill and startup items to disable. Generates a dry-run cleanup shell script. Use the `timps_system_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Diagnose why a computer is slow. Scans: top CPU/RAM processes, startup items, thermal throttling, memory pressure. Returns a report with specific processes to kill and startup items to disable. Generates a dry-run cleanup shell script. Use the `timps_system_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_system_optimizer"]
 model: haiku

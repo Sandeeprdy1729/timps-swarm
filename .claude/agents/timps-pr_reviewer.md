@@ -1,6 +1,6 @@
 ---
 name: timps_pr_reviewer
-description: Review a pull request diff for blockers, suggestions, and nitpicks. Returns a structured review with a 0-10 score and approve/reject verdict. Use the `timps_pr_reviewer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Review a pull request diff for blockers, suggestions, and nitpicks. Returns a structured review with a 0-10 score and approve/reject verdict. Use the `timps_pr_reviewer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_pr_reviewer"]
 model: haiku

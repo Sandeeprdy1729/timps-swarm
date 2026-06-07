@@ -1,6 +1,6 @@
 ---
 name: timps_vector_db_agent
-description: Design Qdrant/Pinecone/Weaviate/pgvector schemas and integration code. Use the `timps_vector_db_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Design Qdrant/Pinecone/Weaviate/pgvector schemas and integration code. Use the `timps_vector_db_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_vector_db_agent"]
 model: sonnet

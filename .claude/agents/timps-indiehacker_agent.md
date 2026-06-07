@@ -1,6 +1,6 @@
 ---
 name: timps_indiehacker_agent
-description: India GTM plan: INR pricing tiers, Razorpay integration, GST invoice generation. Use the `timps_indiehacker_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "India GTM plan: INR pricing tiers, Razorpay integration, GST invoice generation. Use the `timps_indiehacker_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_indiehacker_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_boilerplate_architect
-description: Scaffold a new project: folder structure, stub files, setup commands. Supports any language or framework — describe what you're building. Use the `timps_boilerplate_architect` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scaffold a new project: folder structure, stub files, setup commands. Supports any language or framework — describe what you're building. Use the `timps_boilerplate_architect` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_boilerplate_architect"]
 model: haiku

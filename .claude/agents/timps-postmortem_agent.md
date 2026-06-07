@@ -1,6 +1,6 @@
 ---
 name: timps_postmortem_agent
-description: Write blameless postmortems: 5 Whys, root causes, P0-P2 action items, runbooks. Use the `timps_postmortem_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Write blameless postmortems: 5 Whys, root causes, P0-P2 action items, runbooks. Use the `timps_postmortem_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_postmortem_agent"]
 model: sonnet

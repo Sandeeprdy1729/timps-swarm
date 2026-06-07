@@ -1,6 +1,6 @@
 ---
 name: timps_edge_agent
-description: Generate Cloudflare Workers/Vercel Edge/Fastly code with KV storage and geo-routing. Use the `timps_edge_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate Cloudflare Workers/Vercel Edge/Fastly code with KV storage and geo-routing. Use the `timps_edge_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_edge_agent"]
 model: sonnet

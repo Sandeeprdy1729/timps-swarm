@@ -1,6 +1,6 @@
 ---
 name: timps_gst_compliance
-description: Generate GSTR-1/3B filings, e-invoice XML, ITC reconciliation reports (India GST). Use the `timps_gst_compliance` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate GSTR-1/3B filings, e-invoice XML, ITC reconciliation reports (India GST). Use the `timps_gst_compliance` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_gst_compliance"]
 model: sonnet

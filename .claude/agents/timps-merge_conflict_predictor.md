@@ -1,6 +1,6 @@
 ---
 name: timps_merge_conflict_predictor
-description: Predict merge conflicts between two branches before merging, with file-level and line-level overlap analysis. Use the `timps_merge_conflict_predictor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Predict merge conflicts between two branches before merging, with file-level and line-level overlap analysis. Use the `timps_merge_conflict_predictor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_merge_conflict_predictor"]
 model: sonnet

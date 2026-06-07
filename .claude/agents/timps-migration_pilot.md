@@ -1,6 +1,6 @@
 ---
 name: timps_migration_pilot
-description: Analyse a codebase for breaking-change APIs given a target library/framework upgrade. Returns a step-by-step migration checklist. Use the `timps_migration_pilot` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Analyse a codebase for breaking-change APIs given a target library/framework upgrade. Returns a step-by-step migration checklist. Use the `timps_migration_pilot` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_migration_pilot"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_federated_learning
-description: Design Flower/FedAvg/PySyft FL pipelines with differential privacy and aggregation strategies. Use the `timps_federated_learning` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Design Flower/FedAvg/PySyft FL pipelines with differential privacy and aggregation strategies. Use the `timps_federated_learning` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_federated_learning"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_monitoring_agent
-description: Generate Prometheus metric definitions, Grafana dashboard JSON, alerting rules, and instrumentation code snippets. Use the `timps_monitoring_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate Prometheus metric definitions, Grafana dashboard JSON, alerting rules, and instrumentation code snippets. Use the `timps_monitoring_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_monitoring_agent"]
 model: sonnet

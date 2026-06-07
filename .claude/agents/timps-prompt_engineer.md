@@ -1,6 +1,6 @@
 ---
 name: timps_prompt_engineer
-description: Rewrite prompts with Chain-of-Thought, XML tags, and few-shot examples for better LLM output. Use the `timps_prompt_engineer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Rewrite prompts with Chain-of-Thought, XML tags, and few-shot examples for better LLM output. Use the `timps_prompt_engineer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_prompt_engineer"]
 model: sonnet

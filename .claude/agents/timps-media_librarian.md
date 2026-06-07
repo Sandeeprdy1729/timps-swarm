@@ -1,6 +1,6 @@
 ---
 name: timps_media_librarian
-description: Scan Photos, Downloads, Desktop for media chaos: unnamed photos, screenshot backlog, oversized videos. Suggests a date-based rename plan and generates ffmpeg compression commands (dry-run). Use the `timps_media_librarian` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan Photos, Downloads, Desktop for media chaos: unnamed photos, screenshot backlog, oversized videos. Suggests a date-based rename plan and generates ffmpeg compression commands (dry-run). Use the `timps_media_librarian` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_media_librarian"]
 model: haiku

@@ -1,6 +1,6 @@
 ---
 name: timps_deep_research_agent
-description: Multi-hop, multi-source research planner: decomposes a query, runs parallel web searches, cross-references, and returns a sourced report with [N] citations and a bottom-line answer. Use the `timps_deep_research_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Multi-hop, multi-source research planner: decomposes a query, runs parallel web searches, cross-references, and returns a sourced report with [N] citations and a bottom-line answer. Use the `timps_deep_research_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_deep_research_agent"]
 model: sonnet

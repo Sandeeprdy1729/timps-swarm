@@ -1,6 +1,6 @@
 ---
 name: timps_network_medic
-description: Diagnose network problems: ping internet/Cloudflare, DNS resolution, WiFi signal, traceroute, open ports. Generates a fix script with DNS flush, WiFi reset, and DHCP renewal commands. Use the `timps_network_medic` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Diagnose network problems: ping internet/Cloudflare, DNS resolution, WiFi signal, traceroute, open ports. Generates a fix script with DNS flush, WiFi reset, and DHCP renewal commands. Use the `timps_network_medic` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_network_medic"]
 model: haiku

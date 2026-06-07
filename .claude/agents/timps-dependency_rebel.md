@@ -1,6 +1,6 @@
 ---
 name: timps_dependency_rebel
-description: Detect dependency conflicts, vulnerabilities, and outdated packages across Python and Node. Returns a fix plan and remediation script. Use the `timps_dependency_rebel` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Detect dependency conflicts, vulnerabilities, and outdated packages across Python and Node. Returns a fix plan and remediation script. Use the `timps_dependency_rebel` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_dependency_rebel"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_memory_agent
-description: Store, recall, and manage TIMPS run history and contextual memory. Use the `timps_memory_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Store, recall, and manage TIMPS run history and contextual memory. Use the `timps_memory_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_memory_agent"]
 model: sonnet

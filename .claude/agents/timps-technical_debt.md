@@ -1,6 +1,6 @@
 ---
 name: timps_technical_debt
-description: Quantify technical debt via radon complexity + git churn + TODO density; output a debt roadmap. Use the `timps_technical_debt` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Quantify technical debt via radon complexity + git churn + TODO density; output a debt roadmap. Use the `timps_technical_debt` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_technical_debt"]
 model: sonnet

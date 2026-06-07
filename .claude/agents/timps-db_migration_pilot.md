@@ -1,6 +1,6 @@
 ---
 name: timps_db_migration_pilot
-description: Plan a zero-downtime database migration: expand-contract phases, backfill scripts, dual-write strategy, kill-switches, rollback plan. Use the `timps_db_migration_pilot` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Plan a zero-downtime database migration: expand-contract phases, backfill scripts, dual-write strategy, kill-switches, rollback plan. Use the `timps_db_migration_pilot` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_db_migration_pilot"]
 model: sonnet

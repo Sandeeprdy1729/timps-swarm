@@ -1,6 +1,6 @@
 ---
 name: timps_data_wrangler
-description: Clean and normalise messy data: CSV, JSON, PDF extracts, copy-pasted tables. Returns cleaned records, a quality score, and SQL insert hint. Use the `timps_data_wrangler` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Clean and normalise messy data: CSV, JSON, PDF extracts, copy-pasted tables. Returns cleaned records, a quality score, and SQL insert hint. Use the `timps_data_wrangler` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: knowledge
 tools: ["mcp__timps-swarm__timps_data_wrangler"]
 model: haiku

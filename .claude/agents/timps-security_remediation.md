@@ -1,6 +1,6 @@
 ---
 name: timps_security_remediation
-description: Convert a security finding (CVE, SAST, secret, misconfig) into a step-by-step patch plan with a working code diff and rollback. Use the `timps_security_remediation` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Convert a security finding (CVE, SAST, secret, misconfig) into a step-by-step patch plan with a working code diff and rollback. Use the `timps_security_remediation` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_security_remediation"]
 model: sonnet

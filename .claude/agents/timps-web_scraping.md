@@ -1,6 +1,6 @@
 ---
 name: timps_web_scraping
-description: Generate Playwright/Scrapy/httpx scrapers with anti-bot config and data extraction logic. Use the `timps_web_scraping` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate Playwright/Scrapy/httpx scrapers with anti-bot config and data extraction logic. Use the `timps_web_scraping` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_web_scraping"]
 model: sonnet

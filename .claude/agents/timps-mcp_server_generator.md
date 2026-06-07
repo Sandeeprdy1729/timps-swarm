@@ -1,6 +1,6 @@
 ---
 name: timps_mcp_server_generator
-description: Scaffold a complete Model Context Protocol (MCP) server: tools, resources, prompts, server.py, pyproject, smoke-test client, README. Use the `timps_mcp_server_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scaffold a complete Model Context Protocol (MCP) server: tools, resources, prompts, server.py, pyproject, smoke-test client, README. Use the `timps_mcp_server_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_mcp_server_generator"]
 model: sonnet

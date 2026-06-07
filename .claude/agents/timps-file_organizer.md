@@ -1,6 +1,6 @@
 ---
 name: timps_file_organizer
-description: Scan Downloads and Desktop for clutter: duplicates, large files, unnamed junk. Generates a folder organisation plan and a move script (dry-run — no files moved until user approves). Use the `timps_file_organizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scan Downloads and Desktop for clutter: duplicates, large files, unnamed junk. Generates a folder organisation plan and a move script (dry-run — no files moved until user approves). Use the `timps_file_organizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_file_organizer"]
 model: haiku

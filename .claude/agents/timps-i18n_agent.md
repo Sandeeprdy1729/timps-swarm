@@ -1,6 +1,6 @@
 ---
 name: timps_i18n_agent
-description: Extract translatable strings from source code, generate translation JSON files for multiple locales, and flag RTL/cultural issues. Use the `timps_i18n_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Extract translatable strings from source code, generate translation JSON files for multiple locales, and flag RTL/cultural issues. Use the `timps_i18n_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_i18n_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_refactoring_agent
-description: Detect code smells and produce a fully refactored version with a diff summary, complexity scores, and improvement list. Use the `timps_refactoring_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Detect code smells and produce a fully refactored version with a diff summary, complexity scores, and improvement list. Use the `timps_refactoring_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_refactoring_agent"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_agri_commodity_forecaster
-description: Forecast Indian agri-commodity prices (mandi arrivals, MSP, weather, festival demand). Returns direction, confidence, and a hedge recommendation for farmers / FPOs / traders. Use the `timps_agri_commodity_forecaster` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Forecast Indian agri-commodity prices (mandi arrivals, MSP, weather, festival demand). Returns direction, confidence, and a hedge recommendation for farmers / FPOs / traders. Use the `timps_agri_commodity_forecaster` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: knowledge
 tools: ["mcp__timps-swarm__timps_agri_commodity_forecaster"]
 model: haiku

@@ -1,6 +1,6 @@
 ---
 name: timps_ui_ux_agent
-description: Generate a UI component spec, implementation code, Storybook story, design tokens, and WCAG accessibility audit. Use the `timps_ui_ux_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate a UI component spec, implementation code, Storybook story, design tokens, and WCAG accessibility audit. Use the `timps_ui_ux_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_ui_ux_agent"]
 model: sonnet

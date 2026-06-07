@@ -1,6 +1,6 @@
 ---
 name: timps_tech_writer_assistant
-description: Refresh a project README, write ADRs, generate a 'Getting Started' guide, an FAQ, and a reference page from the codebase. Use the `timps_tech_writer_assistant` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Refresh a project README, write ADRs, generate a 'Getting Started' guide, an FAQ, and a reference page from the codebase. Use the `timps_tech_writer_assistant` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_tech_writer_assistant"]
 model: sonnet

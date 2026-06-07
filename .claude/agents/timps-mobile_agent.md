@@ -1,6 +1,6 @@
 ---
 name: timps_mobile_agent
-description: Scaffold React Native/Flutter/Expo apps with push notifications and deep links. Use the `timps_mobile_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Scaffold React Native/Flutter/Expo apps with push notifications and deep links. Use the `timps_mobile_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_mobile_agent"]
 model: sonnet

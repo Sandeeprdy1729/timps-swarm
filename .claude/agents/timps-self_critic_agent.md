@@ -1,6 +1,6 @@
 ---
 name: timps_self_critic_agent
-description: Score any agent's output on a 1–10 quality scale, identify weaknesses, and automatically re-run the originating agent with an improved prompt until the score meets the threshold. This closes the quality feedback loop across the entire swarm. Use the `timps_self_critic_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Score any agent's output on a 1–10 quality scale, identify weaknesses, and automatically re-run the originating agent with an improved prompt until the score meets the threshold. This closes the quality feedback loop across the entire swarm. Use the `timps_self_critic_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_self_critic_agent"]
 model: sonnet

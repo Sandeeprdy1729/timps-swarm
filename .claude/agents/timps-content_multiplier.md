@@ -1,6 +1,6 @@
 ---
 name: timps_content_multiplier
-description: Transform a long-form technical post into multiple short-form formats: tweet thread, LinkedIn post, changelog entry, docs blurb, and HN title. Use the `timps_content_multiplier` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Transform a long-form technical post into multiple short-form formats: tweet thread, LinkedIn post, changelog entry, docs blurb, and HN title. Use the `timps_content_multiplier` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: developer
 tools: ["mcp__timps-swarm__timps_content_multiplier"]
 model: haiku

@@ -1,6 +1,6 @@
 ---
 name: timps_cost_optimizer
-description: Estimate monthly/annual cloud cost for an architecture and generate a prioritised list of savings optimisations. Use the `timps_cost_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Estimate monthly/annual cloud cost for an architecture and generate a prioritised list of savings optimisations. Use the `timps_cost_optimizer` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_cost_optimizer"]
 model: sonnet

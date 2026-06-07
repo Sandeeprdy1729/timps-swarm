@@ -1,6 +1,6 @@
 ---
 name: timps_connect_tools
-description: Auto-configure TIMPS Swarm as an MCP server in every AI coding tool installed on this machine (Cursor, Windsurf, GitHub Copilot, Cline, Continue, Aider, Goose, OpenCode, Gemini CLI, and more). Use --dry-run to preview what would change. Use the `timps_connect_tools` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Auto-configure TIMPS Swarm as an MCP server in every AI coding tool installed on this machine (Cursor, Windsurf, GitHub Copilot, Cline, Continue, Aider, Goose, OpenCode, Gemini CLI, and more). Use --dry-run to preview what would change. Use the `timps_connect_tools` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: meta
 tools: ["mcp__timps-swarm__timps_connect_tools"]
 model: haiku

@@ -1,6 +1,6 @@
 ---
 name: timps_test_data_agent
-description: Generate realistic, edge-case-covering seed / fixture data for any JSON schema, SQL DDL, or plain-text description. Use the `timps_test_data_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate realistic, edge-case-covering seed / fixture data for any JSON schema, SQL DDL, or plain-text description. Use the `timps_test_data_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_test_data_agent"]
 model: sonnet

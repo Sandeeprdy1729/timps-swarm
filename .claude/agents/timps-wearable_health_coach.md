@@ -1,6 +1,6 @@
 ---
 name: timps_wearable_health_coach
-description: Interpret wearable / fitness data (HRV, sleep, RHR, steps, SpO2) into an actionable, evidence-based weekly coaching plan with safety guardrails. Use the `timps_wearable_health_coach` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Interpret wearable / fitness data (HRV, sleep, RHR, steps, SpO2) into an actionable, evidence-based weekly coaching plan with safety guardrails. Use the `timps_wearable_health_coach` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_wearable_health_coach"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_agent_marketplace_curator
-description: Curate the best AI agent / MCP / LLM-tool marketplaces and recommend picks by use-case. Tracks pulse.mcp.run, glama.ai, mcp.so, OpenAI GPT Store, Claude tool directory. Use the `timps_agent_marketplace_curator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Curate the best AI agent / MCP / LLM-tool marketplaces and recommend picks by use-case. Tracks pulse.mcp.run, glama.ai, mcp.so, OpenAI GPT Store, Claude tool directory. Use the `timps_agent_marketplace_curator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_agent_marketplace_curator"]
 model: sonnet

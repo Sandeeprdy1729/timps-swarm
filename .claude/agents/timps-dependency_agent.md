@@ -1,6 +1,6 @@
 ---
 name: timps_dependency_agent
-description: Dependency Agent — runs pip-audit / npm audit / cargo audit after code generation. Produces: a CVE severity report, a license compliance check, a version pinning strategy, and a safe upgrade script. Security-conscious devs' favourite agent. Use the `timps_dependency_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Dependency Agent — runs pip-audit / npm audit / cargo audit after code generation. Produces: a CVE severity report, a license compliance check, a version pinning strategy, and a safe upgrade script. Security-conscious devs' favourite agent. Use the `timps_dependency_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_dependency_agent"]
 model: sonnet

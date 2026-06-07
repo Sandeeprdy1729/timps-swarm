@@ -1,6 +1,6 @@
 ---
 name: timps_embedded_agent
-description: Create Arduino/ESP32/RPi firmware, HAL headers, CMakeLists, and OTA update scripts. Use the `timps_embedded_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Create Arduino/ESP32/RPi firmware, HAL headers, CMakeLists, and OTA update scripts. Use the `timps_embedded_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_embedded_agent"]
 model: sonnet

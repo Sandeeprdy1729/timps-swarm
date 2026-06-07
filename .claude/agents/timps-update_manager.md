@@ -1,6 +1,6 @@
 ---
 name: timps_update_manager
-description: Check for pending updates: macOS/Linux OS, Homebrew packages, global npm packages, pip packages. Returns a prioritised update plan (security first) with a safe ordered shell script. Use the `timps_update_manager` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Check for pending updates: macOS/Linux OS, Homebrew packages, global npm packages, pip packages. Returns a prioritised update plan (security first) with a safe ordered shell script. Use the `timps_update_manager` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_update_manager"]
 model: haiku

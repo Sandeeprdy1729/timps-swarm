@@ -1,6 +1,6 @@
 ---
 name: timps_storybook_story_generator
-description: Generate an original illustrated children's story for a target age, theme, and moral: outline, full prose, page breaks, illustration prompts, and a printable PDF layout spec. Use the `timps_storybook_story_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Generate an original illustrated children's story for a target age, theme, and moral: outline, full prose, page breaks, illustration prompts, and a printable PDF layout spec. Use the `timps_storybook_story_generator` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_storybook_story_generator"]
 model: sonnet

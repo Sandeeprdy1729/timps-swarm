@@ -1,6 +1,6 @@
 ---
 name: timps_dotfile_doctor
-description: Detect errors and performance issues in shell config files (.zshrc, .bashrc, .gitconfig). Finds slow evals, duplicate PATH entries, syntax errors. Use the `timps_dotfile_doctor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Detect errors and performance issues in shell config files (.zshrc, .bashrc, .gitconfig). Finds slow evals, duplicate PATH entries, syntax errors. Use the `timps_dotfile_doctor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: expert
 tools: ["mcp__timps-swarm__timps_dotfile_doctor"]
 model: sonnet

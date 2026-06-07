@@ -1,6 +1,6 @@
 ---
 name: timps_log_interpreter
-description: Read crash logs and system logs, extract stack traces, and explain each crash in plain English. Classifies as app bug / OS bug / hardware / user error. Pass a log file path to analyse a specific log. Use the `timps_log_interpreter` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Read crash logs and system logs, extract stack traces, and explain each crash in plain English. Classifies as app bug / OS bug / hardware / user error. Pass a log file path to analyse a specific log. Use the `timps_log_interpreter` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: health
 tools: ["mcp__timps-swarm__timps_log_interpreter"]
 model: haiku

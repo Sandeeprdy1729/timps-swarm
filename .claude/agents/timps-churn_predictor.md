@@ -1,6 +1,6 @@
 ---
 name: timps_churn_predictor
-description: Score accounts/users for churn risk from behavioural signals, build a survival-curve forecast, segment at-risk cohorts, and recommend save plays per segment. Use the `timps_churn_predictor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Score accounts/users for churn risk from behavioural signals, build a survival-curve forecast, segment at-risk cohorts, and recommend save plays per segment. Use the `timps_churn_predictor` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_churn_predictor"]
 model: sonnet

@@ -1,6 +1,6 @@
 ---
 name: timps_seo_agent
-description: Run Lighthouse CI, generate schema.org JSON-LD, fix Core Web Vitals, build sitemaps. Use the `timps_seo_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Run Lighthouse CI, generate schema.org JSON-LD, fix Core Web Vitals, build sitemaps. Use the `timps_seo_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_seo_agent"]
 model: sonnet

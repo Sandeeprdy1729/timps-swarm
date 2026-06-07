@@ -1,6 +1,6 @@
 ---
 name: timps_web3_agent
-description: Audit smart contracts with Slither/Mythril patterns; generate Solidity code with gas optimisation. Use the `timps_web3_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.
+description: "Audit smart contracts with Slither/Mythril patterns; generate Solidity code with gas optimisation. Use the `timps_web3_agent` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent."
 category: priority
 tools: ["mcp__timps-swarm__timps_web3_agent"]
 model: sonnet
