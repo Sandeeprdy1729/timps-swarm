@@ -6,7 +6,7 @@ Shifts TIMPS from a "passive tool server" to an "autonomous workforce."
 Instead of:  MCP client calls timps_run_security_scan
 Now:         MCP client calls timps_delegate(goal="fix the auth bug and deploy it")
              → Orchestrator breaks goal into sub-tasks
-             → 22 agents self-organize to complete them
+             → 35 agents self-organize to complete them
              → Result + artifacts returned when done
 
 Architecture:

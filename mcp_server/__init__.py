@@ -1,7 +1,7 @@
 """
 TIMPS Swarm MCP Server
 
-Exposes all 22 agents as MCP tools so any MCP-compatible IDE/CLI
+Exposes all agents as MCP tools so any MCP-compatible IDE/CLI
 (Claude Code, GitHub Copilot, Cursor, Windsurf, Kimi Code, etc.)
 can invoke them with a single tool call.
 

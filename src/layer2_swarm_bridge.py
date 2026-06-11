@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class AgentRole(Enum):
-    """All 22 swarm agent roles (10 SDLC + 12 Computer Health)."""
+    """All 35 swarm agent roles (10 SDLC + 13 Computer Health + 12 Auxiliary)."""
     # ── SDLC pipeline ──────────────────────────────────────────────────────
     ORCHESTRATOR = "orchestrator"
     PRODUCT_MANAGER = "product_manager"

@@ -45,7 +45,7 @@ setup: install
 	@echo ">>> Setup complete ✅"
 
 install:
-	@pip install -r requirements.txt
+	@pip install -e ".[dev]"
 	@echo ">>> Python deps installed ✅"
 
 # ── Dataset ────────────────────────────────────────────────────────────────
