@@ -24,7 +24,7 @@ import shlex
 import subprocess
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from src._helpers import _strip_fences
 

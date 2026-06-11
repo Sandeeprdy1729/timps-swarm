@@ -145,7 +145,6 @@ def _dependency_agent_node(state: SwarmState) -> dict:
     for path in state.get("code_artifacts", []):
         if "requirements" in str(path) or "package.json" in str(path):
             try:
-                import os
                 manifest = open(path, encoding="utf-8").read()
                 break
             except Exception:

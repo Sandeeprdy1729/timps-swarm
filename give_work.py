@@ -23,7 +23,6 @@ SDLC with specific agents:
   python3 give_work.py --spawn code_generator qa_tester "Write and test a sort function"
 """
 import asyncio
-import json
 import os
 import sys
 import argparse
@@ -32,38 +31,49 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from src.layer2_swarm_bridge import get_swarm_bridge, AgentRole
 
-# Keywords that indicate a computer-health request (not a code task)
-_HEALTH_KEYWORDS = [
-    "slow", "battery", "drain", "wifi", "network", "dns", "latency",
-    "crash", "log", "stack trace", "error log", "broken", "not found",
-    "python env", "node env", "docker", "permission", "camera", "microphone",
-    "update", "upgrade", "outdated", "security scan", "port", "firewall",
-    "privacy", "cookie", "tracker", "photo", "video", "screenshot",
-    "backup", "time machine", "uncommitted", "focus", "distraction", "tab",
-    "files", "downloads", "desktop clutter", "duplicate", "organiz",
-    "thermal", "fan", "jet engine", "startup", "bloat",
-    # Expert / deep-diagnostic agents — use short stems so natural-language
-    # variants like "dependencies for conflicts" or "my disk will be full" match.
-    "depend",          # dependency, dependencies, check my dependencies
-    "conflict",        # merge conflict, dependency conflicts
-    "npm audit", "pip check", "lockfile", "version conflict",
-    "tech debt", "cyclomatic", "code smell", "debt score",
-    "migrate", "migration", "breaking change",
-    "flaky test", "flakey", "intermittent test",
-    "onboarding", "new developer", "new team member",
-    "incident", "outage", "production down", "service down",
-    "cloud cost", "terraform waste", "idle resource",
-    "certificate", "cert expir", "tls", "ssl expir",
-    "terraform plan", "tf plan", "tfplan",
-    "dotfile", "zshrc", "bashrc", "shell slow",
-    "disk full", "no space", "disk space", "disk",  # 'disk' catches 'when my disk will be full'
+_HEALTH_PREFIXES = [
+    "my ", "why is", "why does", "why are", "why isn", "why can", "why won",
+    "diagnose", "fix my", "check my", "health", "system",
 ]
 
 
 def _is_health_task(request: str) -> bool:
-    """Return True if the request should be handled by the health pipeline."""
-    rl = request.lower()
-    return any(kw in rl for kw in _HEALTH_KEYWORDS)
+    rl = request.lower().strip()
+    # Fast path: explicit --health flag takes precedence (handled in main())
+    # Prefix check: only classify as health if the request reads like a
+    # complaint / diagnostic, AND matches a health domain below.
+    is_plain_language = any(p in rl for p in _HEALTH_PREFIXES)
+    if not is_plain_language:
+        return False
+
+    _DOMAINS = [
+        # System performance
+        "slow", "battery", "drain", "overheating", "thermal", "fan",
+        "startup", "bloat", "jet engine",
+        # Network
+        "wifi", "network", "dns", "latency", "port", "firewall",
+        # Crashes & errors
+        "crash", "stack trace", "error log", "kernel panic", "freeze",
+        # Environments
+        "python envir", "node envir", "python environment", "node environment",
+        "docker", "permission denied",
+        # Security & privacy
+        "camera", "microphone", "security scan", "privacy", "cookie", "tracker",
+        # Files & backups
+        "backup", "time machine", "uncommitted",
+        "downloads", "desktop clutter", "duplicate file",
+        "disk full", "no space left", "disk space",
+        # Focus / workflow
+        "focus", "distraction", "tab",
+        # Expert diagnostics
+        "tech debt", "code smell", "cyclomatic complexity",
+        "flaky test", "intermittent test",
+        "incident", "outage", "production down",
+        "cloud cost", "idle resource",
+        "certificate expiry", "tls cert", "ssl cert",
+        "terraform plan", "dotfile", "zshrc", "bashrc", "shell slow",
+    ]
+    return any(d in rl for d in _DOMAINS)
 
 
 def run_health(request: str, multi_agent: bool = False):
@@ -277,7 +287,7 @@ def main():
 
     elif args.delegate:
         from src.agent_kernel import delegate
-        import os, json as _json
+        import os
         print(f"🤖 Delegating goal to Agent Kernel: {args.delegate}")
         result = delegate(args.delegate, context={"cwd": os.getcwd()})
         print(f"\n✅ Run ID  : {result['run_id']}")

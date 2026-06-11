@@ -6,12 +6,11 @@ Run this to test that each agent gets isolated compute resources.
 import asyncio
 import os
 import sys
-import tempfile
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from src.layer1_computer_manager import get_computer_manager, ComputeResources
+from src.layer1_computer_manager import get_computer_manager
 from src.layer2_swarm_bridge import get_swarm_bridge, AgentRole
 
 

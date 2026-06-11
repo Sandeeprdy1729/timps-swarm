@@ -40,10 +40,11 @@ except Exception:
 
 app = FastAPI(title="TIMPS Swarm API", version=_APP_VERSION)
 
+_CORS_ORIGINS = os.getenv("TIMPS_CORS_ORIGINS", "http://localhost:3000,http://localhost:5173")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=[o.strip() for o in _CORS_ORIGINS.split(",") if o.strip()],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -577,7 +578,7 @@ async def agent_self_critic(req: SelfCriticRequest):
 
 @app.get("/providers")
 async def list_all_providers():
-    from src.providers import list_providers, registry
+    from src.providers import registry
     providers_info = []
     for name in ["mcp", "gemini", "anthropic", "openai", "groq", "ollama", "timps"]:
         try:

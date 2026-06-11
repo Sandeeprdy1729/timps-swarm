@@ -27,7 +27,6 @@ class TIMPSProvider(ProviderInterface):
         # being selected when it will just fall through to Ollama anyway.
         try:
             import transformers  # noqa: F401
-            from huggingface_hub import snapshot_download
             import os
             # Check if model is cached locally (don't trigger a download)
             model_path = os.getenv("TIMPS_MODEL_PATH", "sandeeprdy1729/TIMPS-Coder-0.5B")
@@ -58,7 +57,6 @@ class TIMPSProvider(ProviderInterface):
             {"role": "user", "content": user},
         ]
         try:
-            import torch
             text = self._tokenizer.apply_chat_template(
                 messages, tokenize=False, add_generation_prompt=True
             )

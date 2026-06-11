@@ -17,7 +17,7 @@ Output: clusters, anomalies, correlations, hypotheses,
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from src._helpers import _ts, _llm, _save, _parse_json, _record
 

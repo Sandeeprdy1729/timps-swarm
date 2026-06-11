@@ -403,7 +403,7 @@ def memory_agent(args: Dict[str, Any]) -> Dict[str, Any]:
       limit (int): Max results to return (default 5).
       key (str): Specific memory key for 'forget'.
     """
-    from src.memory import recall_similar, record_run, get_preference, set_preference
+    from src.memory import record_run
 
     action  = args.get("action", "recall")
     content = args.get("content", "")
@@ -499,7 +499,6 @@ def learning_agent(args: Dict[str, Any]) -> Dict[str, Any]:
     top_k   = int(args.get("top_k", 10))
     apply   = args.get("apply", False)
 
-    from src.memory import recall_similar
     from pathlib import Path as _P
     import os as _os
 

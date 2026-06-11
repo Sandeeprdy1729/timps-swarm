@@ -25,10 +25,9 @@ import argparse
 import json
 import os
 import shutil
-import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 # ── colour helpers (no deps) ─────────────────────────────────────────────────
 _NO_COLOR = not sys.stdout.isatty() or os.getenv("NO_COLOR")
@@ -620,11 +619,13 @@ def cmd_install(args: argparse.Namespace) -> None:
     print(f"    {cyan('timps connect cursor        # connect a specific tool')}")
     print(f"    {cyan('timps config claude_code    # print ready-to-paste config snippet')}")
     print()
+    _example1 = 'opencode run "Use timps_pr_reviewer to review this diff: ..."'
+    _example2 = 'claude "use timps_unit_test_writer to write tests for src/auth.py"'
     print(f"  {bold('Step 4: Use from any agent')}")
     print(f"    {dim('Example in OpenCode:')}")
-    print(f"    {cyan('opencode run \"Use timps_pr_reviewer to review this diff: ...\"')}")
+    print(f"    {cyan(_example1)}")
     print(f"    {dim('Example in Claude Code:')}")
-    print(f"    {cyan('claude \"use timps_unit_test_writer to write tests for src/auth.py\"')}")
+    print(f"    {cyan(_example2)}")
     print()
     print(f"  {dim('Full docs: https://github.com/Sandeeprdy1729/timps-swarm')}")
     print()

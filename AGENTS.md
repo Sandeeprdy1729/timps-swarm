@@ -9,7 +9,7 @@ Guidance for OpenCode sessions working in the TIMPS Swarm monorepo. Only signals
 - `src/aiml/`, `src/business/`, `src/domain/`, `src/emerging/`, `src/india/`, `src/infra/`, `src/intelligence/`, `src/nextgen/`, `src/phase7/` — subpackages of specialist agents. Each is a sibling flat namespace; import as `from src.nextgen.foo import foo`.
 - `src/layer1_computer_manager.py`, `src/layer2_swarm_bridge.py`, `src/layer3_swarm_cli.py` — the 3-layer runtime (per-agent compute isolation, swarm bridge/orchestration, CLI shim).
 - `src/llm_router.py` is a thin façade — provider logic lives in `src/providers/*.py` (gemini, anthropic, openai, groq, ollama, mcp_sampler, timps, null).
-- `mcp_server/server.py` — MCP stdio server (JSON-RPC 2.0). Registers an MCP-sampling callback that the LLM router prefers over cloud providers when the host supports it. Defines `TOOLS` (the 64-tool catalogue) and `_TOOL_HANDLERS` (name → lambda). The FastAPI server lazy-imports both for `/mcp/tools` and `/mcp/tools/call`.
+- `mcp_server/server.py` — MCP stdio server (JSON-RPC 2.0). Registers an MCP-sampling callback that the LLM router prefers over cloud providers when the host supports it. Defines `TOOLS` (the 160-tool catalogue) and `_TOOL_HANDLERS` (name → lambda). The FastAPI server lazy-imports both for `/mcp/tools` and `/mcp/tools/call`.
 - `cli/` — the published npm package (`@timps-swarm/cli`-style). Layout: `bin/timps-swarm.js`, `lib/local-audit.js`, `lib/agents-manifest.js` (64 agent metadata), `lib/agent-files.js` (sub-agent `.md` writer/remover), `lib/mcp-proxy.js` (Node.js JSON-RPC 2.0 stdio proxy for `mcp` when Python repo missing), `tools/generate-manifest.js` (Python-AST re-sync). Has its own `package.json`, `node_modules/`, `package-lock.json`. `postinstall` runs `bin/timps-swarm.js install-mcp` which writes 1) the `timps-swarm` MCP server entry into 9 IDE config files (with `env:` block forwarding `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `GROQ_API_KEY`, `TIMPS_API_URL`, `OLLAMA_HOST`, `REDIS_URL`) and 2) one sub-agent `.md` file per TIMPS tool into `~/.claude/agents/`, `./.claude/agents/`, and `~/.codex/agents/`. `timps-swarm uninstall-mcp` reverses both. Add `--no-sub-agents` to install-mcp to skip the `.md` files.
 - `dashboard/` — React UI (react-scripts). Talks to the API via `proxy: http://localhost:8000` and a WebSocket at `ws://localhost:8000/ws`.
 - Top-level Python entry points: `give_work.py` (SDLC/health dispatch), `timps_cli.py` (unified `timps` CLI), `timps_daemon.py` (context-keeper daemon), `timps_doctor.py` (env diagnostics).
@@ -51,11 +51,7 @@ Required for full functionality; first one set wins in `src/llm_router.py`:
 - **Adding a new sub-agent file** after editing `mcp_server/server.py:TOOLS`: run `node cli/tools/generate-manifest.js` to regenerate `cli/lib/agents-manifest.js` (the parser fails loudly on unmapped tools so you must also add a category in the manifest switch). The `npm install` postinstall will then write the new `.md` for existing installs.
 - CLI helpers in `cli/bin/timps-swarm.js`: `findRepoPython()` (priority: `$TIMPS_REPO` env → walk up CWD → `~/timps-swarm` → `~/Desktop/timps-swarm` → `/opt/timps-swarm` → `npm config get prefix`/lib/node_modules/timps-swarm), `pythonBin()` (probes `python3` first, falls back to `python`), `serverDownError(err)` (detects `ECONNREFUSED` / `fetch failed` / `request to … failed` and prints start-server instructions).
 - The 10-agent SDLC graph is wired in `src/graph.py`; `src/agent_kernel.py` is the higher-level "delegate a goal" planner (planner → blackboard → supervisor → executor → reporter). The blackboard lives at `generated/kernel/`.
-- `give_work.py` routes between the SDLC pipeline and the computer-health pipeline by keyword match — adding a new health category requires extending `_HEALTH_KEYWORDS` in `give_work.py`.
-- Python ≥ 3.10 (`pyproject.toml`); CI pins 3.11.
-- The base model for adapter fine-tuning is `Qwen/Qwen2.5-Coder-0.5B-Instruct` (see `Makefile` `BASE_MODEL`). 20 LoRA adapters live under `adapters/`. MLX (Apple Silicon) is the documented path; CUDA torch or plain torch also supported.
-- The 10-agent SDLC graph is wired in `src/graph.py`; `src/agent_kernel.py` is the higher-level "delegate a goal" planner (planner → blackboard → supervisor → executor → reporter). The blackboard lives at `generated/kernel/`.
-- `give_work.py` routes between the SDLC pipeline and the computer-health pipeline by keyword match — adding a new health category requires extending `_HEALTH_KEYWORDS` in `give_work.py`.
+- `give_work.py` routes between the SDLC pipeline and the computer-health pipeline by keyword match — adding a new health domain requires extending the `_DOMAINS` list in `give_work.py`.
 - Python ≥ 3.10 (`pyproject.toml`); CI pins 3.11.
 - The base model for adapter fine-tuning is `Qwen/Qwen2.5-Coder-0.5B-Instruct` (see `Makefile` `BASE_MODEL`). 20 LoRA adapters live under `adapters/`. MLX (Apple Silicon) is the documented path; CUDA torch or plain torch also supported.
 
@@ -67,9 +63,8 @@ Required for full functionality; first one set wins in `src/llm_router.py`:
 
 ## Git / repo quirks
 
-- `.gitignore` is minimal — `.DS_Store` and `__pycache__/*.pyc` are tracked; do not commit them.
-- `dashboard/node_modules/`, `cli/node_modules/`, and `dist/` are tracked or partially tracked. Don't `git clean` blindly.
-- Current `main` has uncommitted local changes to `mcp_server/server.py`, `src/llm_router.py`, `src/graph.py`, `src/_helpers.py`, `src/main.py` (new `/mcp/tools` + `/mcp/tools/call` endpoints), `cli/bin/timps-swarm.js` (`pythonBin`, `serverDownError`, `findRepoPython` extended, `--repo` flags, env forwarding), `cli/lib/mcp-proxy.js` (NEW), `cli/lib/agents-manifest.js`, `cli/lib/agent-files.js`, `cli/tools/generate-manifest.js`, `cli/package.json`, and the README — expect diffs to appear.
+- `.gitignore` covers `__pycache__/`, `*-node_modules/`, `.DS_Store`, `.env`, and runtime artefacts; the tracked `cli/node_modules/` was removed in `267e3c11`.
+- `dashboard/node_modules/`, `cli/node_modules/`, and `dist/` are tracked or untracked depending on history. Don't `git clean -dfx` blindly.
 - Branch-protection / PR / release expectations are not codified anywhere in the repo (no `CONTRIBUTING.md`, no PR template). If asked, default to conventional commits, PRs against `main`.
 
 ## Existing instruction sources worth knowing about

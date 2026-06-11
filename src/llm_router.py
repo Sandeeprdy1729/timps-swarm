@@ -14,7 +14,6 @@ Priority (highest → lowest):
   7. Ollama           — local qwen2.5 models (fallback)
 """
 import logging
-import os
 from typing import Optional
 
 from src.providers.base import ProviderError

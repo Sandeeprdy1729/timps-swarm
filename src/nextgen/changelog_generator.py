@@ -12,7 +12,7 @@ Output: changelog_md, release_notes_by_audience, breaking_changes,
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from src._helpers import _ts, _llm, _save, _parse_json, _record, _run
 

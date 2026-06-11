@@ -31,7 +31,6 @@ from __future__ import annotations
 import json
 import logging
 import os
-import re
 from pathlib import Path
 from typing import Any, Dict
 
@@ -1003,7 +1002,6 @@ def dispatch(request: str, state: Optional[Dict] = None) -> Dict:
         from src.computer_agents import dispatch
         result = dispatch("my wifi keeps dropping")
     """
-    from typing import Optional  # local to avoid top-level circular
     req_lower = request.lower()
     for keywords, node_fn in _KEYWORD_MAP:
         if any(kw in req_lower for kw in keywords):

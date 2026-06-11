@@ -17,14 +17,12 @@ from __future__ import annotations
 import argparse
 import importlib
 import json
-import os
 import shutil
 import subprocess
 import sys
-import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Callable, List
 
 # ── Ensure src/ is importable ─────────────────────────────────────────────────
 _REPO = Path(__file__).resolve().parent
@@ -323,7 +321,7 @@ def check_context_keeper() -> CheckResult:
 def check_agent_kernel() -> CheckResult:
     """Verify the agent kernel can be imported."""
     try:
-        from src.agent_kernel import _heuristic_plan, Blackboard
+        from src.agent_kernel import _heuristic_plan
         tasks = _heuristic_plan("write a hello world function")
         return CheckResult(
             "Agent Kernel",

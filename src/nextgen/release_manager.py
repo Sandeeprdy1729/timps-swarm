@@ -14,7 +14,7 @@ Output: release_plan, version, canary_plan, rollback_triggers,
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from src._helpers import _ts, _llm, _save, _parse_json, _record, _run
 

@@ -25,17 +25,14 @@ result (empty `results`, an LLM-only synthesised answer, and a clear
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import re
-import time
 import urllib.parse
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
-from src._helpers import _GEN, _llm, _parse_json, _record, _run, _save, _ts
+from src._helpers import _GEN, _llm, _parse_json, _record, _save, _ts
 
 DOMAIN = "nextgen"
 

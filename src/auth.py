@@ -27,7 +27,7 @@ import secrets
 import stat
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 _SECRETS_FILE = Path(
     os.environ.get("TIMPS_SECRETS_FILE", str(Path.home() / ".timps" / ".secrets"))

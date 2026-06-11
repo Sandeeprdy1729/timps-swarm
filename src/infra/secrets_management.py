@@ -7,7 +7,6 @@ Output: findings, migration_code, pre_commit_config, report_path
 """
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any, Dict
 

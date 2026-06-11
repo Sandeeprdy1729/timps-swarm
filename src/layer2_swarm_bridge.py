@@ -4,13 +4,9 @@ TIMPS Swarm Integration Layer 2: Swarm Bridge
 Bridges timps-code CLI to timps-swarm multi-agent system.
 Connects the 10 specialized agents from timps-swarm into timps-code's command system.
 """
-import os
-import asyncio
 import logging
-import time
-import json
 import uuid
-from typing import Dict, Optional, Any, List, Callable
+from typing import Dict, Optional, Any, List
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum

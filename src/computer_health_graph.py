@@ -25,8 +25,7 @@ Graph shape (multi-agent mode):
 from __future__ import annotations
 
 import logging
-import operator
-from typing import Annotated, Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from langgraph.graph import StateGraph, END
 
@@ -44,7 +43,6 @@ from src.computer_agents import (
     media_librarian_node,
     backup_sentinel_node,
     context_switcher_node,
-    dispatch,
 )
 from src.expert_agents import (
     dependency_rebel_node,

@@ -5,24 +5,21 @@ CLI commands for timps-code to control the swarm.
 Adds /swarm slash commands to timps-code.
 """
 import os
-import asyncio
 import logging
-import json
-import time
 from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
 try:
-    from src.layer2_swarm_bridge import SwarmBridge, AgentRole, SubAgent, SwarmTask, get_swarm_bridge
-    from src.layer1_computer_manager import get_computer_manager, ComputeResources
+    from src.layer2_swarm_bridge import SwarmBridge, AgentRole, get_swarm_bridge
+    from src.layer1_computer_manager import get_computer_manager
 except ImportError:
     try:
         import sys
         sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        from layer2_swarm_bridge import SwarmBridge, AgentRole, SubAgent, SwarmTask, get_swarm_bridge
-        from layer1_computer_manager import get_computer_manager, ComputeResources
+        from layer2_swarm_bridge import SwarmBridge, AgentRole, get_swarm_bridge
+        from layer1_computer_manager import get_computer_manager
     except ImportError:
         pass
 

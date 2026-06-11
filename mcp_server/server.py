@@ -39,7 +39,6 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-import os
 import sys
 import traceback
 from pathlib import Path
@@ -1403,7 +1402,6 @@ def _handle_full_checkup(args: Dict) -> str:
 
 
 def _handle_run_task(args: Dict) -> str:
-    import asyncio
     from src.layer2_swarm_bridge import get_swarm_bridge
     bridge = get_swarm_bridge()
     request = args.get("request", "")
@@ -1559,7 +1557,7 @@ def _handle_knowledge_agent(agent_name: str, args: Dict) -> str:
 
 
 def _handle_connect_tools(args: Dict) -> str:
-    from src.tool_connectors import connect_tool, connect_all, TOOLS as TC_TOOLS
+    from src.tool_connectors import connect_tool, connect_all
     tool_id = args.get("tool_id", "all")
     dry_run = bool(args.get("dry_run", False))
 

@@ -27,7 +27,7 @@
     "timps-swarm": "bin/timps-swarm.js"
   },
   "scripts": {
-    "postinstall": "node bin/timps-swarm.js install-mcp --silent 2>/dev/null || true",
+    "postinstall": "node -e \"try{process.stderr.write('\\n  ⚡ Run \\`npx timps-swarm install-mcp\\` to connect to Claude Code / Cursor / Codex\\n\\n')}catch(e){}\"",
     "test": "node --test tests/*.test.js"
   },
   "dependencies": {

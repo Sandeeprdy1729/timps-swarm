@@ -19,7 +19,7 @@ import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 from src.llm_router import LLMRouter
 from src.memory import record_run
@@ -423,7 +423,6 @@ def finetuning_agent(args: Dict[str, Any]) -> Dict[str, Any]:
     except json.JSONDecodeError:
         data = {"config_yaml": raw, "train_script": "", "lora_config": {}}
 
-    import yaml as _yaml_attempt
     lora_cfg = data.get("lora_config", {})
     try:
         import yaml

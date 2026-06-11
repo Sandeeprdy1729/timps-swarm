@@ -29,7 +29,6 @@ Available providers (auto-detected from env vars)
 
 from __future__ import annotations
 
-import os
 from typing import Optional
 
 from src.providers.base import ProviderInterface, ProviderError

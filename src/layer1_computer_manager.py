@@ -5,7 +5,6 @@ Allocates isolated compute resources (CPU, RAM, disk) to each sub-agent.
 Each sub-agent runs in its own sandboxed environment with dedicated resources.
 """
 import os
-import asyncio
 import logging
 import uuid
 try:
@@ -14,7 +13,6 @@ try:
 except ImportError:
     HAS_PSUTIL = False
     psutil = None
-import tempfile
 import shutil
 from typing import Dict, Optional, Any
 from dataclasses import dataclass, field

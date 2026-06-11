@@ -225,11 +225,12 @@ def _render_retrieve(name, retriever, reranker) -> str:
 
 
 def _render_generate(name, prompt, llm) -> str:
+    _default_template = 'Context:\\n{context}\\n\\nQ: {question}\\nA:'
     return (
         f'"""{name} generator — formats the prompt and calls the local LLM."""\n'
         f"from __future__ import annotations\n"
         f"SYSTEM = {json.dumps(prompt.get('system',''))}\n"
-        f"TEMPLATE = {json.dumps(prompt.get('template', 'Context:\\n{context}\\n\\nQ: {question}\\nA:'))}\n"
+        f"TEMPLATE = {json.dumps(prompt.get('template', _default_template))}\n"
         f"LLM_MODEL = {json.dumps(llm.get('model', 'llama3.1:8b'))}\n"
         f"TEMPERATURE = {llm.get('temperature', 0.2)}\n"
         f"MAX_TOKENS = {llm.get('max_tokens', 512)}\n\n"
