@@ -84,24 +84,49 @@ function findRepoPython() {
   return null;
 }
 
+function pythonBin() {
+  try { execSync("python3 --version", { stdio: "ignore" }); return "python3"; } catch {}
+  try { execSync("python --version", { stdio: "ignore" }); return "python"; } catch {}
+  return null;
+}
+
+function requirePython() {
+  const py = pythonBin();
+  if (py) return py;
+  console.error("");
+  console.error(chalk.red("  ✗ Python 3.10+ is required but not found on your system."));
+  console.error(chalk.dim("    Install it and try again:"));
+  console.error(chalk.cyan("      macOS:  brew install python@3.12"));
+  console.error(chalk.cyan("      Ubuntu: sudo apt install python3.12"));
+  console.error(chalk.cyan("      Other:  https://python.org/downloads"));
+  console.error("");
+  process.exit(1);
+}
+
+function requireGit() {
+  try { execSync("git --version", { stdio: "ignore" }); return true; } catch {}
+  console.error("");
+  console.error(chalk.red("  ✗ Git is required but not found on your system."));
+  console.error(chalk.dim("    Install it: https://git-scm.com/downloads"));
+  console.error(chalk.cyan("      macOS:  brew install git"));
+  console.error(chalk.cyan("      Ubuntu: sudo apt install git"));
+  console.error("");
+  process.exit(1);
+}
+
 function ensureRepo() {
   const existing = findRepoPython();
   if (existing) return existing;
-  console.error(chalk.cyan("\n  ⏳ First-time setup: cloning TIMPS Swarm backend (~30s)…\n"));
+  requireGit();
+  const py = requirePython();
+  console.error(chalk.cyan("\n  ⏳  First-time setup: cloning TIMPS Swarm backend & installing deps"));
+  console.error(chalk.dim("     This only happens once (~30–90s depending on your internet).\n"));
   mkdirSync(TIMPS_DATA_DIR, { recursive: true });
   execSync(`git clone --depth 1 https://github.com/Sandeeprdy1729/timps-swarm.git "${TIMPS_REPO_DIR}"`, { stdio: "inherit" });
-  const py = pythonBin();
   console.error(chalk.cyan("  Installing Python dependencies…\n"));
-  execSync(`"${py}" -m pip install -e "${TIMPS_REPO_DIR}" --quiet`, { stdio: "inherit" });
-  console.error(chalk.green("\n  ✓ Backend ready\n"));
+  execSync(`"${py}" -m pip install -e "${TIMPS_REPO_DIR}"`, { stdio: "inherit" });
+  console.error(chalk.green("\n  ✓ Backend ready. Restart your IDE to see the 160 tools.\n"));
   return TIMPS_REPO_DIR;
-}
-
-function pythonBin() {
-  // Prefer python3 — macOS 12+ and most Linux distros don't ship `python` anymore.
-  try { execSync("python3 --version", { stdio: "ignore" }); return "python3"; } catch {}
-  try { execSync("python --version", { stdio: "ignore" }); return "python"; } catch {}
-  return "python3";
 }
 
 function serverDownError(err) {
@@ -180,11 +205,7 @@ program
     const serverUp = await checkServer();
     if (!serverUp) {
       console.log(chalk.yellow("  TIMPS server not running — starting it now…\n"));
-      const repoDir = findRepoPython();
-      if (!repoDir) {
-        console.error(chalk.red("  Could not find timps-swarm repo. Set TIMPS_API_URL or clone the repo."));
-        process.exit(1);
-      }
+      const repoDir = ensureRepo();
       const proc = spawn(pythonBin(), ["-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"], {
         cwd: repoDir, detached: true, stdio: "ignore",
       });
