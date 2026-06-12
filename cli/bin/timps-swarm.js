@@ -38,6 +38,8 @@ const __dirname = dirname(__filename);
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 const API_BASE = process.env.TIMPS_API_URL || "http://localhost:8000";
+const TIMPS_DATA_DIR = join(process.env.HOME || process.cwd(), ".timps");
+const TIMPS_REPO_DIR = process.env.TIMPS_REPO || join(TIMPS_DATA_DIR, "repo");
 
 async function fetchAPI(path, body) {
   const fetch = (await import("node-fetch")).default;
@@ -61,17 +63,17 @@ async function checkServer() {
 }
 
 function findRepoPython() {
-  // 1. Explicit override (set TIMPS_REPO=/path/to/timps-swarm to skip auto-detection)
-  if (process.env.TIMPS_REPO && existsSync(join(process.env.TIMPS_REPO, "mcp_server", "server.py"))) {
-    return process.env.TIMPS_REPO;
-  }
-  // 2. Walk up from CWD
+  // 1. Auto-cloned repo in ~/.timps/repo/
+  if (existsSync(join(TIMPS_REPO_DIR, "mcp_server", "server.py"))) return TIMPS_REPO_DIR;
+  // 2. Explicit override (TIMPS_REPO env)
+  if (process.env.TIMPS_REPO && existsSync(join(process.env.TIMPS_REPO, "mcp_server", "server.py"))) return process.env.TIMPS_REPO;
+  // 3. Walk up from CWD
   let dir = process.cwd();
   for (let i = 0; i < 6; i++) {
     if (existsSync(join(dir, "mcp_server", "server.py"))) return dir;
     dir = resolve(dir, "..");
   }
-  // 3. Common install locations
+  // 4. Common install locations
   const common = [
     join(process.env.HOME || "", "timps-swarm"),
     join(process.env.HOME || "", "Desktop", "timps-swarm"),
@@ -79,15 +81,20 @@ function findRepoPython() {
   ];
   const found = common.find(d => d && existsSync(join(d, "mcp_server", "server.py")));
   if (found) return found;
-  // 4. npm global prefix (for `npm install -g` users who bundled Python files)
-  try {
-    const npmPrefix = execSync("npm config get prefix", { encoding: "utf8" }).trim();
-    if (npmPrefix) {
-      const npmLib = join(npmPrefix, "lib", "node_modules", "timps-swarm");
-      if (existsSync(join(npmLib, "mcp_server", "server.py"))) return npmLib;
-    }
-  } catch {}
   return null;
+}
+
+function ensureRepo() {
+  const existing = findRepoPython();
+  if (existing) return existing;
+  console.error(chalk.cyan("\n  ⏳ First-time setup: cloning TIMPS Swarm backend (~30s)…\n"));
+  mkdirSync(TIMPS_DATA_DIR, { recursive: true });
+  execSync(`git clone --depth 1 https://github.com/Sandeeprdy1729/timps-swarm.git "${TIMPS_REPO_DIR}"`, { stdio: "inherit" });
+  const py = pythonBin();
+  console.error(chalk.cyan("  Installing Python dependencies…\n"));
+  execSync(`"${py}" -m pip install -e "${TIMPS_REPO_DIR}" --quiet`, { stdio: "inherit" });
+  console.error(chalk.green("\n  ✓ Backend ready\n"));
+  return TIMPS_REPO_DIR;
 }
 
 function pythonBin() {
@@ -484,9 +491,9 @@ program
   .option("--repo <path>", "Path to timps-swarm Python repo (auto-detected if omitted)")
   .action((opts) => {
     printHeader("Starting Server");
-    const repoDir = opts.repo || findRepoPython();
+    const repoDir = opts.repo || ensureRepo();
     if (!repoDir) {
-      console.error(chalk.red("  Could not find timps-swarm repo."));
+      console.error(chalk.red("  Could not find or install timps-swarm Python backend."));
       console.error(chalk.dim("  Clone it:  git clone https://github.com/Sandeeprdy1729/timps-swarm ~/timps-swarm"));
       console.error(chalk.dim("  Or pass:   npx timps-swarm start --repo <path>"));
       console.error(chalk.dim("  Or set:    TIMPS_REPO=/path/to/timps-swarm"));
@@ -509,7 +516,7 @@ program
   .description("Start the MCP stdio server (for Claude Code, Cursor, etc.)")
   .option("--repo <path>", "Path to timps-swarm Python repo (auto-detected if omitted)")
   .action(async (opts) => {
-    const repoDir = opts.repo || findRepoPython();
+    const repoDir = opts.repo || ensureRepo();
     if (repoDir) {
       // Path 1: full Python MCP server (in-process, supports MCP sampling)
       const proc = spawn(pythonBin(), ["-m", "mcp_server.server"], {
@@ -520,10 +527,9 @@ program
       proc.on("exit", code => process.exit(code || 0));
       return;
     }
-    // Path 2: Node.js JSON-RPC 2.0 proxy → a running FastAPI server.
-    // Lets `npm install -g timps-swarm` users run the MCP server without
-    // cloning the Python backend, as long as the API server is reachable
-    // (locally via `npx timps-swarm start` or remotely via TIMPS_API_URL).
+    // Path 2 (fallback): Node.js JSON-RPC 2.0 proxy → remote FastAPI server.
+    // Used when cloning failed (no git, no pip) but user has a remote server.
+    console.error(chalk.yellow("  Could not install Python backend locally. Falling back to remote proxy."));
     const url = await import("node:url");
     const proxyPath = url.fileURLToPath(new URL("../lib/mcp-proxy.js", import.meta.url));
     const proc = spawn(process.execPath, [proxyPath], {
@@ -552,7 +558,7 @@ program
 
     const home = process.env.HOME || process.env.USERPROFILE || "~";
     const cwd  = process.cwd();
-    const repoDir = opts.repo || findRepoPython() || resolve(__dirname, "../..");
+    const repoDir = opts.repo || ensureRepo() || resolve(__dirname, "../..");
 
     // MCP entry — use `npx timps-swarm mcp` so it works globally or locally
     const envVars = {};

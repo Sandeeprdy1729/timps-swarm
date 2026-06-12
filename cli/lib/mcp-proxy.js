@@ -69,7 +69,27 @@ function fail(id, code, message, data) {
 
 async function loadTools() {
   if (cachedTools) return cachedTools;
-  const r = await fetch(`${API_BASE}/mcp/tools`, { signal: AbortSignal.timeout(10000) });
+  let r;
+  try {
+    r = await fetch(`${API_BASE}/mcp/tools`, { signal: AbortSignal.timeout(10000) });
+  } catch (err) {
+    log(``);
+    log(`┌────────────────────────────────────────────────────────────────┐`);
+    log(`│ ⚠  TIMPS backend server not found at ${API_BASE}  │`);
+    log(`│                                                                │`);
+    log(`│ The "160 AI agents" live in the Python backend. Start it with: │`);
+    log(`│                                                                │`);
+    log(`│   npx timps-swarm start                                         │`);
+    log(`│                                                                │`);
+    log(`│ Or point at a remote server:                                    │`);
+    log(`│   TIMPS_API_URL=https://your-server npx timps-swarm mcp          │`);
+    log(`│                                                                │`);
+    log(`│ The local-only audit command never needs a backend:             │`);
+    log(`│   npx timps-swarm audit ./                                      │`);
+    log(`└────────────────────────────────────────────────────────────────┘`);
+    log(``);
+    throw new Error(`Cannot reach TIMPS backend at ${API_BASE} — run "npx timps-swarm start" first`);
+  }
   if (!r.ok) throw new Error(`GET /mcp/tools → ${r.status} ${r.statusText}`);
   const data = await r.json();
   cachedTools = Array.isArray(data.tools) ? data.tools : [];
