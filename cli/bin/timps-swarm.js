@@ -119,6 +119,10 @@ function ensureRepo() {
   if (existing) return existing;
   requireGit();
   const py = requirePython();
+  const gitDir = join(TIMPS_REPO_DIR, ".git");
+  if (existsSync(TIMPS_REPO_DIR) && !existsSync(gitDir)) {
+    execSync(`rm -rf "${TIMPS_REPO_DIR}"`, { stdio: "inherit" });
+  }
   console.error(chalk.cyan("\n  ⏳  First-time setup: cloning TIMPS Swarm backend & installing deps"));
   console.error(chalk.dim("     This only happens once (~30–90s depending on your internet).\n"));
   mkdirSync(TIMPS_DATA_DIR, { recursive: true });
