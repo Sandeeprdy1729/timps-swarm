@@ -549,6 +549,45 @@ TOOLS: List[Dict[str, Any]] = [
         },
     },
     {
+        "name": "timps_batch",
+        "description": (
+            "Intelligently decompose a bulk task into parallel sub-tasks, "
+            "execute them concurrently, and return a single aggregated result. "
+            "Use this to do the same operation across many files at once. "
+            "Examples: 'add tests for all handlers', 'review all API endpoints', "
+            "'add docstrings to every Python file', 'find flaky tests across all modules'."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "instruction": {
+                    "type": "string",
+                    "description": "The high-level instruction describing the bulk task",
+                },
+                "agent_type": {
+                    "type": "string",
+                    "description": "Which specialist agent to use (e.g., unit_test_writer, "
+                                 "docstring_generator, pr_reviewer, log_detective)",
+                },
+                "working_dir": {
+                    "type": "string",
+                    "description": "The project root directory to scan for work items",
+                },
+                "max_parallel": {
+                    "type": "integer",
+                    "description": "Max concurrent sub-agents (default: 10)",
+                    "default": 10,
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "description": "If true, just show the decomposition plan without executing",
+                    "default": False,
+                },
+            },
+            "required": ["instruction", "agent_type", "working_dir"],
+        },
+    },
+    {
         "name": "timps_kernel_status",
         "description": "Check the status of a previously delegated kernel run by its run_id.",
         "inputSchema": {
@@ -1560,6 +1599,70 @@ def _handle_kernel_status(args: Dict) -> str:
     return f"Run `{run_id}`: status={data['status']}, tasks={done}/{total} done\n\n{report_snippet}"
 
 
+def _handle_batch(args: Dict) -> str:
+    from src.delegation_engine import DelegationEngine
+    instruction = args.get("instruction", "")
+    agent_type = args.get("agent_type", "")
+    working_dir = args.get("working_dir", "")
+    max_parallel = int(args.get("max_parallel", 10))
+    dry_run = bool(args.get("dry_run", False))
+
+    if not instruction or not agent_type or not working_dir:
+        return "Error: instruction, agent_type, and working_dir are all required."
+
+    def progress_callback(progress, total, message):
+        if progress is not None and total is not None:
+            _send_progress(None, progress, total, message)
+
+    engine = DelegationEngine()
+    result = asyncio.run(engine.execute(
+        instruction=instruction, agent_type=agent_type,
+        working_dir=working_dir, max_parallel=max_parallel,
+        dry_run=dry_run, progress_callback=progress_callback,
+    ))
+
+    lines = ["# TIMPS Batch Delegation\n"]
+    if dry_run:
+        lines.append(f"**Plan:** {result['total_tasks']} sub-tasks across "
+                      f"{result['estimated_parallel_waves']} parallel waves\n")
+        for t in result["tasks"]:
+            lines.append(f"- #{t['id']} **{t['agent']}** → {t.get('target', '?')}")
+            if t.get("dependencies"):
+                deps_list = t["dependencies"]
+                lines[-1] = lines[-1] + " (depends on: " + str(deps_list) + ")"
+        return "\n".join(lines)
+
+    lines.append(f"**Status:** {result['status']}  |  "
+                  f"**Time:** {result.get('wall_time_seconds', 0)}s  |  "
+                  f"**Waves:** {result.get('waves_executed', 0)}\n")
+    lines.append(f"**Tasks:** {result['succeeded']}/{result['total']} succeeded"
+                  f" ({result['failed']} failed, {result.get('timed_out', 0)} timed out)\n")
+    if result.get("files_created"):
+        lines.append(f"**Files created:** {len(result['files_created'])}")
+        for f in result["files_created"][:10]:
+            lines.append(f"- `{f}`")
+        if len(result["files_created"]) > 10:
+            lines.append(f"- … and {len(result['files_created']) - 10} more")
+        lines.append("")
+    if result.get("failures"):
+        lines.append("**Failures:**")
+        for f in result["failures"]:
+            lines.append(f"- `{f['target']}`: {f['error'][:120]}")
+        lines.append("")
+    if result.get("next_steps"):
+        lines.append("**Next steps:**")
+        for step in result["next_steps"]:
+            lines.append(f"- {step[:200]}")
+        lines.append("")
+    if result.get("cost"):
+        c = result["cost"]
+        lines.append(f"**Cost:** ${c['total_cost_usd']} ({c['total_calls']} calls, "
+                      f"{c['total_input_tokens']} in / {c['total_output_tokens']} out tokens)")
+    lines.append("\n---\n")
+    lines.append(result.get("summary", ""))
+    return "\n".join(lines)
+
+
 def _handle_health_agent(agent_name: str, args: Dict) -> str:
     agents = _import_agents()
     node_fn = agents[agent_name]
@@ -1804,6 +1907,7 @@ _TOOL_HANDLERS: Dict[str, Any] = {
     "timps_context_switcher":   lambda a: _handle_health_agent("context_switcher",   a),
     "timps_context_briefing":   lambda a: _handle_context_briefing(a),
     "timps_delegate":            lambda a: _handle_delegate(a),
+    "timps_batch":               lambda a: _handle_batch(a),
     "timps_kernel_status":       lambda a: _handle_kernel_status(a),
     # Expert agents
     "timps_dependency_rebel":         lambda a: _handle_expert_agent("dependency_rebel", a),

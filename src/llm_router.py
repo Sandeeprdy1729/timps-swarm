@@ -132,6 +132,7 @@ class LLMRouter:
         system_prompt: str = "",
         use_timps: bool = False,
         format_json: bool = False,
+        task_id: str = None,
     ) -> str:
         """Route call to the correct model via the provider abstraction layer.
 
@@ -159,14 +160,30 @@ class LLMRouter:
         from src.providers.ollama import OllamaProvider
         try:
             if isinstance(provider, OllamaProvider):
-                return provider.chat(
+                response = provider.chat(
                     prompt, system_prompt,
                     model=model, temperature=temperature, format_json=format_json,
                 )
-            return provider.chat(
-                prompt, system_prompt,
-                temperature=temperature, max_tokens=8192, format_json=format_json,
-            )
+            else:
+                response = provider.chat(
+                    prompt, system_prompt,
+                    temperature=temperature, max_tokens=8192, format_json=format_json,
+                )
+
+            if isinstance(response, str) and response:
+                try:
+                    from src.token_budget import get_token_budget_manager
+                    input_tokens = len(prompt) // 3 + (len(system_prompt) // 3 if system_prompt else 0)
+                    output_tokens = len(response) // 3
+                    get_token_budget_manager().record_usage(
+                        model=model, input_tokens=input_tokens,
+                        output_tokens=output_tokens,
+                        agent_name=agent_name, task_id=task_id,
+                    )
+                except Exception:
+                    pass
+
+            return response
         except ProviderError as exc:
             logger.warning("Provider error for %s: %s", agent_name, exc)
             return f"[No LLM provider available — {exc}]"

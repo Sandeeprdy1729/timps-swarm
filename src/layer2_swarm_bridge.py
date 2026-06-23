@@ -119,6 +119,7 @@ class SubAgent:
     started_at: Optional[str] = None
     completed_at: Optional[str] = None
     error: Optional[str] = None
+    task_id: Optional[str] = None
 
 
 @dataclass 
@@ -134,6 +135,7 @@ class SwarmTask:
     results: Dict[str, Any] = field(default_factory=dict)
     artifacts: List[str] = field(default_factory=list)
     error: Optional[str] = None
+    task_id: Optional[str] = None
 
 
 class SwarmBridge:
@@ -158,7 +160,8 @@ class SwarmBridge:
         self, 
         role: AgentRole, 
         resources: Optional[ComputeResources] = None,
-        initial_task: Optional[str] = None
+        initial_task: Optional[str] = None,
+        task_id: Optional[str] = None,
     ) -> SubAgent:
         """Spawn a new sub-agent with its own computer."""
         resources = resources or ROLE_RESOURCES.get(role, ComputeResources())
@@ -175,6 +178,7 @@ class SwarmBridge:
             status="running" if initial_task else "idle",
             current_task=initial_task or "",
             started_at=datetime.now(timezone.utc).isoformat() if initial_task else None,
+            task_id=task_id,
         )
         
         self.sub_agents[agent.id] = agent
