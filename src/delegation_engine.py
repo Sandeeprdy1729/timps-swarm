@@ -162,6 +162,8 @@ class DelegationEngine:
         progress_callback=None,
     ) -> dict:
         start_time = time.time()
+        import uuid
+        run_id = f"run-{uuid.uuid4().hex[:12]}"
 
         if progress_callback:
             progress_callback(5, 100, "Capturing repository context...")
@@ -178,6 +180,23 @@ class DelegationEngine:
         sub_tasks = self.decomposer.decompose(
             instruction, agent_type, working_dir, max_items=100,
         )
+
+        # Persist run start to SQLite
+        try:
+            from src.persistence import get_db
+            get_db().create_run(
+                run_id=run_id, instruction=instruction,
+                agent_type=agent_type, working_dir=working_dir,
+                total_tasks=len(sub_tasks),
+            )
+            for task in sub_tasks:
+                get_db().create_task(
+                    run_id=run_id, task_id=task["id"],
+                    target=task.get("target", "unknown"),
+                    agent=task["agent"],
+                )
+        except Exception:
+            pass
 
         if dry_run:
             return {
@@ -211,10 +230,41 @@ class DelegationEngine:
         aggregated["wall_time_seconds"] = round(time.time() - start_time, 2)
         aggregated["waves_executed"] = len(waves)
         aggregated["total_tasks"] = len(sub_tasks)
+        aggregated["run_id"] = run_id
 
         try:
             from src.token_budget import get_token_budget_manager
             aggregated["cost"] = get_token_budget_manager().get_run_summary()
+        except Exception:
+            pass
+
+        # Persist run completion
+        try:
+            from src.persistence import get_db
+            db = get_db()
+            db.finish_run(
+                run_id=run_id,
+                status=aggregated["status"],
+                result=aggregated,
+            )
+            db.update_run(
+                run_id,
+                wall_time_seconds=aggregated["wall_time_seconds"],
+                waves_executed=aggregated["waves_executed"],
+                succeeded_tasks=aggregated["succeeded"],
+                failed_tasks=aggregated["failed"],
+                summary=aggregated.get("summary", ""),
+            )
+            # Update individual task statuses
+            for ndx, task in enumerate(sub_tasks):
+                task_result = all_normalized[ndx] if ndx < len(all_normalized) else None
+                if task_result:
+                    db.update_task(
+                        run_id, task["id"],
+                        status=task_result["status"],
+                        output_json=str(task_result.get("raw", ""))[:500],
+                        error=task_result.get("summary", "")[:500],
+                    )
         except Exception:
             pass
 

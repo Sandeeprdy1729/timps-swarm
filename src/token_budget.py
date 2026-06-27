@@ -80,6 +80,21 @@ class TokenBudgetManager:
             self._current_run_cost += cost
             self._daily_cost += cost
 
+        try:
+            from src.persistence import get_db
+            db = get_db()
+            db.record_token_usage(
+                model=model,
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
+                cost_usd=cost,
+                agent_name=agent_name,
+                run_id=task_id or "",
+                task_id=task_id or "",
+            )
+        except Exception:
+            pass
+
         result = {"cost_usd": round(cost, 6), "within_budget": True, "warning": None}
         if cost > self.per_task_budget:
             result["warning"] = (

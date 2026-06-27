@@ -125,6 +125,10 @@ AGENT_MODEL_MAP = {
 
 
 class LLMRouter:
+    def _get_provider_name(self, model: str) -> str:
+        from src.rate_limiter import get_rate_limiter
+        return get_rate_limiter().wrap_provider_name(model)
+
     def call(
         self,
         agent_name: str,
@@ -158,7 +162,13 @@ class LLMRouter:
 
         # For Ollama we pass the agent-specific model; other providers use their defaults
         from src.providers.ollama import OllamaProvider
+        from src.rate_limiter import get_rate_limiter
         try:
+            provider_name = self._get_provider_name(model)
+            acquired = get_rate_limiter().sync_acquire(provider_name, timeout=120)
+            if not acquired:
+                return f"[Rate limit timeout — {provider_name} busy after 120s wait]"
+
             if isinstance(provider, OllamaProvider):
                 response = provider.chat(
                     prompt, system_prompt,

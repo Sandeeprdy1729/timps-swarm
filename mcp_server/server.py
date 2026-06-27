@@ -2112,6 +2112,14 @@ def _handle_request(msg: Dict) -> Optional[str]:
         except ImportError:
             pass  # auth module not available — open access
 
+        # ── Graceful shutdown check ──────────────────────────────────────
+        try:
+            from src.shutdown import get_shutdown
+            if get_shutdown().is_shutting_down:
+                return _make_error(id_, -32000, "Server is shutting down, cannot accept new tasks")
+        except ImportError:
+            pass
+
         handler = _TOOL_HANDLERS.get(tool_name)
         if not handler:
             return _make_error(id_, -32601, f"Unknown tool: {tool_name}")

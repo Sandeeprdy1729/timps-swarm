@@ -69,11 +69,11 @@ class FailureRecovery:
 
         self.retry_log.append({
             "task_id": task["id"],
-            "attempts": self.MAX_RETRIES,
+            "attempts": attempt,
             "status": "failed",
             "last_error": last_error,
         })
-        return {"status": "failed", "error": last_error, "attempts": self.MAX_RETRIES, "last_output": last_output}
+        return {"status": "failed", "error": last_error, "attempts": attempt, "last_output": last_output}
 
     def _modify_args_for_retry(self, args: dict, attempt: int, last_error: Optional[str]) -> dict:
         modified = dict(args)
@@ -102,11 +102,11 @@ class FailureRecovery:
             return "rate_limit"
         if "auth" in error_string or "401" in error_string or "403" in error_string:
             return "auth"
-        if "context_length" in error_string or "token" in error_string:
+        if "context_length" in error_string or "token" in error_string or "context length" in error_string:
             return "context_length"
         if "connection" in error_string or "network" in error_string:
             return "connection"
-        if "json" in error_string or "parse" in error_string:
+        if "json" in error_string or "parse" in error_string or "expect" in error_string:
             return "json_parse"
         return "unknown"
 

@@ -11,6 +11,8 @@ import asyncio
 import json
 import logging
 import os
+import signal
+import sys
 import time
 import uuid
 from collections import OrderedDict
@@ -39,6 +41,20 @@ except Exception:
     _APP_VERSION = "2.2.0"
 
 app = FastAPI(title="TIMPS Swarm API", version=_APP_VERSION)
+
+# ── Graceful shutdown ──────────────────────────────────────────────────────
+try:
+    from src.shutdown import get_shutdown
+    shutdown = get_shutdown()
+
+    @app.on_event("shutdown")
+    async def _app_shutdown():
+        """Close SQLite and HTTP sessions on server shutdown."""
+        from src.persistence import get_db
+        get_db().close()
+        logger.info("Database connection closed on shutdown")
+except Exception:
+    pass
 
 _CORS_ORIGINS = os.getenv("TIMPS_CORS_ORIGINS", "http://localhost:3000,http://localhost:5173")
 app.add_middleware(
@@ -317,11 +333,18 @@ async def _run_swarm_async(run_id: str, request: str, language: str, max_iterati
 @app.get("/health")
 async def health():
     r = _get_redis()
+    db_size = 0.0
+    try:
+        from src.persistence import get_db
+        db_size = get_db().get_db_size_mb()
+    except Exception:
+        pass
     return {
         "status": "ok",
         "service": "timps-swarm",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "redis": "connected" if r else "unavailable (using in-memory fallback)",
+        "sqlite_db_mb": round(db_size, 2),
     }
 
 
@@ -651,6 +674,35 @@ async def mcp_install(body: dict):
             "if installed globally)."
         ),
     )
+
+
+# ── Persistence API (SQLite-backed) ──────────────────────────────────────
+
+@app.get("/api/costs")
+async def get_cost_history(days: int = 7):
+    from src.persistence import get_db
+    return get_db().get_cost_summary(days=days)
+
+
+@app.get("/api/runs")
+async def get_recent_runs(limit: int = 20):
+    from src.persistence import get_db
+    return get_db().get_recent_runs(limit=limit)
+
+
+@app.get("/api/runs/{run_id}")
+async def get_run(run_id: str):
+    from src.persistence import get_db
+    run = get_db().get_run(run_id)
+    if not run:
+        raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
+    return run
+
+
+@app.get("/api/patterns")
+async def get_top_patterns(limit: int = 20):
+    from src.persistence import get_db
+    return get_db().get_top_patterns(limit=limit)
 
 
 # ── HTTP bridge to the MCP server ─────────────────────────────────────────

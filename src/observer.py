@@ -25,6 +25,17 @@ class TaskObserver:
         self.call_buffer.append(call_record)
         patterns = self.detect_repetitive_patterns()
         for pattern in patterns:
+            try:
+                from src.persistence import get_db
+                get_db().save_pattern(
+                    tool=pattern["tool"],
+                    fingerprint=pattern.get("sample_args", {}).get("args_hash", "unknown"),
+                    call_count=pattern["count"],
+                    time_span=pattern["time_span_seconds"],
+                    action_taken=pattern["suggested_action"],
+                )
+            except Exception:
+                pass
             for callback in self.spawn_callbacks:
                 try:
                     callback(pattern)
