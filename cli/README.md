@@ -1,15 +1,15 @@
 # timps-swarm CLI
 
-> **160 AI specialists — code, security, DevOps, AI/ML, infra, India-stack,
+> **161 AI specialists — code, security, DevOps, AI/ML, infra, India-stack,
 > health, research, content, voice, robotics, and more.**
-> One `npm install` puts every one of them into your AI coding tool as
+> One `install-mcp` command puts every one of them into your AI coding tool as
 > parallel sub-agents. Works with just Node — no Python required.
 
 [![npm](https://img.shields.io/badge/npm-timps--swarm-CB3837?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/timps-swarm)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 [![Node 18+](https://img.shields.io/badge/Node-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![MCP Protocol](https://img.shields.io/badge/Protocol-MCP-7C3AED?style=flat-square)](https://modelcontextprotocol.io)
-[![v2.2.0](https://img.shields.io/badge/version-2.2.0-FF6B35?style=flat-square)](https://github.com/Sandeeprdy1729/timps-swarm/releases)
+[![v2.2.1](https://img.shields.io/badge/version-2.2.1-FF6B35?style=flat-square)](https://github.com/Sandeeprdy1729/timps-swarm/releases)
 
 ## Install
 
@@ -19,18 +19,24 @@ npm install -g timps-swarm
 npx timps-swarm <command>
 ```
 
-The postinstall hook auto-detects every AI tool on your machine and:
+Then wire it into your coding agents:
+
+```bash
+npx timps-swarm install-mcp
+```
+
+`install-mcp` auto-detects every AI tool on your machine and:
 
 1. Writes the `timps-swarm` MCP server entry into each IDE config file,
    including an explicit `env:` block that forwards your API keys
    (`GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
    `GROQ_API_KEY`, `TIMPS_API_URL`, `OLLAMA_HOST`, `REDIS_URL`).
-2. Writes one sub-agent `.md` file per agent (160 total) into
+2. Writes one sub-agent `.md` file per agent (161 total) into
    `~/.claude/agents/`, `./.claude/agents/`, and `~/.codex/agents/`
    so Claude Code, Cursor, and Codex can dispatch them in parallel
    via `Task(subagent_type="timps_kubernetes_navigator")`.
 
-Restart your tool — 160 agents appear as MCP tools **and** as parallel sub-agents.
+Restart your tool — 161 agents appear as MCP tools **and** as parallel sub-agents.
 
 ```bash
 # Zero-setup, no install required:
@@ -131,18 +137,18 @@ npx timps-swarm start --repo ./..    # start with explicit repo path
 ### `install-mcp` / `uninstall-mcp` — wire up (or remove) every IDE
 
 ```bash
-npx timps-swarm install-mcp              # all detected tools + 160 sub-agents
+npx timps-swarm install-mcp              # all detected tools + 161 sub-agents
 npx timps-swarm install-mcp --tool cursor          # one tool only
 npx timps-swarm install-mcp --no-sub-agents        # MCP config only, no .md files
 npx timps-swarm install-mcp --dry-run              # preview without writing
-npx timps-swarm uninstall-mcp           # remove the MCP config and 160 sub-agents
+npx timps-swarm uninstall-mcp           # remove the MCP config and 161 sub-agents
 ```
 
 By default `install-mcp` writes:
 
 - **MCP server entries** into 9 IDE config files (one per IDE, all
   pointing at `npx timps-swarm mcp`).
-- **160 sub-agent `.md` files** into `~/.claude/agents/`,
+- **161 sub-agent `.md` files** into `~/.claude/agents/`,
   `./.claude/agents/`, `~/.codex/agents/` (one per MCP tool) so
   Claude Code's `Task(subagent_type="timps_kubernetes_navigator")`,
   Cursor Composer, and Codex can dispatch them in parallel.
@@ -157,7 +163,7 @@ and the `timps-*.md` files — your other config is untouched).
 FLAGS (install-mcp)
   --tool <id>            Configure one IDE only
                          (claude-code, cursor, codex-cli, windsurf, vscode, …)
-  --no-sub-agents        Skip writing 160 sub-agent .md files (MCP config only)
+  --no-sub-agents        Skip writing 161 sub-agent .md files (MCP config only)
   --dry-run              Preview without writing
   --silent               Suppress output (postinstall)
 
@@ -179,7 +185,7 @@ FLAGS (start / mcp)
 | `REDIS_URL` | Redis server URL — default `redis://localhost:6379/0`. Falls back to in-memory dict silently when Redis is down. |
 | `LOG_LEVEL` | Default `INFO`. |
 
-## The 160 agents
+## The 161 agents
 
 9 categories. Every one is callable as an MCP tool **and** registered as a
 native Claude Code / Cursor / Codex sub-agent.

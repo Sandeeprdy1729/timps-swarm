@@ -19,14 +19,32 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
+def _pyproject_version() -> str:
+    content = (REPO_ROOT / "pyproject.toml").read_text()
+    match = re.search(r'^version\s*=\s*"([^"]+)"', content, re.MULTILINE)
+    assert match, "Could not find project.version in pyproject.toml"
+    return match.group(1)
+
+
+def _mcp_server_info_version() -> str:
+    content = (REPO_ROOT / "mcp_server" / "server.py").read_text()
+    match = re.search(
+        r'"name":\s*"timps-swarm".*?"version":\s*"([0-9.]+)"',
+        content,
+        re.DOTALL,
+    )
+    assert match, "Could not find timps-swarm serverInfo in mcp_server/server.py"
+    return match.group(1)
+
+
 # ── MCP tool catalogue ──────────────────────────────────────────────────────
 
 
-def test_mcp_tool_catalogue_has_160_tools():
-    """The MCP server must expose exactly 160 tools — the canonical agent
-    catalogue size after the 2.2.0 expansion (was 64 in 2.1.0)."""
+def test_mcp_tool_catalogue_has_161_tools():
+    """The MCP server must expose exactly 161 tools — the canonical agent
+    catalogue size after adding the batch delegation workhorse."""
     from mcp_server.server import TOOLS
-    assert len(TOOLS) == 160, f"Expected 160 tools, got {len(TOOLS)}"
+    assert len(TOOLS) == 161, f"Expected 161 tools, got {len(TOOLS)}"
 
 
 def test_every_tool_has_a_handler():
@@ -96,49 +114,36 @@ def test_meta_agents_present():
 # ── Package version consistency ─────────────────────────────────────────────
 
 
-def test_cli_package_version_is_2_2_0():
-    """The npm package version must be 2.2.0 to match the published
-    release on the registry."""
+def test_cli_package_version_matches_python_package():
+    """The npm package version must match the Python package version."""
     pkg_path = REPO_ROOT / "cli" / "package.json"
     assert pkg_path.exists(), f"Missing {pkg_path}"
     pkg = json.loads(pkg_path.read_text())
-    assert pkg["version"] == "2.2.0", (
-        f"cli/package.json version is {pkg['version']}, expected 2.2.0"
+    assert pkg["version"] == _pyproject_version(), (
+        f"cli/package.json version is {pkg['version']}, "
+        f"expected {_pyproject_version()}"
     )
-    assert "160" in pkg.get("description", ""), (
-        f"cli/package.json description should mention 160 agents: {pkg.get('description')}"
+    assert "161" in pkg.get("description", ""), (
+        f"cli/package.json description should mention 161 agents: {pkg.get('description')}"
     )
 
 
-def test_python_package_version_is_2_2_0():
-    """The Python `timps-swarm-mcp` package version (pyproject.toml) must
-    be 2.2.0 to match the npm release."""
+def test_python_package_version_matches_cli_package():
+    """The Python `timps-swarm-mcp` package version must match npm."""
     pyproject = REPO_ROOT / "pyproject.toml"
     assert pyproject.exists()
-    content = pyproject.read_text()
-    assert 'version = "2.2.0"' in content, (
-        f"pyproject.toml version should be 2.2.0 — "
-        f"found: {[l.strip() for l in content.split(chr(10)) if 'version' in l and '=' in l]}"
-    )
+    pkg = json.loads((REPO_ROOT / "cli" / "package.json").read_text())
+    assert _pyproject_version() == pkg["version"]
 
 
-def test_mcp_server_info_version_is_2_2_0():
-    """The MCP server's serverInfo.version must match the published npm
-    package version (2.2.0). Drift here breaks MCP clients that cache the
-    version."""
+def test_mcp_server_info_version_matches_package():
+    """The MCP server's serverInfo.version must match package metadata.
+    Drift here breaks MCP clients that cache the version."""
     mcp_server = REPO_ROOT / "mcp_server" / "server.py"
     assert mcp_server.exists()
-    content = mcp_server.read_text()
-    # The serverInfo is emitted as a Python dict literal in a JSON-RPC
-    # response. Look for `"version": "2.2.0"` near `"name": "timps-swarm"`.
-    match = re.search(
-        r'"name":\s*"timps-swarm".*?"version":\s*"([0-9.]+)"',
-        content,
-        re.DOTALL,
-    )
-    assert match, "Could not find timps-swarm serverInfo in mcp_server/server.py"
-    assert match.group(1) == "2.2.0", (
-        f"MCP serverInfo.version is {match.group(1)}, expected 2.2.0"
+    assert _mcp_server_info_version() == _pyproject_version(), (
+        f"MCP serverInfo.version is {_mcp_server_info_version()}, "
+        f"expected {_pyproject_version()}"
     )
 
 
@@ -156,29 +161,31 @@ def test_subagents_manifest_is_in_sync():
     # `{ name: '` (with the opening brace + leading quote). The JSDoc
     # typedef on line 5 also has `name:`, so a plain `name: ` count would
     # over-count by 1.
+    from mcp_server.server import TOOLS
     agent_count = content.count("{ name: '")
-    assert agent_count == 160, (
-        f"Manifest has {agent_count} agents (expected 160). "
+    assert agent_count == len(TOOLS), (
+        f"Manifest has {agent_count} agents (expected {len(TOOLS)}). "
         f"Re-run `node cli/tools/generate-manifest.js` to re-sync."
     )
 
 
-def test_repo_subagent_files_count_160():
+def test_repo_subagent_files_count_matches_catalogue():
     """The checked-in `.claude/agents/` sub-agent files must be exactly
-    160. This is the canonical sub-agent location for Claude Code and
-    Cursor."""
+    one file per MCP tool. This is the canonical sub-agent location for
+    Claude Code and Cursor."""
+    from mcp_server.server import TOOLS
     subagents_dir = REPO_ROOT / ".claude" / "agents"
     assert subagents_dir.is_dir(), f"Missing {subagents_dir}"
     md_files = list(subagents_dir.glob("timps-*.md"))
-    assert len(md_files) == 160, (
-        f"Found {len(md_files)} sub-agent .md files (expected 160). "
+    assert len(md_files) == len(TOOLS), (
+        f"Found {len(md_files)} sub-agent .md files (expected {len(TOOLS)}). "
         f"Re-run `npx timps-swarm install-mcp` to regenerate."
     )
 
 
 def test_repo_subagent_files_have_valid_yaml():
     """Every sub-agent `.md` file must have valid YAML frontmatter — the
-    `e9e7545f` fix quoted descriptions because 51/160 had unescaped
+    `e9e7545f` fix quoted descriptions because many files had unescaped
     colons. This test asserts each file has `---` delimiters and that the
     description is wrapped in double quotes."""
     subagents_dir = REPO_ROOT / ".claude" / "agents"

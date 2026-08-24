@@ -1,0 +1,92 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Sandeeprdy1729/timps-swarm",
+  "description": "161 AI agents for code gen, health, AI/ML, infra, India-stack. One command.",
+  "repository": {
+    "url": "https://github.com/Sandeeprdy1729/timps-swarm",
+    "source": "github"
+  },
+      "version": "2.2.3",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "timps-swarm",
+  "version": "2.2.3",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Gemini API key (recommended free tier)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "GEMINI_API_KEY"
+        },
+        {
+          "description": "Anthropic API key",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "ANTHROPIC_API_KEY"
+        },
+        {
+          "description": "OpenAI API key",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "OPENAI_API_KEY"
+        },
+        {
+          "description": "Groq API key",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "GROQ_API_KEY"
+        },
+        {
+          "description": "Ollama host URL",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "OLLAMA_HOST"
+        },
+        {
+          "description": "TIMPS model path for Ollama",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "TIMPS_MODEL_PATH"
+        },
+        {
+          "description": "Max concurrent agent workers",
+          "isRequired": false,
+          "format": "number",
+          "isSecret": false,
+          "name": "TIMPS_MAX_AGENT_WORKERS"
+        },
+        {
+          "description": "Redis URL for state persistence",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "REDIS_URL"
+        },
+        {
+          "description": "Enable API key authentication",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "TIMPS_AUTH"
+        },
+        {
+          "description": "Log level (DEBUG, INFO, WARNING, ERROR)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "LOG_LEVEL"
+        }
+      ]
+    }
+  ]
+}

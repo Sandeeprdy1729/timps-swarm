@@ -140,3 +140,31 @@ class TestAggregation:
             assert result["total_tasks"] >= 1
             assert "tasks" in result
             assert "estimated_parallel_waves" in result
+
+    @pytest.mark.asyncio
+    async def test_execute_wave_runs_ready_tasks_in_parallel(self, monkeypatch):
+        import time
+
+        engine = DelegationEngine()
+        tasks = [
+            {
+                "id": i,
+                "agent": "slow_agent",
+                "description": f"task {i}",
+                "target": f"file_{i}.py",
+                "dependencies": [],
+            }
+            for i in range(4)
+        ]
+
+        def slow_agent(args):
+            time.sleep(0.2)
+            return {"file_path": args["file_path"], "status": "ok"}
+
+        monkeypatch.setattr(engine, "_get_agent_function", lambda name: slow_agent)
+        start = time.perf_counter()
+        results = await engine._execute_wave(tasks, repo_context={}, max_parallel=4)
+        elapsed = time.perf_counter() - start
+
+        assert all(r["status"] == "completed" for r in results)
+        assert elapsed < 0.5

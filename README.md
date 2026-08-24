@@ -2,7 +2,7 @@
 
 <img src="https://img.shields.io/badge/TIMPS%20SWARM-v2.2-FF6B35?style=for-the-badge&labelColor=1a1a1a" alt="TIMPS Swarm" />
 
-**One `npm install` puts 160 AI specialists into every coding tool you use — as parallel sub-agents, not just MCP tools.**
+**One `install-mcp` command puts 161 AI specialists into every coding tool you use — as parallel sub-agents, not just MCP tools.**
 
 [![npm](https://img.shields.io/badge/npm-timps--swarm-CB3837?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/timps-swarm)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
@@ -10,7 +10,7 @@
 [![MCP Protocol](https://img.shields.io/badge/Protocol-MCP-7C3AED?style=flat-square)](https://modelcontextprotocol.io)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/MmsTNm8WF6)
 
-[Quick Start](#quick-start) · [Sub-agents](#what-install-actually-does) · [160 Agents](#the-160-agents) · [MCP Setup](#mcp-integrations) · [CLI](#cli) · [Architecture](#architecture)
+[Quick Start](#quick-start) · [Sub-agents](#what-install-actually-does) · [161 Agents](#the-161-agents) · [MCP Setup](#mcp-integrations) · [CLI](#cli) · [Architecture](#architecture)
 
 </div>
 
@@ -22,7 +22,7 @@
 ## What it does
 
 - **Security audit any repo in 30 seconds** — `npx timps-swarm audit ./` finds CVEs, hardcoded secrets, and OWASP issues. No backend, no config, no API key.
-- **160 specialist agents in every AI tool** — one `install-mcp` command writes the MCP config for 9 IDEs (Claude Code, Cursor, Windsurf, Continue, Aider, Cline, Zed, VS Code, Gemini, Codex, Amp, Warp) **and** registers every agent as a native sub-agent so Claude Code / Cursor / Codex can dispatch them in parallel via `Task(subagent_type=...)`.
+- **161 specialist agents in every AI tool** — one `install-mcp` command writes the MCP config for 9 IDEs (Claude Code, Cursor, Windsurf, Continue, Aider, Cline, Zed, VS Code, Gemini, Codex, Amp, Warp) **and** registers every agent as a native sub-agent so Claude Code / Cursor / Codex can dispatch them in parallel via `Task(subagent_type=...)`.
 - **Local-first, BYOK** — runs on Ollama with zero API cost; plug in Gemini/Anthropic/OpenAI/Groq when you want more power.
 - **Works without the Python backend** — `npm install -g timps-swarm` ships a Node.js MCP stdio proxy (`cli/lib/mcp-proxy.js`) that talks to any running FastAPI server (local or remote via `TIMPS_API_URL`). The Python repo is optional.
 
@@ -34,11 +34,17 @@
 npm i -g timps-swarm
 ```
 
-Postinstall auto-detects every AI tool on your machine and:
+Then wire it into your coding agents:
+
+```bash
+npx timps-swarm install-mcp
+```
+
+`install-mcp` auto-detects every AI tool on your machine and:
 1. Writes the `timps-swarm` MCP server entry into every detected IDE config (with an explicit `env:` block forwarding `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `GROQ_API_KEY`, `TIMPS_API_URL`, `OLLAMA_HOST`, `REDIS_URL`).
 2. Writes one sub-agent `.md` file per TIMPS tool into `~/.claude/agents/`, `./.claude/agents/`, and `~/.codex/agents/`.
 
-Restart your tool — 160 agents appear as MCP tools **and** as parallel sub-agents.
+Restart your tool — 161 agents appear as MCP tools **and** as parallel sub-agents.
 
 **Run without installing (zero setup):**
 
@@ -63,7 +69,7 @@ npx timps-swarm uninstall-mcp                # remove all of the above
 By default this writes:
 
 - **MCP server entries** into 9 IDE config files (one entry per IDE, all pointing at `npx timps-swarm mcp`).
-- **160 sub-agent `.md` files** into `~/.claude/agents/`, `./.claude/agents/`, `~/.codex/agents/` (one per MCP tool) so Claude Code's `Task(subagent_type="timps_kubernetes_navigator")`, Cursor Composer, and Codex can dispatch them in parallel.
+- **161 sub-agent `.md` files** into `~/.claude/agents/`, `./.claude/agents/`, `~/.codex/agents/` (one per MCP tool) so Claude Code's `Task(subagent_type="timps_kubernetes_navigator")`, Cursor Composer, and Codex can dispatch them in parallel.
 
 All writes are **idempotent** (re-running updates the existing file) and **reversible** via `uninstall-mcp` (which only removes the `timps-swarm` key and the `timps-*.md` files — your other config is untouched).
 
@@ -219,9 +225,9 @@ export ANTHROPIC_API_KEY=...   # optional
 ---
 
 <details>
-<summary><strong>The 160 agents — full list</strong></summary>
+<summary><strong>The 161 agents — full list</strong></summary>
 
-The MCP server exposes **160 specialist agents** across 9 categories. Every one is also registered as a native Claude Code / Cursor / Codex sub-agent.
+The MCP server exposes **161 specialist agents** across 9 categories. Every one is also registered as a native Claude Code / Cursor / Codex sub-agent.
 
 | Category | Count | Examples |
 |----------|------:|----------|
@@ -246,13 +252,13 @@ python3 give_work.py "My laptop fan is always running"
 # Delegate a multi-step goal
 npx timps-swarm delegate "fix the auth bug and ensure 80% test coverage"
 
-# Call any of the 160 directly from the CLI
+# Call any of the 161 directly from the CLI
 npx timps-swarm mcp   # then use any MCP client
 ```
 
 The **Self-Critic Agent** is the most valuable one — it scores any output 1–10 and re-runs the originating agent until the threshold is met, closing the quality loop across the entire swarm.
 
-> The 160 includes Phase 3 (12 priority), Phase 5 (7 more), Phase 6 nextgen (21 — security/DevOps/MLOps/emerging), and Phase 7 (32 — India verticals, compliance, content, sales/voice, research). The `src/tool_connectors` module has a separate `TOOLS` dict (24 IDE config shortcuts — `claude_code`, `cursor`, etc.) used at runtime by `timps_connect_tools` and `timps_tool_status`; those are not part of the 160.
+> The 161 includes Phase 3 (12 priority), Phase 5 (7 more), Phase 6 nextgen (21 — security/DevOps/MLOps/emerging), Phase 7 (32 — India verticals, compliance, content, sales/voice, research), and `timps_batch` for parallel delegation. The `src/tool_connectors` module has a separate `TOOLS` dict (24 IDE config shortcuts — `claude_code`, `cursor`, etc.) used at runtime by `timps_connect_tools` and `timps_tool_status`; those are not part of the 161.
 
 </details>
 
@@ -280,21 +286,21 @@ COMMANDS
   critique <content>     Score output 1-10, auto-improve until threshold
   health                 Computer health checkup (12 agents)
   providers              Show configured LLM providers
-  install-mcp            Auto-configure TIMPS in 9 AI tools + 160 sub-agents
-  uninstall-mcp          Remove the MCP config and 160 sub-agent .md files
+  install-mcp            Auto-configure TIMPS in 9 AI tools + 161 sub-agents
+  uninstall-mcp          Remove the MCP config and 161 sub-agent .md files
   start [--repo <path>]  Start the TIMPS Swarm API server (port 8000)
   mcp   [--repo <path>]  Start the MCP stdio server (Python or Node.js fallback)
 
 FLAGS (install-mcp)
   --tool <id>            Only configure one IDE (claude-code, cursor, codex-cli, …)
-  --no-sub-agents        Skip writing 160 sub-agent .md files (MCP config only)
+  --no-sub-agents        Skip writing 161 sub-agent .md files (MCP config only)
   --dry-run              Preview without writing anything
   --silent               Suppress output (postinstall)
 
 ENV VARS
   TIMPS_API_URL          API server URL (default http://localhost:8000)
                          Set to a remote URL to point every tool call at it.
-  TIMPS_REPO             Explicit path to the Python repo (skip auto-detection)
+  TIMPS_REPO             Explicit path to the Python repo for backend commands
   GEMINI_API_KEY         Free tier — fastest start
   ANTHROPIC_API_KEY      Optional
   OPENAI_API_KEY         Optional
@@ -318,7 +324,7 @@ If `timps-swarm mcp` is invoked but no Python repo is on disk, it transparently 
               ▼                        ▼                        ▼
   ┌──────────────────────┐   ┌──────────────────────┐   ┌────────────────────┐
   │ mcp_server/server.py │   │ cli/lib/mcp-proxy.js │   │     src/main.py    │
-  │  Python — 160 tools, │   │  Node.js fallback    │   │  FastAPI + WS      │
+  │  Python — 161 tools, │   │  Node.js fallback    │   │  FastAPI + WS      │
   │  full MCP sampling   │   │  (npm-only path)     │   │  /swarm/run,       │
   │                      │   │                       │   │  /agents/*,        │
   │                      │   │                       │   │  /mcp/tools,       │
@@ -330,7 +336,7 @@ If `timps-swarm mcp` is invoked but no Python repo is on disk, it transparently 
              │ ◀───────────────────────┴──────────────────────────▶│
              │                                                     │
              │      mcp_server/server._TOOL_HANDLERS              │
-             │              (160 tools, in-process)                │
+             │              (161 tools, in-process)                │
              └─────────────────────────┬───────────────────────────┘
                                        │
                               Swarm Bridge
@@ -352,7 +358,7 @@ If `timps-swarm mcp` is invoked but no Python repo is on disk, it transparently 
 
 Three transport paths converge on the same dispatch table:
 
-1. **Python MCP stdio** (`mcp_server/server.py`) — full MCP sampling, in-process, 160 tools. Used when the Python repo is on disk.
+1. **Python MCP stdio** (`mcp_server/server.py`) — full MCP sampling, in-process, 161 tools. Used when the Python repo is on disk.
 2. **Node.js MCP stdio proxy** (`cli/lib/mcp-proxy.js`) — pure stdio JSON-RPC 2.0 that proxies `tools/list` + `tools/call` to a running FastAPI server. Used when only the npm package is installed (no Python repo).
 3. **FastAPI REST + WebSocket** (`src/main.py`) — `/swarm/run`, `/agents/*`, `/health`, `/ws`, plus the bridge endpoints `/mcp/tools` (catalogue) and `/mcp/tools/call` (dispatch).
 
@@ -380,7 +386,7 @@ curl -X POST http://localhost:8000/agents/refactor \
 curl http://localhost:8000/providers
 
 # MCP bridge (used by cli/lib/mcp-proxy.js)
-curl http://localhost:8000/mcp/tools                                       # full 160-tool catalogue
+curl http://localhost:8000/mcp/tools                                       # full 161-tool catalogue
 curl -X POST http://localhost:8000/mcp/tools/call \
   -H "Content-Type: application/json" \
   -d '{"name": "timps_list_agents", "arguments": {}}'                      # call any tool over HTTP

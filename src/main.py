@@ -707,7 +707,7 @@ async def get_top_patterns(limit: int = 20):
 
 # ── HTTP bridge to the MCP server ─────────────────────────────────────────
 # These two endpoints let a thin Node.js stdio proxy (cli/lib/mcp-proxy.js)
-# expose the full 160-tool MCP surface to Claude Code / Cursor / Codex when
+# expose the full 161-tool MCP surface to Claude Code / Cursor / Codex when
 # the user has `npm install -g timps-swarm` but has not cloned the Python repo.
 # The proxy starts the FastAPI server (or points at a remote one) and forwards
 # JSON-RPC 2.0 tool calls to these endpoints. The actual tool execution lives
@@ -752,7 +752,7 @@ class MCPCallRequest(BaseModel):
 @app.post("/mcp/tools/call")
 async def call_mcp_tool(req: MCPCallRequest):
     """Dispatch a single MCP tool call. Mirrors the stdio dispatch in
-    mcp_server/server.py so the Node.js proxy can route any of the 160 tools
+    mcp_server/server.py so the Node.js proxy can route any of the 161 tools
     through one HTTP endpoint."""
     handlers = _get_mcp_handlers()
     handler = handlers.get(req.name)

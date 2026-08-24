@@ -16,8 +16,8 @@
  *   providers           Show configured LLM providers
  *   start               Start the TIMPS Swarm API server
  *   mcp                 Start the MCP stdio server
- *   install-mcp         Auto-configure TIMPS as MCP + register 160 native sub-agents
- *   uninstall-mcp       Remove the TIMPS MCP config and 160 sub-agent .md files
+ *   install-mcp         Auto-configure TIMPS as MCP + register 161 native sub-agents
+ *   uninstall-mcp       Remove the TIMPS MCP config and 161 sub-agent .md files
  */
 
 import { Command } from "commander";
@@ -129,7 +129,7 @@ function ensureRepo() {
   execSync(`git clone --depth 1 https://github.com/Sandeeprdy1729/timps-swarm.git "${TIMPS_REPO_DIR}"`, { stdio: "inherit" });
   console.error(chalk.cyan("  Installing Python dependencies…\n"));
   execSync(`"${py}" -m pip install -e "${TIMPS_REPO_DIR}"`, { stdio: "inherit" });
-  console.error(chalk.green("\n  ✓ Backend ready. Restart your IDE to see the 160 tools.\n"));
+  console.error(chalk.green("\n  ✓ Backend ready. Restart your IDE to see the 161 tools.\n"));
   return TIMPS_REPO_DIR;
 }
 
@@ -189,8 +189,8 @@ const program = new Command();
 
 program
   .name("timps-swarm")
-  .description("TIMPS Swarm — 160 AI specialists (code, security, DevOps, AI/ML, infra, India-stack, health, research, content, voice, robotics) as parallel sub-agents and MCP tools")
-  .version("2.2.0");
+  .description("TIMPS Swarm — 161 AI specialists (code, security, DevOps, AI/ML, infra, India-stack, health, research, content, voice, robotics) as parallel sub-agents and MCP tools")
+  .version("2.2.1");
 
 // ── fix ───────────────────────────────────────────────────────────────────────
 program
@@ -571,8 +571,8 @@ program
   .option("--tool <id>", "Specific tool to configure (see list below)")
   .option("--dry-run", "Preview only — don't write any files")
   .option("--silent", "Suppress output (used during postinstall)")
-  .option("--repo <path>", "Path to timps-swarm repo (auto-detected if omitted)")
-  .option("--no-sub-agents", "Skip writing 160 sub-agent .md files (MCP config only)")
+  .option("--repo <path>", "Embed an explicit Python repo path in the generated MCP command")
+  .option("--no-sub-agents", "Skip writing 161 sub-agent .md files (MCP config only)")
   .action(async (opts) => {
     // In postinstall context with CI / non-TTY, skip silently
     if (opts.silent && (process.env.CI || process.env.CONTINUOUS_INTEGRATION || !process.stdout.isTTY)) {
@@ -583,18 +583,15 @@ program
 
     const home = process.env.HOME || process.env.USERPROFILE || "~";
     const cwd  = process.cwd();
-    const repoDir = opts.repo || ensureRepo() || resolve(__dirname, "../..");
 
     // MCP entry — use `npx timps-swarm mcp` so it works globally or locally
     const envVars = {};
     for (const k of ["ANTHROPIC_API_KEY","OPENAI_API_KEY","GEMINI_API_KEY","GROQ_API_KEY","TIMPS_API_URL","OLLAMA_HOST","REDIS_URL"]) {
       if (process.env[k]) envVars[k] = process.env[k];
     }
-    const mcpCmd  = { command: "npx", args: ["timps-swarm", "mcp"], env: envVars };
-    // Alternative: direct Python server (used when repo is found)
-    const pyCmd   = repoDir
-      ? { command: "python", args: ["-m", "mcp_server.server"], cwd: repoDir, env: envVars }
-      : mcpCmd;
+    const mcpArgs = ["timps-swarm", "mcp"];
+    if (opts.repo) mcpArgs.push("--repo", resolve(opts.repo));
+    const mcpCmd  = { command: "npx", args: mcpArgs, env: envVars };
 
     // ── Tool registry ────────────────────────────────────────────────────────
     // format: "claude-mcp"    → { mcpServers: { "timps-swarm": entry } }
@@ -730,7 +727,7 @@ program
     }
 
     // ── Sub-agent file registration ───────────────────────────────────────
-    // Each of the 160 MCP tools is also registered as a native sub-agent so
+    // Each of the 161 MCP tools is also registered as a native sub-agent so
     // Claude Code / Cursor / Codex can dispatch them in parallel via their
     // Task/Composer systems. Default-on, idempotent, reversible via uninstall-mcp.
     if (opts.subAgents !== false) {
@@ -820,11 +817,11 @@ program
 // ── uninstall-mcp ────────────────────────────────────────────────────────────
 program
   .command("uninstall-mcp")
-  .description("Remove the TIMPS MCP server entry and 160 sub-agent files from every configured IDE")
+  .description("Remove the TIMPS MCP server entry and 161 sub-agent files from every configured IDE")
   .option("--tool <id>", "Specific tool to remove (default: all detected)")
   .option("--dry-run", "Preview only — don't delete any files")
   .option("--keep-config", "Only remove sub-agent .md files; keep the MCP server config")
-  .option("--keep-agents", "Only remove the MCP server config; keep the 160 sub-agent .md files")
+  .option("--keep-agents", "Only remove the MCP server config; keep the 161 sub-agent .md files")
   .action(async (opts) => {
     printHeader("MCP Uninstaller");
     const home = process.env.HOME || process.env.USERPROFILE || "~";

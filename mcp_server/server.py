@@ -2075,9 +2075,9 @@ def _handle_request(msg: Dict) -> Optional[str]:
             "experimental": experimental,
             "serverInfo": {
                 "name": "timps-swarm",
-                "version": "2.2.0",
+                "version": "2.2.3",
                 "description": (
-                    "TIMPS Swarm: 160 AI specialists across SDLC, computer health, "
+                    "TIMPS Swarm: 161 AI specialists across SDLC, computer health, "
                     "developer workflow, knowledge worker, priority, expert diagnostics, "
                     "context, kernel, and meta categories. Callable as MCP tools and as "
                     "native Claude Code / Cursor / Codex sub-agents."
