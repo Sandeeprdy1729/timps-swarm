@@ -34,6 +34,13 @@
 npm i -g timps-swarm
 ```
 
+> **Hand this repo to any coding agent and it will set itself up.**
+> `SETUP.md` is written as an instruction set (not just docs) — when a user
+> clones the repo and tells Claude Code, opencode, Codex, Cursor, Windsurf,
+> or any other agent to "read SETUP.md and set me up", the agent installs the
+> backend, registers the `timps-swarm` MCP server for whatever tool it's
+> running in, and starts dispatching the 161 specialist agents in parallel.
+
 Then wire it into your coding agents:
 
 ```bash
