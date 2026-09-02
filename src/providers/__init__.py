@@ -39,6 +39,7 @@ from src.providers.gemini import GeminiProvider
 from src.providers.groq import GroqProvider
 from src.providers.timps import TIMPSProvider
 from src.providers.mcp_sampler import MCPSamplerProvider
+from src.providers.raw import RawProvider
 from src.providers.null import NullProvider
 
 __all__ = [
@@ -51,6 +52,7 @@ __all__ = [
     "GroqProvider",
     "TIMPSProvider",
     "MCPSamplerProvider",
+    "RawProvider",
     "NullProvider",
     "get_provider",
     "list_providers",
@@ -73,6 +75,7 @@ class _ProviderRegistry:
     def _build(self, name: str) -> Optional[ProviderInterface]:
         mapping = {
             "mcp":       MCPSamplerProvider,
+            "raw":       RawProvider,
             "anthropic": AnthropicProvider,
             "openai":    OpenAIProvider,
             "gemini":    GeminiProvider,
@@ -86,7 +89,13 @@ class _ProviderRegistry:
 
     def available(self) -> list[str]:
         """Return providers that have credentials / are reachable."""
-        order = ["mcp", "gemini", "anthropic", "openai", "groq", "ollama", "timps"]
+        import os
+        raw_mode = os.getenv("TIMPS_LLM_MODE", "").lower() in ("1", "raw", "true", "yes")
+        # In raw mode the server only gathers data — NO provider call. This
+        # beats MCP sampling (and any cloud key) so the host model does the
+        # analysis natively.
+        order = (["raw"] if raw_mode else ["mcp"])
+        order += ["gemini", "anthropic", "openai", "groq", "ollama", "timps"]
         return [p for p in order if self.get(p) and self.get(p).is_available()]
 
     def invalidate(self, name: str) -> None:

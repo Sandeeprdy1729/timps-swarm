@@ -21,6 +21,7 @@ help:
 	@echo "    make train      — Train all 20 specialised adapters (MLX)"
 	@echo "    make up         — Start the full Docker swarm"
 	@echo "    make up-local   — Start API locally (no Docker)"
+	@echo "    make mcp-http   — Serve all 161 tools over MCP streamable-HTTP (port 8123)"
 	@echo "    make ui         — Start React dashboard"
 	@echo "    make down       — Stop all Docker services"
 	@echo "    make logs       — Tail swarm API logs"
@@ -78,9 +79,13 @@ logs:
 	@docker-compose logs -f swarm-api
 
 # ── Local dev (no Docker) ──────────────────────────────────────────────────
-up-local:
+ up-local:
 	@echo ">>> Starting API locally on port $(PORT)..."
 	@DEV=true PORT=$(PORT) python3 -m src.main
+
+mcp-http:
+	@echo ">>> Starting TIMPS Swarm MCP (streamable HTTP) on port $(MCP_PORT)..."
+	@PORT=$(MCP_PORT) bash scripts/serve-mcp-http.sh
 
 ui:
 	@echo ">>> Starting React dashboard..."

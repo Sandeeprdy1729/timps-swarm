@@ -78,71 +78,67 @@ const ROUTING_HINTS = {
  * be parsed by YAML as a mapping key and break Claude Code / Cursor / Codex
  * frontmatter loading.
  */
-export function renderAgentFile(agent) {
+export function renderAgentFile(agent, targetId = "claude-code") {
   const base = agentFileBase(agent.name);
   const toolName = agent.name;
   const description = agent.description;
   const hint = ROUTING_HINTS[agent.name];
 
-  const desc = `${description} Use the \`${toolName}\` MCP tool to perform this task. Do not answer directly — delegate to this sub-agent.`
+  // The sub-agent runs on the HOST's own model (opencode's model, Claude
+  // Code's model, etc.). The timps-swarm server is in "raw gather" mode
+  // (TIMPS_LLM_MODE=raw): it collects the deterministic data and returns it
+  // WITHOUT calling any server-side LLM. This sub-agent's job is to write the
+  // analysis/report itself, on the host model, using that gathered data.
+  const desc = `${description} You are a native specialist: gather the data via the timps-swarm MCP tool, then write the report yourself on your own model.`
     .replace(/\\/g, "\\\\")
     .replace(/"/g,  "\\\"")
     .replace(/\n/g, " ");
 
-  const frontmatter = [
+  const fm = [
     "---",
     `name: ${toolName}`,
     `description: "${desc}"`,
-    `category: ${agent.category}`,
-    `tools: ["mcp__timps-swarm__${toolName}"]`,
-    `model: ${agent.model}`,
-    "---",
-  ].join("\n");
+  ];
+  if (targetId === "opencode") {
+    // opencode sub-agents run on the session model; `mode: subagent` makes
+    // them available via the `task` tool. No `tools:` restriction so the
+    // sub-agent can use opencode-native tools (read/bash/grep/websearch).
+    fm.push("mode: subagent");
+  } else {
+    // Claude Code / Cursor / Codex flavour.
+    fm.push(`category: ${agent.category}`);
+    fm.push(`model: ${agent.model}`);
+  }
+  fm.push("---");
+  const frontmatter = fm.join("\n");
 
   const bodyLines = [
     "",
     `# ${base.replace(/_/g, " ")}`,
     "",
-    `You are the **${base.replace(/_/g, " ")}** sub-agent from the TIMPS Swarm (category: \`${agent.category}\`).`,
+    `You are the **${base.replace(/_/g, " ")}** specialist sub-agent from the TIMPS Swarm (category: \`${agent.category}\`). You run on the user's own model.`,
     "",
     "## Your job",
     "",
     `${description}`,
     "",
-    "## How to respond",
+    "## How to work (run on YOUR model — the user's LLM)",
     "",
-    "1. **Always call the MCP tool** `" + toolName + "` exactly once via the `mcp__timps-swarm__" + toolName + "` tool handle.",
-    "2. Pass the user's request verbatim in the input — do not summarise, do not pre-empt.",
-    "3. Wait for the tool's text response and return it to the parent agent. The tool output is the result.",
-    "4. **Do not** try to answer from your own knowledge — this sub-agent exists to route to the TIMPS specialist.",
-    "5. **Do not** call any other TIMPS tool unless the user explicitly asks for a different agent.",
+    "1. **Gather the real data first.** Call the MCP tool `" + toolName + "` via the `mcp__timps-swarm__" + toolName + "` tool handle, passing the user's request/code/context. The server is in RAW-GATHER mode: it collects the deterministic data (file scans, command outputs, logs, diffs, code) and returns it — it does NOT generate any analysis.",
+    "2. **Use that gathered raw data to do the actual specialist work yourself.** Apply your expertise to produce the deliverable described in \"Your job\": the report, the fix, the refactor, the test suite, the review, the plan, the generated code, etc. This is the step that must run on YOUR model — not a server-side LLM.",
+    "3. If the raw data is incomplete for the task, use your own tools (read files, run shell commands, grep/glob the codebase, web search) to gather what else you need, then complete the work.",
+    "4. Return a complete, well-structured result to the parent agent. This is a real deliverable, not just a pass-through.",
     "",
-    "## What you do NOT do",
+    "## Notes",
     "",
-    "- Do not run shell commands, read files, or edit code — those are the parent agent's job.",
-    "- Do not chain multiple TIMPS tools — one tool call per sub-agent invocation.",
-    "- Do not modify the request payload (add fields, change casing, etc.) — forward as-is.",
-    "",
-    "## Input contract",
-    "",
-    "The MCP tool `" + toolName + "` accepts a JSON object. Pass through whatever the parent agent provided. Common shapes:",
-    "```json",
-    "{ \"request\": \"<plain-English task>\" }",
-    "```",
-    "or for the structured agents:",
-    "```json",
-    "{ \"code\": \"...\", \"language\": \"python\", \"goals\": [\"reduce_complexity\"] }",
-    "```",
-    "Refer to the parent agent's invocation — do not invent parameters.",
-    "",
-    "## Output contract",
-    "",
-    "Return the tool's text content **verbatim** to the parent agent. Do not wrap it in extra markdown headings, do not add commentary. The parent will integrate it into the user's final answer.",
+    "- You MAY use opencode-native tools (read, edit, bash, grep, glob, websearch, webfetch) as needed to complete the work.",
+    "- Do NOT chain multiple TIMPS MCP tools in one invocation unless the task genuinely requires it.",
+    "- If the server returns a JSON object with `raw_data`, `_mode`, `_note`, or similar fields, those are the gathered inputs — analyse them.",
     "",
   ];
 
   if (hint) {
-    bodyLines.splice(bodyLines.length - 1, 0,
+    bodyLines.push(
       "",
       "## Routing hint",
       "",
@@ -163,10 +159,15 @@ export function subAgentTargets(home, cwd) {
     { id: "claude-code", label: "Claude Code",  dir: join(home, ".claude", "agents") },
     { id: "cursor",      label: "Cursor",       dir: join(cwd,  ".claude", "agents") },  // Cursor also reads this
     { id: "codex",       label: "Codex CLI",    dir: join(home, ".codex",  "agents") },
+    { id: "opencode",    label: "opencode",     dir: join(home, ".config", "opencode", "agent") },
   ];
 }
 
-export function subAgentFilename(agent) {
+export function subAgentFilename(agent, targetId = "claude-code") {
+  // opencode loads its sub-agents by the `name:` frontmatter, and the
+  // conventional filename in ~/.config/opencode/agent/ matches the agent name
+  // exactly (timps_<name>.md). Claude Code / Cursor / Codex use timps-<name>.md.
+  if (targetId === "opencode") return `${agent.name}.md`;
   return `timps-${agentFileBase(agent.name)}.md`;
 }
 
@@ -180,7 +181,7 @@ export function subAgentFilename(agent) {
 export function writeSubAgents(opts = {}) {
   const home = opts.home || process.env.HOME || process.env.USERPROFILE || "~";
   const cwd  = opts.cwd  || process.cwd();
-  const requested = opts.targetIds || ["claude-code", "cursor", "codex"];
+  const requested = opts.targetIds || ["claude-code", "cursor", "codex", "opencode"];
   const targets = subAgentTargets(home, cwd).filter(t => requested.includes(t.id));
 
   const written = [];
@@ -196,8 +197,8 @@ export function writeSubAgents(opts = {}) {
     }
 
     for (const agent of AGENTS) {
-      const file = join(target.dir, subAgentFilename(agent));
-      const content = renderAgentFile(agent);
+      const file = join(target.dir, subAgentFilename(agent, target.id));
+      const content = renderAgentFile(agent, target.id);
 
       if (existsSync(file) && readFileSync(file, "utf8") === content) {
         skipped.push(file);

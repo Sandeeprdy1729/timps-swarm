@@ -93,6 +93,14 @@ _CLIENT_NAME: str = "unknown"
 _CLIENT_SUPPORTS_SAMPLING: bool = False
 _STDIN_BUF: Optional[Any] = None
 _STDOUT_BUF: Optional[Any] = None
+# Seconds to wait for a sampling/createMessage response before falling back.
+_SAMPLING_TIMEOUT: float = float(os.getenv("TIMPS_SAMPLING_TIMEOUT", "120"))
+# Registry of outstanding sampling requests: sample_id -> dict(event, result, error).
+# The requesting thread waits on the event; the main input loop dispatches the
+# response when it reads the matching `id` off stdin. This keeps a SINGLE stdin
+# reader (no thread races on _STDIN_BUF).
+_SAMPLING_PENDING: Dict[str, Any] = {}
+_SAMPLING_REGISTRY_LOCK: threading.Lock = threading.Lock()
 _SAMPLE_COUNTER: int = 0
 
 
@@ -102,10 +110,17 @@ def _mcp_sample(system: str, user_prompt: str, max_tokens: int = 8192) -> Option
     Returns None when:
     - The client doesn't advertise sampling support
     - The round-trip fails for any reason
+    - No response within _SAMPLING_TIMEOUT seconds
     The caller (LLMRouter) falls back to local Ollama in those cases.
+
+    This is race-free: the requesting thread writes the request to stdout and
+    then waits on a per-request Event. The single main input loop reads the
+    client's response off stdin and wakes the waiting thread via
+    _dispatch_sampling_response(). Only the main loop ever calls readline() on
+    _STDIN_BUF, so background agent threads can't steal protocol frames.
     """
     global _SAMPLE_COUNTER
-    if _DISABLE_SAMPLING or not _CLIENT_SUPPORTS_SAMPLING or _STDOUT_BUF is None or _STDIN_BUF is None:
+    if _DISABLE_SAMPLING or not _CLIENT_SUPPORTS_SAMPLING or _STDOUT_BUF is None:
         return None
 
     _SAMPLE_COUNTER += 1
@@ -124,32 +139,75 @@ def _mcp_sample(system: str, user_prompt: str, max_tokens: int = 8192) -> Option
             "includeContext": "none",
         },
     }
+
+    entry = {"event": threading.Event(), "result": None, "error": None}
+    with _SAMPLING_REGISTRY_LOCK:
+        _SAMPLING_PENDING[sample_id] = entry
     try:
-        _STDOUT_BUF.write((json.dumps(request) + "\n").encode())
-        _STDOUT_BUF.flush()
-        # Read back the response; skip notifications (they have no "id")
-        for _ in range(20):
-            raw = _STDIN_BUF.readline()
-            if not raw:
-                return None
-            resp = json.loads(raw.strip())
-            if "id" not in resp:
-                continue  # notification — ignore and keep reading
-            if resp.get("id") != sample_id:
-                continue  # out-of-order — shouldn't happen but be safe
-            if "error" in resp:
-                logger.error("Sampling error from %s: %s", _CLIENT_NAME, resp["error"])
-                return None
-            content = resp.get("result", {}).get("content", {})
-            if isinstance(content, dict):
-                return content.get("text") or ""
-            return str(content)
-    except Exception as exc:
-        logger.error("MCP sampling round-trip failed: %s", exc)
-    return None
+        try:
+            _STDOUT_BUF.write((json.dumps(request) + "\n").encode())
+            _STDOUT_BUF.flush()
+        except Exception as exc:
+            logger.error("Sampling write failed: %s", exc)
+            return None
+
+        waited = entry["event"].wait(_SAMPLING_TIMEOUT)
+        if not waited:
+            logger.warning("Sampling timeout for %s after %.0fs — falling back to provider", sample_id, _SAMPLING_TIMEOUT)
+            _log_sampling_probe(sample_id, "timeout")
+            return None
+        if entry.get("error") is not None:
+            logger.error("Sampling error from %s: %s", _CLIENT_NAME, entry["error"])
+            return None
+        content = entry.get("result")
+        if isinstance(content, dict):
+            sampled = content.get("text") or ""
+        else:
+            sampled = str(content) if content is not None else None
+        _log_sampling_probe(sample_id, "answered", sampled)
+        return sampled
+    finally:
+        with _SAMPLING_REGISTRY_LOCK:
+            _SAMPLING_PENDING.pop(sample_id, None)
+
+
+def _dispatch_sampling_response(resp: dict) -> bool:
+    """If `resp` is a sampling reply for a pending request, wake its thread.
+
+    Called from the main input loop ONLY (single stdin reader). Returns True
+    when the response was consumed by a pending sampler (so the caller must not
+    treat it as a normal protocol reply).
+    """
+    resp_id = resp.get("id")
+    if not resp_id:
+        return False
+    with _SAMPLING_REGISTRY_LOCK:
+        entry = _SAMPLING_PENDING.get(resp_id)
+        _SAMPLING_PENDING.pop(resp_id, None)
+    if entry is None:
+        return False
+    if "error" in resp:
+        entry["error"] = resp["error"]
+    else:
+        entry["result"] = resp.get("result", {}).get("content")
+    entry["event"].set()
+    return True
 
 
 # ── Progress notification helper ──────────────────────────────────────────────
+
+def _log_sampling_probe(sample_id: str, outcome: str, detail: Any = None):
+    """Append a sampling round-trip outcome to /tmp/timps-sampling-probe.log."""
+    if not _DISABLE_SAMPLING and os.getenv("TIMPS_PROBE_SAMPLING", "").lower() in ("1", "true", "yes"):
+        import datetime
+        line = f"{datetime.datetime.now().isoformat()} {_CLIENT_NAME} {sample_id} {outcome}"
+        if detail is not None:
+            line += " :: " + str(detail)[:400]
+        try:
+            with open("/tmp/timps-sampling-probe.log", "a") as f:
+                f.write(line + "\n")
+        except Exception:
+            pass
 
 def _send_progress(progress_token: Any, progress: int, total: int, message: str):
     """Send a progress notification to the MCP client (non-blocking)."""
@@ -2199,6 +2257,12 @@ def run_server():
                 response = _make_error(None, -32700, f"Parse error: {exc}")
                 stdout.write((response + "\n").encode())
                 stdout.flush()
+                continue
+
+            # If this line is a response to an outstanding sampling request,
+            # wake the waiting thread and keep reading. The main loop is the
+            # ONLY stdin reader; _mcp_sample never calls readline() itself.
+            if _SAMPLING_PENDING and _dispatch_sampling_response(msg):
                 continue
 
             response = _handle_request(msg)
