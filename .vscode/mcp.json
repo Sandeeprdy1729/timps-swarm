@@ -9,8 +9,7 @@
           "mcp"
         ],
         "env": {
-          "ANTHROPIC_API_KEY": "sk-ant-456",
-          "GEMINI_API_KEY": "sk-gemini-123"
+          "GEMINI_API_KEY": "${GEMINI_API_KEY}"
         }
       }
     }
