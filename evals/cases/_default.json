@@ -1,0 +1,62 @@
+{
+  "agent": "_default",
+  "note": "Shared smoke cases used when an agent has no dedicated case file. They only reject broken/erroring outputs; add agent-specific assertions for a stronger gate.",
+  "cases": [
+    {
+      "id": "smoke-summary",
+      "args": {
+        "user_request": "Report a concise, structured summary of what you would check and what you found.",
+        "task": "Report a concise, structured summary.",
+        "description": "Report a concise, structured summary.",
+        "topic": "general health check",
+        "dry_run": true,
+        "apply": false,
+        "path": "."
+      },
+      "expect_contains": [],
+      "expect_not_contains": [
+        "[No LLM provider available",
+        "[Rate limit",
+        "Traceback (most recent call last)"
+      ],
+      "min_chars": 80
+    },
+    {
+      "id": "smoke-findings",
+      "args": {
+        "user_request": "List the most important findings and recommended actions, with reasoning.",
+        "task": "List findings and recommended actions.",
+        "description": "List findings and recommended actions.",
+        "dry_run": true,
+        "apply": false,
+        "path": "."
+      },
+      "expect_contains": [],
+      "expect_not_contains": [
+        "[No LLM provider available",
+        "[Rate limit",
+        "Traceback (most recent call last)",
+        "Error: "
+      ],
+      "min_chars": 80
+    },
+    {
+      "id": "smoke-report",
+      "args": {
+        "user_request": "Produce a short report with sections and concrete next steps.",
+        "task": "Produce a short report with next steps.",
+        "description": "Produce a short report with next steps.",
+        "dry_run": true,
+        "apply": false,
+        "path": "."
+      },
+      "expect_contains": [],
+      "expect_not_contains": [
+        "[No LLM provider available",
+        "[Rate limit",
+        "Traceback (most recent call last)"
+      ],
+      "min_chars": 80
+    }
+  ]
+}
