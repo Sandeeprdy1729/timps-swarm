@@ -17,6 +17,7 @@ from typing import Any, Callable
 from langgraph.graph import StateGraph, END
 
 from src.state import SwarmState
+from src.critic_sampler import with_critic_sampling
 from src.agents import (
     orchestrator_node,
     product_manager_node,
@@ -347,30 +348,33 @@ def route_after_orchestrator(state: SwarmState) -> str:
 def build_graph() -> StateGraph:
     workflow = StateGraph(SwarmState)
 
+    def _observed(name: str, fn: Callable) -> Callable:
+        return with_critic_sampling(fn, name)
+
     # ── Core 10 SDLC agents ───────────────────────────────────────────────────
-    workflow.add_node("orchestrator",           orchestrator_node)
-    workflow.add_node("product_manager",        product_manager_node)
-    workflow.add_node("architect",              architect_node)
-    workflow.add_node("code_generator",         code_generator_node)
-    workflow.add_node("code_reviewer",          code_reviewer_node)
-    workflow.add_node("qa_tester",              qa_tester_node)
-    workflow.add_node("security_auditor",       security_auditor_node)
-    workflow.add_node("performance_optimizer",  performance_optimizer_node)
-    workflow.add_node("documentation_writer",   documentation_writer_node)
-    workflow.add_node("devops",                 devops_node)
+    workflow.add_node("orchestrator",           _observed("orchestrator", orchestrator_node))
+    workflow.add_node("product_manager",        _observed("product_manager", product_manager_node))
+    workflow.add_node("architect",              _observed("architect", architect_node))
+    workflow.add_node("code_generator",         _observed("code_generator", code_generator_node))
+    workflow.add_node("code_reviewer",          _observed("code_reviewer", code_reviewer_node))
+    workflow.add_node("qa_tester",              _observed("qa_tester", qa_tester_node))
+    workflow.add_node("security_auditor",       _observed("security_auditor", security_auditor_node))
+    workflow.add_node("performance_optimizer",  _observed("performance_optimizer", performance_optimizer_node))
+    workflow.add_node("documentation_writer",   _observed("documentation_writer", documentation_writer_node))
+    workflow.add_node("devops",                 _observed("devops", devops_node))
 
     # ── Parallel fan-out executor ──────────────────────────────────────────────
-    workflow.add_node("parallel_executor",      parallel_executor_node)
+    workflow.add_node("parallel_executor",      _observed("parallel_executor", parallel_executor_node))
 
     # ── Priority agents (hand-crafted wrappers above) ─────────────────────────
-    workflow.add_node("research_agent",         _research_agent_node)
-    workflow.add_node("api_design_agent",       _api_design_node)
-    workflow.add_node("dependency_agent",       _dependency_agent_node)
+    workflow.add_node("research_agent",         _observed("research_agent", _research_agent_node))
+    workflow.add_node("api_design_agent",       _observed("api_design_agent", _api_design_node))
+    workflow.add_node("dependency_agent",       _observed("dependency_agent", _dependency_agent_node))
 
     # ── Bulk registration of domain-package agents ────────────────────────────
     all_domain_agents = _load_agents()
     for name, fn in all_domain_agents.items():
-        workflow.add_node(name, _make_node(name, fn))
+        workflow.add_node(name, _observed(name, _make_node(name, fn)))
 
     # ── Entry point ───────────────────────────────────────────────────────────
     workflow.set_entry_point("orchestrator")

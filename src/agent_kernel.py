@@ -345,7 +345,13 @@ def _execute_task(task: KernelTask, run: KernelRun) -> str:
     if result_dict.get("script_path"):
         run.artifacts.append(result_dict["script_path"])
 
-    return result_text or f"{agent} completed with no report output"
+    result_text = result_text or f"{agent} completed with no report output"
+    try:
+        from src.critic_sampler import maybe_score
+        maybe_score(agent, task.goal, result_text)
+    except Exception:
+        pass
+    return result_text
 
 
 def _run_sdlc_agent(agent_name: str, goal: str, state: Dict) -> Dict:
