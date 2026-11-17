@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Nightly self-improvement job.
+
+  Install:
+    cp scripts/ai.timps.nightly-learning.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/ai.timps.nightly-learning.plist
+    launchctl list | grep timps.nightly
+
+  Disable:
+    launchctl unload ~/Library/LaunchAgents/ai.timps.nightly-learning.plist
+
+  --apply-candidates --auto-promote still go through the golden-case gate:
+  a candidate is promoted only if it beats the baseline by >= 0.1 on 3+ cases.
+  Remove those two arguments to return to shadow (report-only) mode.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>ai.timps.nightly-learning</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Library/Frameworks/Python.framework/Versions/3.12/bin/python3</string>
+    <string>/Users/sandeepreddy/Desktop/timps-swarm/scripts/nightly_learning.py</string>
+    <string>--days</string>
+    <string>7</string>
+    <string>--min-runs</string>
+    <string>3</string>
+    <string>--apply-candidates</string>
+    <string>--auto-promote</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>TIMPS_EVAL_DIR</key>
+    <string>/Users/sandeepreddy/Desktop/timps-swarm/evals</string>
+    <key>TIMPS_CRITIC_SAMPLE_RATE</key>
+    <string>0.1</string>
+    <key>TIMPS_CRITIC_MAX_PER_RUN</key>
+    <string>3</string>
+    <key>GENERATED_DIR</key>
+    <string>/Users/sandeepreddy/Desktop/timps-swarm/generated</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>/Users/sandeepreddy/Desktop/timps-swarm</string>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>2</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+  <key>RunAtLoad</key>
+  <false/>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>/Users/sandeepreddy/.timps/logs/nightly-learning.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/sandeepreddy/.timps/logs/nightly-learning.err.log</string>
+</dict>
+</plist>
