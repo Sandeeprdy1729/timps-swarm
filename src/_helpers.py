@@ -10,6 +10,7 @@ import os
 import re
 import shlex
 import subprocess
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -23,11 +24,49 @@ def _ts() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
 
-def _llm(prompt: str, system: str, agent: str = "default") -> str:
+def _resolved_system(agent: str, system: str) -> str:
+    """Apply a reviewed prompt override if one is active for this agent."""
     try:
+        from src.prompt_store import resolve
+        return resolve(agent, system) or system
+    except Exception:
+        return system
+
+
+def _record_llm_call(agent: str, started: float, ok: bool, output: Optional[str]) -> None:
+    """
+    Append one lightweight telemetry row per LLM call. Never raises —
+    observability must never break an agent.
+    """
+    try:
+        mem = Path(os.getenv("TIMPS_MEMORY_DIR", str(Path.home() / ".timps" / "memory")))
+        mem.mkdir(parents=True, exist_ok=True)
+        path = mem / "llm_calls.jsonl"
+        if path.exists() and path.stat().st_size > 5_000_000:
+            path.replace(mem / "llm_calls.1.jsonl")
+        entry = {
+            "ts": datetime.now(timezone.utc).isoformat(),
+            "agent": agent,
+            "latency_ms": round((time.perf_counter() - started) * 1000, 1),
+            "success": bool(ok),
+            "output_chars": len(output) if output else 0,
+        }
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(entry) + "\n")
+    except Exception:
+        pass
+
+
+def _llm(prompt: str, system: str, agent: str = "default") -> str:
+    started = time.perf_counter()
+    try:
+        system = _resolved_system(agent, system)
         from src.llm_router import LLMRouter
-        return LLMRouter().call(agent, prompt, system)
+        result = LLMRouter().call(agent, prompt, system)
+        _record_llm_call(agent, started, True, result)
+        return result
     except Exception as exc:
+        _record_llm_call(agent, started, False, None)
         logger.error("LLM error [%s]: %s", agent, exc)
         return (
             "[No LLM provider available — raw data follows]\n\n"

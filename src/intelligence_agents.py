@@ -514,10 +514,17 @@ def learning_agent(args: Dict[str, Any]) -> Dict[str, Any]:
                 pass
 
     # Filter to target agent and high-quality runs
+    def _score(row: dict) -> float:
+        try:
+            return float(row.get("score", 0))
+        except (TypeError, ValueError):
+            return 0.0
+
     good_runs = [
         r for r in all_runs
-        if r.get("success") and
-        (target == "all" or r.get("agent") == target)
+        if r.get("success")
+        and (target == "all" or r.get("agent") == target)
+        and _score(r) >= min_score
     ][-top_k * 5:]  # take recent ones
 
     if not good_runs:

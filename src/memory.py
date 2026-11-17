@@ -41,6 +41,10 @@ def record_run(
     request: str,
     summary: str,
     success: bool = True,
+    score: Optional[float] = None,
+    latency_ms: Optional[float] = None,
+    tokens: Optional[int] = None,
+    provider: Optional[str] = None,
     metadata: Optional[Dict[str, Any]] = None,
 ) -> None:
     """Append a completed agent run to runs.jsonl (fire-and-forget, never raises)."""
@@ -53,6 +57,14 @@ def record_run(
             "success": success,
             "metadata": metadata or {},
         }
+        for key, value in (
+            ("score", score),
+            ("latency_ms", latency_ms),
+            ("tokens", tokens),
+            ("provider", provider),
+        ):
+            if value is not None:
+                entry[key] = value
         with open(_ensure_dir() / "runs.jsonl", "a") as fh:
             fh.write(json.dumps(entry) + "\n")
     except Exception:

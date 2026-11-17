@@ -169,9 +169,6 @@ def test_data_agent(args: dict) -> dict:
                 valid = []
                 for r in records:
                     if isinstance(r, dict):
-                        name = str(r.get("name", r.get("Name", "")))
-                        age = r.get("age", r.get("Age", 0))
-                        stock = r.get("stock", r.get("Stock", r.get("quantity", r.get("Quantity", 0))))
                         valid.append(r)
                 data_str = json.dumps(valid, indent=2)
         except (json.JSONDecodeError, TypeError):
@@ -609,6 +606,25 @@ def self_critic_agent(args: dict) -> dict:
             else:
                 # Score didn't improve — stop trying
                 break
+
+    # Persist the score: without this the nightly learner has no quality signal.
+    try:
+        from src.memory import record_run
+        weak = ", ".join(str(w)[:80] for w in critique.get("weaknesses", [])[:3])
+        record_run(
+            agent_name=agent_name,
+            request=task or f"critique of {agent_name}",
+            summary=f"score={score}/10 verdict={verdict} weaknesses={weak}"[:1000],
+            score=float(score),
+            success=(verdict == "pass"),
+            metadata={
+                "threshold": threshold,
+                "iterations": iteration,
+                "source": "self_critic_agent",
+            },
+        )
+    except Exception:
+        pass
 
     report_lines = [
         f"# Self-Critic Report — {agent_name} — {_ts()}\n",
