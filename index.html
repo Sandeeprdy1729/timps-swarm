@@ -5,10 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>TIMPS Swarm — 160 specialists. One install. Your model.</title>
 <meta name="description" content="TIMPS Swarm connects 160 specialist agents to the coding tool you already use. One install, 20 LoRA adapters, and a full MCP tool catalog — running on your model."/>
+<link rel="preload" href="assets/fonts/offbit-bold.woff" as="font" type="font/woff" crossorigin/>
+<link rel="preload" href="assets/fonts/offbit-dot-bold.woff" as="font" type="font/woff" crossorigin/>
 <style>
+/* OffBit by Power Type™ — vendored locally so it works offline.
+   The foundry ships a Bold cut; use it across the whole weight range. */
+@font-face {
+  font-family: 'OffBit';
+  src: url('assets/fonts/offbit-bold.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'OffBit Dot';
+  src: url('assets/fonts/offbit-dot-bold.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* TIMPS Swarm — a typographic landing page with a technical pulse.
-   Language: system font, ink + one grey, soft pills, hairlines,
-   big two-tone statements, an electric accent. No web fonts. Light and dark. */
+   Language: OffBit, ink + one grey, soft pills, hairlines,
+   big two-tone statements, an electric accent. Light and dark. */
 
 /* tokens ----------------------------------------------------------- */
 :root {
@@ -37,8 +56,8 @@
   --note-fs: clamp(15px, 1.05vw, 16.5px);
   --max: 1680px;
   --side: max(var(--gutter), 50% - var(--max) / 2);
-  --sans: system-ui, -apple-system, "SF Pro Text", "Segoe UI", sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: 'OffBit', system-ui, -apple-system, "SF Pro Text", "Segoe UI", sans-serif;
+  --mono: 'OffBit Dot', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --ease: cubic-bezier(.2, .7, .2, 1);
 }
 /* dark palette — system preference, unless the visitor chose light */
@@ -241,11 +260,11 @@ button { font: inherit; color: inherit; }
   background: radial-gradient(560px circle at var(--mouse-x, 50%) var(--mouse-y, 35%), color-mix(in srgb, var(--hot) 12%, transparent), transparent 46%);
   opacity: 0; transition: opacity var(--dur-slow) var(--ease-out); }
 @media (hover: hover) { .hero-in:hover::after { opacity: 1; } }
-.hero-content { max-width: 22em; }
+.hero-content { max-width: 760px; }
 .hero-label { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 26px; padding: 7px 13px; border: 1px solid var(--line-2); border-radius: 99px; font: 600 11px/1 var(--mono); letter-spacing: .06em; color: var(--ink-2); }
 .hero-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hot); }
 .hero h1 { margin: 0; font-weight: 700; font-size: clamp(38px, 5.2vw, 76px); line-height: 1.06; letter-spacing: -.038em; color: var(--ink); text-wrap: balance; }
-.hero h1 span { display: block; }
+.hero h1 > span { display: block; }
 .hero h1 .lo, .hero h1 .hot { color: var(--hot); }
 .hero p { max-width: 46ch; margin-top: 26px; font-size: var(--read-fs); line-height: 1.5; letter-spacing: -.012em; color: var(--ink-2); text-wrap: pretty; }
 .hero .ctas { margin-top: 34px; }
