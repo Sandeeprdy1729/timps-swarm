@@ -8,6 +8,7 @@ on:
       - index.html
       - timps-swarm.html
       - CNAME
+      - assets/**
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -35,6 +36,7 @@ jobs:
           mkdir -p _site
           cp index.html _site/index.html
           if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
+          if [ -d assets ]; then cp -r assets _site/assets; fi
           touch _site/.nojekyll
 
       - name: Upload Pages artifact
