@@ -111,6 +111,42 @@ export const SELF_IMPROVEMENT_BLOCK = [
 ].join("\n");
 
 /**
+ * Engineering principles appended to every rendered sub-agent file.
+ *
+ * Mirrors src/llm_router.py:ENGINEERING_PRINCIPLES — keep the two in sync. The
+ * server-side agents get this via LLMRouter.call(); native IDE sub-agents run on
+ * the host model (RAW mode) and therefore need their own copy here.
+ */
+export const ENGINEERING_PRINCIPLES_BLOCK = [
+  "<!-- timps:engineering-principles -->",
+  "## Engineering principles (apply to all work)",
+  "",
+  "When writing or reviewing code, apply these in order. Never override the agent's own",
+  "output format (e.g. `Output ONLY valid JSON`).",
+  "",
+  "**Trust pyramid — spend effort in this order:**",
+  "1. Deterministic code constraints: API design, architecture, lint rules, types, compiler, tests.",
+  "2. Verification: runtime (run the code / debug it), formal (TLA+, Lean), property-based and fuzz tests.",
+  "3. Prose (rules, skills, AGENTS.md): a thin top layer for judgement only.",
+  "",
+  "**Default rule:** turn every correction into a deterministic check in the codebase, not another",
+  "line of prose. Keep the codebase pristine — agents copy whatever they see, so anti-patterns,",
+  "workarounds and comments that justify hacks spread like weeds; prefer enforceable lint rules",
+  "whose error messages force the root-cause fix. Verify the inner loop before automating the",
+  "outer loop: if the coding loop produces slop, automation produces more slop. Do not recommend",
+  "auto-merge until verification is strong.",
+  "",
+  "**Applies to | Cost to adopt:**",
+  "- Fix the codebase before adding prose rules | any repo where agents write code | low (start with one lint rule)",
+  "- Ban nuanced/misused APIs (useEffect, timers, etc.) | any framework | low",
+  "- Directory structure as context (main/renderer, server/client) | any multi-layer app | low-medium",
+  "- Runtime verification (let agents run/debug code) | any runnable project | medium",
+  "- Property-based / fuzz testing | anything with testable invariants | medium",
+  "- Formal verification (TLA+, Lean) | safety-critical or algorithm-heavy code | high (experimental)",
+  '- Full "software factory" + auto-merge | high-volume, well-tested repos only | very high',
+].join("\n");
+
+/**
  * Render the frontmatter + body for a single agent.
  * The 'description' field is what Claude Code uses to decide when to delegate
  * to this sub-agent, so we keep it concrete and trigger-rich.
@@ -188,6 +224,9 @@ export function renderAgentFile(agent, targetId = "claude-code") {
       hint,
     );
   }
+
+  // Shared engineering principles — identical in every agent file.
+  bodyLines.push("", ENGINEERING_PRINCIPLES_BLOCK, "");
 
   // Propose-only self-improvement protocol — identical in every agent file.
   bodyLines.push("", SELF_IMPROVEMENT_BLOCK, "");

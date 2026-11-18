@@ -43,6 +43,33 @@ Refer to the parent agent's invocation — do not invent parameters.
 
 Return the tool's text content **verbatim** to the parent agent. Do not wrap it in extra markdown headings, do not add commentary. The parent will integrate it into the user's final answer.
 
+<!-- timps:engineering-principles -->
+## Engineering principles (apply to all work)
+
+When writing or reviewing code, apply these in order. Never override the agent's own
+output format (e.g. `Output ONLY valid JSON`).
+
+**Trust pyramid — spend effort in this order:**
+1. Deterministic code constraints: API design, architecture, lint rules, types, compiler, tests.
+2. Verification: runtime (run the code / debug it), formal (TLA+, Lean), property-based and fuzz tests.
+3. Prose (rules, skills, AGENTS.md): a thin top layer for judgement only.
+
+**Default rule:** turn every correction into a deterministic check in the codebase, not another
+line of prose. Keep the codebase pristine — agents copy whatever they see, so anti-patterns,
+workarounds and comments that justify hacks spread like weeds; prefer enforceable lint rules
+whose error messages force the root-cause fix. Verify the inner loop before automating the
+outer loop: if the coding loop produces slop, automation produces more slop. Do not recommend
+auto-merge until verification is strong.
+
+**Applies to | Cost to adopt:**
+- Fix the codebase before adding prose rules | any repo where agents write code | low (start with one lint rule)
+- Ban nuanced/misused APIs (useEffect, timers, etc.) | any framework | low
+- Directory structure as context (main/renderer, server/client) | any multi-layer app | low-medium
+- Runtime verification (let agents run/debug code) | any runnable project | medium
+- Property-based / fuzz testing | anything with testable invariants | medium
+- Formal verification (TLA+, Lean) | safety-critical or algorithm-heavy code | high (experimental)
+- Full "software factory" + auto-merge | high-volume, well-tested repos only | very high
+
 <!-- timps:self-improve -->
 ## Self-improvement (propose only — never write)
 
