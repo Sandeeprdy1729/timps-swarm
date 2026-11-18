@@ -7,6 +7,8 @@ Search engines supported (chosen for zero-credential access):
 * `brave`       — Brave Search API (requires `BRAVE_API_KEY` env var)
 * `serpapi`     — SerpAPI (requires `SERPAPI_KEY` env var)
 * `bing`        — Bing Web Search API (requires `BING_SEARCH_KEY` env var)
+* `hackernews`  — Hacker News (official Firebase API for front-page lists +
+                  Algolia HN Search for keyword search; no key required)
 
 The agent:
 
@@ -28,15 +30,42 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from src._helpers import _GEN, _llm, _parse_json, _record, _save, _ts
 
 DOMAIN = "nextgen"
 
-SUPPORTED_ENGINES = ("duckduckgo", "brave", "serpapi", "bing")
+SUPPORTED_ENGINES = ("duckduckgo", "brave", "serpapi", "bing", "hackernews")
+
+# Hacker News API (https://github.com/HackerNews/API):
+#   * Firebase — https://hacker-news.firebaseio.com/v0/<list>stories.json + /item/<id>.json
+#   * Algolia  — https://hn.algolia.com/api/v1/search (keyword search; the
+#                official API has no search endpoint, Algolia is the search
+#                service HN itself uses and documents)
+HN_FIREBASE = "https://hacker-news.firebaseio.com/v0"
+HN_ALGOLIA = "https://hn.algolia.com/api/v1/search"
+HN_ALGOLIA_BY_DATE = "https://hn.algolia.com/api/v1/search_by_date"
+HN_ITEM_URL = "https://news.ycombinator.com/item?id={id}"
+
+# `hn:<list>` (or `hackernews:<list>`) as the whole query selects a Firebase
+# front-page list instead of a keyword search.
+_HN_LISTS = {
+    "top": "topstories",
+    "new": "newstories",
+    "best": "beststories",
+    "ask": "askstories",
+    "show": "showstories",
+    "job": "jobstories",
+    "jobs": "jobstories",
+}
+_HN_LIST_QUERY = re.compile(r"^\s*(?:hn|hackernews|hacker_news):\s*([a-z]+)\s*$", re.IGNORECASE)
+
+_RECENCY_SECONDS = {"day": 86_400, "week": 7 * 86_400, "month": 30 * 86_400, "year": 365 * 86_400}
 DEFAULT_UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 "
     "(KHTML, like Gecko) Version/17.0 Safari/605.1.15"
@@ -45,7 +74,17 @@ DEFAULT_UA = (
 
 def web_search(args: Dict[str, Any]) -> Dict[str, Any]:
     query = (args.get("query") or args.get("request") or "").strip()
-    engines = [e.lower() for e in (args.get("engines") or ["duckduckgo"]) if e.lower() in SUPPORTED_ENGINES] or ["duckduckgo"]
+    requested = args.get("engines") or args.get("sources")
+    if not requested:
+        # `hn:top` / `hn_list` implies the Hacker News engine; otherwise DDG.
+        requested = (
+            ["hackernews"]
+            if (_HN_LIST_QUERY.match(query) or args.get("hn_list"))
+            else ["duckduckgo"]
+        )
+    if isinstance(requested, str):
+        requested = [e.strip() for e in requested.split(",")]
+    engines = [e.lower() for e in requested if str(e).lower() in SUPPORTED_ENGINES] or ["duckduckgo"]
     max_results = int(args.get("max_results") or 10)
     recency = (args.get("recency") or "any").lower()  # 'day'|'week'|'month'|'year'|'any'
     content_type = (args.get("content_type") or "general").lower()  # 'general'|'news'|'academic'|'code'
@@ -54,6 +93,11 @@ def web_search(args: Dict[str, Any]) -> Dict[str, Any]:
     fetch_content = bool(args.get("fetch_content", True))
     max_content_chars = int(args.get("max_content_chars") or 2400)
     max_fetch = min(int(args.get("max_fetch") or 5), max_results)
+    engine_options = {
+        "hn_list": (args.get("hn_list") or "").lower() or None,
+        "hn_tags": (args.get("hn_tags") or "story").lower(),
+        "hn_sort": (args.get("hn_sort") or "").lower() or None,
+    }
 
     if not query:
         return {
@@ -73,7 +117,7 @@ def web_search(args: Dict[str, Any]) -> Dict[str, Any]:
     engine_status: Dict[str, str] = {}
     for engine in engines:
         try:
-            r = _search_with_engine(engine, query, max_results, recency, content_type, locale)
+            r = _search_with_engine(engine, query, max_results, recency, content_type, locale, engine_options)
             raw_results.extend(r)
             engine_status[engine] = f"ok ({len(r)})"
         except Exception as exc:
@@ -132,6 +176,7 @@ def web_search(args: Dict[str, Any]) -> Dict[str, Any]:
         "query": query,
         "refined_queries": refined_queries,
         "engines_used": engines,
+        "engine_options": engine_options,
         "engine_status": engine_status,
         "recency": recency,
         "content_type": content_type,
@@ -166,6 +211,7 @@ def _search_with_engine(
     recency: str,
     content_type: str,
     locale: str,
+    options: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, Any]]:
     if engine == "duckduckgo":
         return _search_duckduckgo(query, max_results, recency, content_type, locale)
@@ -175,6 +221,8 @@ def _search_with_engine(
         return _search_serpapi(query, max_results)
     if engine == "bing":
         return _search_bing(query, max_results, recency)
+    if engine == "hackernews":
+        return _search_hackernews(query, max_results, recency, content_type, options or {})
     return []
 
 
@@ -303,6 +351,143 @@ def _search_bing(query, max_results, recency) -> List[Dict[str, Any]]:
             "engine_priority": 2,
         })
     return out
+
+
+# ---------------------------------------------------------------------------
+# Hacker News — https://github.com/HackerNews/API
+# ---------------------------------------------------------------------------
+
+def _search_hackernews(
+    query: str,
+    max_results: int,
+    recency: str,
+    content_type: str,
+    options: Dict[str, Any],
+) -> List[Dict[str, Any]]:
+    """Query Hacker News.
+
+    * ``hn:top`` / ``hn:new`` / ``hn:best`` / ``hn:ask`` / ``hn:show`` /
+      ``hn:job`` (or the ``hn_list`` argument) reads a front-page list from
+      the official Firebase API (``/v0/<list>stories.json`` + ``/item/<id>.json``).
+    * Anything else is a keyword search through Algolia HN Search
+      (``hn.algolia.com``), the search service HN itself documents.  Supports
+      ``hn_sort=date``, ``hn_tags=story|ask_hn|show_hn|comment|poll`` and the
+      usual ``recency`` window (mapped to a ``created_at_i`` numeric filter).
+    """
+    match = _HN_LIST_QUERY.match(query)
+    list_name = (options.get("hn_list") or (match.group(1) if match else "") or "").lower()
+    if list_name:
+        return _hn_list(list_name, max_results, content_type)
+    return _hn_keyword_search(query, max_results, recency, content_type, options)
+
+
+def _hn_keyword_search(
+    query: str,
+    max_results: int,
+    recency: str,
+    content_type: str,
+    options: Dict[str, Any],
+) -> List[Dict[str, Any]]:
+    params: Dict[str, Any] = {
+        "query": query,
+        "hitsPerPage": max_results,
+        "tags": options.get("hn_tags") or "story",
+    }
+    window = _RECENCY_SECONDS.get(recency)
+    if window:
+        params["numericFilters"] = f"created_at_i>{int(time.time()) - window}"
+    endpoint = HN_ALGOLIA_BY_DATE if options.get("hn_sort") == "date" else HN_ALGOLIA
+
+    data = _hn_get_json(endpoint, params=params) or {}
+    results: List[Dict[str, Any]] = []
+    for hit in data.get("hits") or []:
+        if not (hit.get("title") or hit.get("story_title")):
+            continue
+        results.append(_hn_item_to_result(hit, len(results) + 1, content_type))
+        if len(results) >= max_results:
+            break
+    return results
+
+
+def _hn_list(list_name: str, max_results: int, content_type: str) -> List[Dict[str, Any]]:
+    endpoint = _HN_LISTS.get(list_name)
+    if not endpoint:
+        raise ValueError(
+            f"Unknown Hacker News list '{list_name}' — expected one of: "
+            + ", ".join(sorted(_HN_LISTS))
+        )
+    ids = _hn_get_json(f"{HN_FIREBASE}/{endpoint}.json") or []
+    ids = [i for i in ids if isinstance(i, int)][: max_results * 2]
+    results: List[Dict[str, Any]] = []
+    for item in _hn_items(ids):
+        if item.get("dead") or item.get("deleted") or not item.get("title"):
+            continue
+        results.append(_hn_item_to_result(item, len(results) + 1, content_type))
+        if len(results) >= max_results:
+            break
+    return results
+
+
+def _hn_items(ids: List[int]) -> List[Dict[str, Any]]:
+    """Fetch HN items in parallel; individual failures are skipped."""
+
+    def fetch(item_id: int) -> Dict[str, Any]:
+        try:
+            return _hn_get_json(f"{HN_FIREBASE}/item/{item_id}.json") or {}
+        except Exception:
+            return {}
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        return [item for item in pool.map(fetch, ids) if item]
+
+
+def _hn_get_json(url: str, params: Optional[Dict[str, Any]] = None) -> Any:
+    import requests
+    resp = requests.get(url, params=params, headers={"User-Agent": DEFAULT_UA}, timeout=20)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def _hn_item_to_result(item: Dict[str, Any], position: int, content_type: str) -> Dict[str, Any]:
+    item_id = item.get("id") or item.get("objectID")
+    url = item.get("url") or HN_ITEM_URL.format(id=item_id)
+    score = item.get("score", item.get("points"))
+    comments = item.get("descendants", item.get("num_comments"))
+    by = item.get("by") or item.get("author") or "unknown"
+    when = item.get("created_at") or _iso_from_epoch(item.get("time"))
+
+    meta = []
+    if score is not None:
+        meta.append(f"{score} points")
+    if comments is not None:
+        meta.append(f"{comments} comments")
+    meta.append(f"by {by}")
+    if when:
+        meta.append(str(when))
+    body = item.get("text") or item.get("story_text") or item.get("comment_text") or ""
+    snippet = " | ".join(meta)
+    if body:
+        snippet += f" — {_strip_html(body)[:400]}"
+
+    return {
+        "title": item.get("title") or item.get("story_title") or f"Hacker News item {item_id}",
+        "url": url,
+        "snippet": snippet,
+        "source_engine": "hackernews",
+        "position": position,
+        "engine_priority": 2,
+        "content_type": content_type,
+        "hn_id": item_id,
+        "hn_points": score,
+        "hn_comments": comments,
+    }
+
+
+def _iso_from_epoch(ts: Any) -> str:
+    try:
+        return datetime.fromtimestamp(int(ts), tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:
+        return ""
 
 
 # ---------------------------------------------------------------------------

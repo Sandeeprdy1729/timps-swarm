@@ -1306,6 +1306,22 @@ TOOLS: List[Dict[str, Any]] = [
                 "properties": {
                     "request": {"type": "string", "description": "Plain-English task or context for the agent."},
                     "language": {"type": "string", "description": "Primary programming language (default: python).", "default": "python"},
+                    **({
+                        "query": {"type": "string", "description": "Search query. Use `hn:top|new|best|ask|show|job` to pull a Hacker News list instead of a keyword search."},
+                        "engines": {
+                            "type": "array",
+                            "items": {"type": "string", "enum": ["duckduckgo", "brave", "serpapi", "bing", "hackernews"]},
+                            "description": "Engines to query (default: duckduckgo). Add `hackernews` for Hacker News discussion.",
+                        },
+                        "max_results": {"type": "integer", "default": 10},
+                        "recency": {"type": "string", "enum": ["day", "week", "month", "year", "any"], "default": "any"},
+                        "content_type": {"type": "string", "enum": ["general", "news", "academic", "code"], "default": "general"},
+                        "hn_list": {"type": "string", "enum": ["top", "new", "best", "ask", "show", "job"], "description": "Hacker News front-page list (alternative to an `hn:` query)."},
+                        "hn_tags": {"type": "string", "enum": ["story", "ask_hn", "show_hn", "comment", "poll"], "default": "story"},
+                        "hn_sort": {"type": "string", "enum": ["relevance", "date"], "default": "relevance"},
+                        "fetch_content": {"type": "boolean", "default": True},
+                        "synthesize": {"type": "boolean", "default": True},
+                    } if name == "web_search" else {}),
                 },
                 "required": [],
             },
@@ -1340,7 +1356,7 @@ TOOLS: List[Dict[str, Any]] = [
             ("ai_workflow_orchestrator",     "Turn a plain-English multi-step workflow into executable code for LangGraph, Temporal, or Claude-Flow — plus a Mermaid diagram and tests."),
             ("local_rag_builder",            "Build a fully-local RAG pipeline (Ollama embeddings + Chroma/FAISS + reranker + chat) from a corpus description. Emits ingest, retrieve, generate, evaluate, Dockerfile, Makefile."),
             ("git_workflow_automator",       "Generate an opinionated git workflow: pre-commit hooks, commitlint, lefthook, semantic-release / release-please config, PR template, branch-protection policy, CODEOWNERS."),
-            ("web_search",                   "Multi-engine web search (DuckDuckGo / Brave / SerpAPI / Bing) with deduplication, content extraction, and LLM-synthesised answer with [N] citations. Use for live lookups, news, vendor docs, and competitive intel."),
+            ("web_search",                   "Multi-engine web search (DuckDuckGo / Brave / SerpAPI / Bing / Hacker News) with deduplication, content extraction, and LLM-synthesised answer with [N] citations. Hacker News covers tech/startup discussion via the official Firebase API (top/new/best/Ask/Show/jobs) and Algolia HN Search. Use for live lookups, news, vendor docs, and competitive intel."),
         ]
     ],
 
