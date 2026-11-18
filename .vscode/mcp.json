@@ -3,14 +3,8 @@
     "servers": {
       "timps-swarm": {
         "type": "stdio",
-        "command": "npx",
-        "args": [
-          "timps-swarm",
-          "mcp"
-        ],
-        "env": {
-          "GEMINI_API_KEY": "${GEMINI_API_KEY}"
-        }
+        "command": "timps-mcp",
+        "description": "TIMPS Swarm \u2014 44 specialist agents for dev and productivity tasks"
       }
     }
   }
